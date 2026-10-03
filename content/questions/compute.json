@@ -1,0 +1,1875 @@
+[
+  {
+    "id": "cp-001",
+    "domain": "compute",
+    "objectiveId": "arm-bicep",
+    "topic": "arm-bicep",
+    "services": [
+      "arm-templates"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "In an ARM template, which section should you use to return the public IP address of a deployed VM to the caller?",
+    "options": [
+      {
+        "id": "a",
+        "text": "resources"
+      },
+      {
+        "id": "b",
+        "text": "variables"
+      },
+      {
+        "id": "c",
+        "text": "outputs"
+      },
+      {
+        "id": "d",
+        "text": "parameters"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "The outputs section returns values from a deployment, such as resource IDs, connection strings or IP addresses, which callers or pipelines can use.",
+    "incorrectAnswerExplanations": {
+      "a": "Resources define what gets deployed; they don't return values to the caller.",
+      "b": "Variables hold values computed inside the template; they aren't returned.",
+      "d": "Parameters are inputs supplied at deployment time."
+    },
+    "examTakeaway": "Inputs = parameters; internal values = variables; returned values = outputs.",
+    "relatedTopics": [
+      "arm-bicep"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Outputs in ARM templates",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/templates/outputs"
+      }
+    ]
+  },
+  {
+    "id": "cp-002",
+    "domain": "compute",
+    "objectiveId": "arm-bicep",
+    "topic": "arm-bicep",
+    "services": [
+      "arm-templates"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "RG1 contains VM1, VNet1 and a storage account st1. A colleague deploys a template that defines only VNet1 and st1, using the Complete deployment mode.",
+    "question": "What happens to VM1?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It's deleted because Complete mode removes resources not defined in the template"
+      },
+      {
+        "id": "b",
+        "text": "It's stopped but not deleted"
+      },
+      {
+        "id": "c",
+        "text": "Nothing; it isn't mentioned in the template"
+      },
+      {
+        "id": "d",
+        "text": "The deployment fails validation because VM1 isn't in the template"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "In Complete mode, Resource Manager deletes resources in the resource group that aren't in the template (subject to some exceptions and locks). Incremental mode, the default, leaves unlisted resources unchanged.",
+    "incorrectAnswerExplanations": {
+      "b": "Deployments don't stop VMs as a side effect of mode.",
+      "c": "That's Incremental mode behavior.",
+      "d": "Complete mode doesn't require every existing resource to be listed; it deletes those that aren't."
+    },
+    "examTakeaway": "Complete mode deletes unlisted resources in the RG.",
+    "relatedTopics": [
+      "arm-bicep"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Resource Manager deployment modes",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/templates/deployment-modes"
+      }
+    ]
+  },
+  {
+    "id": "cp-003",
+    "domain": "compute",
+    "objectiveId": "arm-bicep",
+    "topic": "arm-bicep",
+    "services": [
+      "arm-templates"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "You have an ARM template (azuredeploy.json) used for years. The team wants to maintain it as Bicep from now on with minimal manual rewriting.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Rename the file extension to .bicep"
+      },
+      {
+        "id": "b",
+        "text": "Run 'az bicep build --file azuredeploy.json'"
+      },
+      {
+        "id": "c",
+        "text": "Export the template again from the portal"
+      },
+      {
+        "id": "d",
+        "text": "Run 'az bicep decompile --file azuredeploy.json' and review the generated .bicep file"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Decompiling converts ARM JSON to Bicep as a starting point. The output may need cleanup (names, warnings), but it saves rewriting from scratch.",
+    "incorrectAnswerExplanations": {
+      "a": "Bicep has different syntax; renaming doesn't convert it.",
+      "b": "'bicep build' compiles Bicep to JSON — the opposite direction.",
+      "c": "Exporting produces JSON again (and you'd still need to convert it)."
+    },
+    "examTakeaway": "JSON → Bicep: decompile. Bicep → JSON: build.",
+    "relatedTopics": [
+      "arm-bicep"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Decompile ARM template JSON to Bicep",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/bicep/decompile"
+      }
+    ]
+  },
+  {
+    "id": "cp-004",
+    "domain": "compute",
+    "objectiveId": "arm-bicep",
+    "topic": "arm-bicep",
+    "services": [
+      "arm-templates"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "A Bicep file contains: param vmSize string = 'Standard_B2s'. Operators should be prevented from deploying any size other than Standard_B2s or Standard_D2s_v5 at deployment time.",
+    "question": "How should you modify the Bicep file?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Mark the parameter @secure()"
+      },
+      {
+        "id": "b",
+        "text": "Change param to var"
+      },
+      {
+        "id": "c",
+        "text": "Add an output named vmSize"
+      },
+      {
+        "id": "d",
+        "text": "Add the decorator @allowed(['Standard_B2s', 'Standard_D2s_v5']) above the vmSize parameter"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "The @allowed decorator restricts a parameter to a list of values; deployments with other values fail validation.",
+    "incorrectAnswerExplanations": {
+      "a": "@secure hides the value from logs; it doesn't restrict values.",
+      "b": "A variable can't be supplied at deployment time, so operators couldn't choose between the two sizes.",
+      "c": "Outputs return values after deployment and don't validate inputs."
+    },
+    "examTakeaway": "Restrict parameter values with @allowed (Bicep) / allowedValues (ARM JSON).",
+    "relatedTopics": [
+      "arm-bicep"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Parameters in Bicep",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/bicep/parameters"
+      }
+    ]
+  },
+  {
+    "id": "cp-005",
+    "domain": "compute",
+    "objectiveId": "arm-bicep",
+    "topic": "arm-bicep",
+    "services": [
+      "arm-templates"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "You want to preview which resources a template deployment will create, modify or delete before running it. What should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Policy compliance"
+      },
+      {
+        "id": "b",
+        "text": "The what-if operation (az deployment group what-if)"
+      },
+      {
+        "id": "c",
+        "text": "Complete deployment mode"
+      },
+      {
+        "id": "d",
+        "text": "The Activity log"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "What-if evaluates a deployment against the current state and shows the predicted changes without applying them.",
+    "incorrectAnswerExplanations": {
+      "a": "Policy compliance reports on existing resources versus rules.",
+      "c": "Complete mode changes behavior (deletions); it doesn't preview.",
+      "d": "The Activity log records operations that already happened."
+    },
+    "examTakeaway": "Preview template changes → what-if.",
+    "relatedTopics": [
+      "arm-bicep"
+    ],
+    "documentationLinks": [
+      {
+        "title": "ARM template deployment what-if operation",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/templates/deploy-what-if"
+      }
+    ]
+  },
+  {
+    "id": "cp-006",
+    "domain": "compute",
+    "objectiveId": "arm-bicep",
+    "topic": "arm-bicep",
+    "services": [
+      "arm-templates"
+    ],
+    "difficulty": "exam",
+    "questionType": "ordering",
+    "question": "You built a test environment manually in the portal and must reproduce it in another region using infrastructure as code. Order the steps.",
+    "options": [
+      {
+        "id": "s1",
+        "text": "Export the template from the resource group"
+      },
+      {
+        "id": "s2",
+        "text": "Parameterize region-specific and environment-specific values (location, names)"
+      },
+      {
+        "id": "s3",
+        "text": "Run what-if against the target resource group"
+      },
+      {
+        "id": "s4",
+        "text": "Deploy the template to the target resource group"
+      }
+    ],
+    "correctAnswer": [
+      "s1",
+      "s2",
+      "s3",
+      "s4"
+    ],
+    "explanation": "Export captures the current configuration as a template; then replace hard-coded values with parameters so it works in the new region; preview with what-if; finally deploy.",
+    "incorrectAnswerExplanations": {
+      "s1": "You need a template before you can edit or deploy it.",
+      "s2": "Exported templates hard-code names and locations; parameterize before deploying elsewhere.",
+      "s3": "Preview after editing, before deploying, to catch surprises.",
+      "s4": "Deploy last once the template is validated."
+    },
+    "examTakeaway": "Export → parameterize → what-if → deploy.",
+    "relatedTopics": [
+      "arm-bicep"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Export template in Azure portal",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/templates/export-template-portal"
+      }
+    ]
+  },
+  {
+    "id": "cp-007",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "virtual-machines",
+    "services": [
+      "virtual-machines"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "A developer shuts down a VM from inside Windows using Start > Shut down. The portal shows the VM as 'Stopped'. Is the VM still incurring compute charges?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, but only for the temporary disk"
+      },
+      {
+        "id": "b",
+        "text": "No, but the public IP is released"
+      },
+      {
+        "id": "c",
+        "text": "Yes, because the VM remains allocated; it must be stopped (deallocated) from Azure to stop compute charges"
+      },
+      {
+        "id": "d",
+        "text": "No, compute billing stops whenever the OS is shut down"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Shutting down inside the guest leaves the VM allocated on host hardware ('Stopped'), so compute is still billed. Stopping from the portal/CLI deallocates it ('Stopped (deallocated)') and stops compute charges; disk charges continue.",
+    "incorrectAnswerExplanations": {
+      "a": "The temp disk isn't billed separately; the issue is the allocated compute.",
+      "b": "Compute is still billed; Standard static public IPs aren't released by a stop.",
+      "d": "Guest OS shutdown doesn't release the hardware reservation."
+    },
+    "examTakeaway": "Stop billing = Stop (deallocate) from Azure.",
+    "relatedTopics": [
+      "virtual-machines"
+    ],
+    "documentationLinks": [
+      {
+        "title": "States and billing status of Azure VMs",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/states-billing"
+      }
+    ]
+  },
+  {
+    "id": "cp-008",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "virtual-machines",
+    "services": [
+      "virtual-machines"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "You need to resize VM1 from Standard_D2s_v5 to an M-series size for a memory-intensive workload. The desired size doesn't appear in the list of available sizes while VM1 is running.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Stop (deallocate) VM1, then select the new size"
+      },
+      {
+        "id": "b",
+        "text": "Change the OS disk to Premium SSD"
+      },
+      {
+        "id": "c",
+        "text": "Add VM1 to an availability set first"
+      },
+      {
+        "id": "d",
+        "text": "Delete VM1 and create a new VM with the same name"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "The sizes available while running are limited to those supported on the VM's current hardware cluster. Deallocating releases the VM from that cluster, so all sizes available in the region can be selected.",
+    "incorrectAnswerExplanations": {
+      "b": "Disk type doesn't control which VM sizes appear (though some sizes require premium storage support).",
+      "c": "You can't add an existing VM to an availability set, and it wouldn't expose more sizes.",
+      "d": "Recreating the VM is unnecessary and risky."
+    },
+    "examTakeaway": "Size missing while running → deallocate, then resize.",
+    "relatedTopics": [
+      "virtual-machines"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Resize a virtual machine",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/resize-vm"
+      }
+    ]
+  },
+  {
+    "id": "cp-009",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "virtual-machines",
+    "services": [
+      "virtual-machines"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "Which VM series is designed for workloads that are usually idle but occasionally need bursts of CPU, at low cost?",
+    "options": [
+      {
+        "id": "a",
+        "text": "E-series"
+      },
+      {
+        "id": "b",
+        "text": "L-series"
+      },
+      {
+        "id": "c",
+        "text": "B-series"
+      },
+      {
+        "id": "d",
+        "text": "N-series"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "B-series (burstable) VMs accrue CPU credits while idle and spend them to burst above baseline, which suits dev/test, small web servers and low-traffic apps.",
+    "incorrectAnswerExplanations": {
+      "a": "E-series is memory-optimized.",
+      "b": "L-series is storage-optimized with high local disk throughput.",
+      "d": "N-series includes GPUs."
+    },
+    "examTakeaway": "Burstable, low-cost = B-series.",
+    "relatedTopics": [
+      "virtual-machines"
+    ],
+    "documentationLinks": [
+      {
+        "title": "B-series burstable VM sizes",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/sizes/general-purpose/bv1-series"
+      }
+    ]
+  },
+  {
+    "id": "cp-010",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "virtual-machines",
+    "services": [
+      "virtual-machines",
+      "key-vault"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "You must enable Azure Disk Encryption (ADE) on VM1 in West Europe in Subscription A. You have Key Vault kv-east in East US in Subscription A and kv-west in West Europe in Subscription B.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create a new Key Vault in West Europe in Subscription A, enable 'Azure Disk Encryption for volume encryption', and use it"
+      },
+      {
+        "id": "b",
+        "text": "Use kv-east and enable 'Azure Disk Encryption for volume encryption'"
+      },
+      {
+        "id": "c",
+        "text": "ADE doesn't use Key Vault; enable it directly on the disk"
+      },
+      {
+        "id": "d",
+        "text": "Use kv-west because it's in the same region"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "For ADE, the Key Vault and the VM must be in the same region and subscription, and the vault must have the disk-encryption access setting enabled. Neither existing vault meets both conditions.",
+    "incorrectAnswerExplanations": {
+      "b": "kv-east is in the wrong region.",
+      "c": "ADE stores its encryption keys/secrets in Key Vault.",
+      "d": "kv-west is in the wrong subscription."
+    },
+    "examTakeaway": "ADE Key Vault: same region + same subscription + disk encryption enabled.",
+    "relatedTopics": [
+      "virtual-machines"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Create and configure a key vault for Azure Disk Encryption",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/windows/disk-encryption-key-vault"
+      }
+    ],
+    "versionNote": "Microsoft recommends encryption at host for many new deployments and has announced an ADE retirement path; check current guidance."
+  },
+  {
+    "id": "cp-011",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "virtual-machines",
+    "services": [
+      "virtual-machines"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "VM1 runs in West US. The company is consolidating workloads in East US 2 and needs to move VM1 and its dependent resources to East US 2 with a guided, validated process.",
+    "question": "What should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Change the VM's location property in the portal"
+      },
+      {
+        "id": "b",
+        "text": "Azure Resource Mover"
+      },
+      {
+        "id": "c",
+        "text": "Azure Migrate's discovery appliance for on-premises servers"
+      },
+      {
+        "id": "d",
+        "text": "The Move option to another resource group"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Azure Resource Mover moves resources such as VMs and their dependencies across regions, with dependency analysis, preparation, validation and commit steps.",
+    "incorrectAnswerExplanations": {
+      "a": "A resource's location can't be edited after creation.",
+      "c": "The Azure Migrate appliance discovers on-premises servers; cross-region Azure moves use Resource Mover (or Site Recovery).",
+      "d": "Moving between resource groups or subscriptions doesn't change region."
+    },
+    "examTakeaway": "Cross-region VM move → Azure Resource Mover.",
+    "relatedTopics": [
+      "virtual-machines"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Move Azure VMs across regions with Resource Mover",
+        "url": "https://learn.microsoft.com/azure/resource-mover/tutorial-move-region-virtual-machines"
+      }
+    ]
+  },
+  {
+    "id": "cp-012",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "vm-availability",
+    "services": [
+      "virtual-machines"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "An availability set has 2 fault domains and 5 update domains. You deploy 10 VMs into it.",
+    "question": "During a planned maintenance event, what is the maximum number of these VMs that Azure reboots at the same time?",
+    "options": [
+      {
+        "id": "a",
+        "text": "1"
+      },
+      {
+        "id": "b",
+        "text": "2"
+      },
+      {
+        "id": "c",
+        "text": "10"
+      },
+      {
+        "id": "d",
+        "text": "5"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "VMs are distributed across 5 update domains, 2 VMs per UD. During planned maintenance, only one update domain is rebooted at a time, so at most 2 VMs reboot simultaneously.",
+    "incorrectAnswerExplanations": {
+      "a": "With 10 VMs over 5 UDs, each UD holds 2 VMs.",
+      "c": "Azure never reboots all UDs at once.",
+      "d": "5 would be the number of VMs in one fault domain (unplanned failures), not an update domain."
+    },
+    "examTakeaway": "Planned maintenance = one update domain at a time.",
+    "relatedTopics": [
+      "vm-availability"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Availability sets overview",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/availability-set-overview"
+      }
+    ]
+  },
+  {
+    "id": "cp-013",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "vm-availability",
+    "services": [
+      "virtual-machines",
+      "load-balancer"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "You're deploying a two-VM web tier in a region that supports availability zones. The application must remain available if an entire datacenter fails, and you want the highest VM SLA.",
+    "question": "How should you deploy the VMs?",
+    "options": [
+      {
+        "id": "a",
+        "text": "In two different availability zones behind a zone-redundant Standard Load Balancer"
+      },
+      {
+        "id": "b",
+        "text": "As a single VM with Premium SSD disks"
+      },
+      {
+        "id": "c",
+        "text": "In a proximity placement group"
+      },
+      {
+        "id": "d",
+        "text": "In one availability set with 2 fault domains"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Availability zones are physically separate datacenters. Two VMs in different zones survive a datacenter outage and qualify for the highest VM SLA. A zone-redundant Standard LB keeps the frontend available.",
+    "incorrectAnswerExplanations": {
+      "b": "A single VM is a single point of failure.",
+      "c": "Proximity placement groups place VMs close together — the opposite of spreading them.",
+      "d": "An availability set protects against rack failures within one datacenter, not a datacenter outage."
+    },
+    "examTakeaway": "Datacenter failure + highest SLA → availability zones.",
+    "relatedTopics": [
+      "vm-availability",
+      "load-balancer"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Availability options for Azure Virtual Machines",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/availability"
+      }
+    ]
+  },
+  {
+    "id": "cp-014",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "vm-availability",
+    "services": [
+      "virtual-machines"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "VM5 is running without any availability configuration. You must add it to the existing availability set AS1. What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Move VM5 to the same resource group as AS1"
+      },
+      {
+        "id": "b",
+        "text": "Redeploy VM5 into AS1 (for example, recreate the VM from its disks with AS1 specified)"
+      },
+      {
+        "id": "c",
+        "text": "Resize VM5 to the same size as other VMs in AS1"
+      },
+      {
+        "id": "d",
+        "text": "Open VM5 > Availability + scale and select AS1"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "A VM's availability set is set at creation and can't be changed later. To add an existing VM, recreate it in the availability set (for example, delete the VM while keeping its disks, then create a new VM from those disks specifying AS1).",
+    "incorrectAnswerExplanations": {
+      "a": "Resource group placement doesn't affect availability set membership.",
+      "c": "Size doesn't enroll a VM in a set.",
+      "d": "There's no setting to add an existing VM to an availability set."
+    },
+    "examTakeaway": "Availability set/zone is chosen at creation; existing VMs must be recreated.",
+    "relatedTopics": [
+      "vm-availability"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Change the availability set for a VM",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/windows/change-availability-set"
+      }
+    ]
+  },
+  {
+    "id": "cp-015",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "vm-scale-sets",
+    "services": [
+      "vm-scale-sets"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "A VM scale set runs a web app. Load increases sharply every weekday from 08:00 to 18:00 and is low otherwise. You want instances to be ready before the morning surge.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An availability set with 20 update domains"
+      },
+      {
+        "id": "b",
+        "text": "Manual scaling each morning"
+      },
+      {
+        "id": "c",
+        "text": "Only a CPU-based scale-out rule"
+      },
+      {
+        "id": "d",
+        "text": "A schedule-based autoscale profile that raises the instance count for weekdays 08:00–18:00, plus a default profile for other times"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Predictable patterns are best handled with scheduled autoscale profiles that set capacity before demand arrives. Metric-based rules can still be included inside the profile to handle unexpected spikes.",
+    "incorrectAnswerExplanations": {
+      "a": "Update domains relate to maintenance, not scaling.",
+      "b": "Manual scaling adds daily administrative effort.",
+      "c": "Metric rules react after load increases, so instances may not be ready at 08:00."
+    },
+    "examTakeaway": "Predictable load → scheduled autoscale profile.",
+    "relatedTopics": [
+      "vm-scale-sets"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Autoscale with schedules",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/autoscale/autoscale-multiprofile"
+      }
+    ]
+  },
+  {
+    "id": "cp-016",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "vm-scale-sets",
+    "services": [
+      "vm-scale-sets",
+      "azure-monitor"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "A scale set has an autoscale setting: minimum 2, maximum 6, default 2. Rule: if average CPU > 75% for 10 minutes, increase count by 2. There's no scale-in rule. After a traffic spike, CPU has been at 20% for hours.",
+    "question": "How many instances are running?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Whatever count the scale-out rule reached (up to 6) — without a scale-in rule, autoscale doesn't reduce capacity"
+      },
+      {
+        "id": "b",
+        "text": "1 — autoscale removes instances one at a time to below the minimum"
+      },
+      {
+        "id": "c",
+        "text": "0 — idle scale sets scale to zero"
+      },
+      {
+        "id": "d",
+        "text": "2 — autoscale returns to the minimum automatically"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Autoscale only scales in when a scale-in rule triggers. Without one, the instance count stays at the level reached by scale-out (bounded by the maximum of 6).",
+    "incorrectAnswerExplanations": {
+      "b": "Autoscale never goes below the minimum.",
+      "c": "Scale sets don't scale below the configured minimum, and this minimum is 2.",
+      "d": "There's no automatic return to the minimum without a scale-in rule."
+    },
+    "examTakeaway": "Always pair scale-out with scale-in rules.",
+    "relatedTopics": [
+      "vm-scale-sets"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Best practices for autoscale",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/autoscale/autoscale-best-practices"
+      }
+    ]
+  },
+  {
+    "id": "cp-017",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "vm-scale-sets",
+    "services": [
+      "vm-scale-sets"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "When a scale set scales in, you want the newest instances removed first. What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Scale-in policy: NewestVM"
+      },
+      {
+        "id": "b",
+        "text": "Upgrade policy: Rolling"
+      },
+      {
+        "id": "c",
+        "text": "Orchestration mode: Uniform"
+      },
+      {
+        "id": "d",
+        "text": "Overprovisioning: enabled"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Scale-in policies decide which instances are removed: Default (balance across zones and fault domains, then highest instance ID), NewestVM or OldestVM.",
+    "incorrectAnswerExplanations": {
+      "b": "Upgrade policy controls how model updates roll out, not scale-in order.",
+      "c": "Orchestration mode is about how instances are managed and can't be changed after creation.",
+      "d": "Overprovisioning creates extra instances during scale-out to improve success; it doesn't set removal order."
+    },
+    "examTakeaway": "Which instances get removed → scale-in policy.",
+    "relatedTopics": [
+      "vm-scale-sets"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Use custom scale-in policies",
+        "url": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-scale-in-policy"
+      }
+    ]
+  },
+  {
+    "id": "cp-018",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "managed-disks-images",
+    "services": [
+      "managed-disks"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "You attach a new 512 GiB managed data disk to a Windows VM, but it doesn't appear in File Explorer. What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable host caching ReadWrite"
+      },
+      {
+        "id": "b",
+        "text": "Restart the VM twice"
+      },
+      {
+        "id": "c",
+        "text": "Change the disk to Premium SSD"
+      },
+      {
+        "id": "d",
+        "text": "Initialize, partition and format the disk in Disk Management (or with PowerShell)"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Attaching a new disk presents a raw, uninitialized disk to the OS. You must initialize it, create a partition and format a volume before it's usable.",
+    "incorrectAnswerExplanations": {
+      "a": "Caching affects performance; the disk still needs a volume.",
+      "b": "Reboots don't initialize disks.",
+      "c": "Disk type affects performance, not visibility in the OS."
+    },
+    "examTakeaway": "New data disk → initialize and format in the guest OS.",
+    "relatedTopics": [
+      "managed-disks-images"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Attach a managed data disk to a Windows VM",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/windows/attach-managed-disk-portal"
+      }
+    ]
+  },
+  {
+    "id": "cp-019",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "managed-disks-images",
+    "services": [
+      "managed-disks"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "A 1 TiB data disk is mostly empty. You want to reduce it to 256 GiB to save cost. What's true?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Edit the disk size to 256 GiB in the portal"
+      },
+      {
+        "id": "b",
+        "text": "Change the performance tier, which also reduces capacity"
+      },
+      {
+        "id": "c",
+        "text": "Managed disks can't be shrunk; create a new 256 GiB disk and copy the data"
+      },
+      {
+        "id": "d",
+        "text": "Take a snapshot; snapshots are automatically smaller"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Managed disk sizes can only be increased. To reduce size, create a smaller disk, copy data at the OS level, and swap the disks.",
+    "incorrectAnswerExplanations": {
+      "a": "The portal doesn't allow reducing disk size.",
+      "b": "Performance tiers change IOPS/throughput, not provisioned capacity.",
+      "d": "Snapshots don't reduce the size of the disk you're billed for, and a disk created from it would be the same size."
+    },
+    "examTakeaway": "Disks grow, never shrink.",
+    "relatedTopics": [
+      "managed-disks-images"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Expand managed disks",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/windows/expand-os-disk"
+      }
+    ]
+  },
+  {
+    "id": "cp-020",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "managed-disks-images",
+    "services": [
+      "compute-gallery",
+      "vm-scale-sets"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "You have a hardened Windows Server image used to deploy VMs and scale sets in East US and West Europe across three subscriptions. You need versioning so you can roll back to the previous image.",
+    "question": "What should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Compute Gallery with an image definition and versioned image versions replicated to both regions, shared via RBAC"
+      },
+      {
+        "id": "b",
+        "text": "A managed image in each subscription and region"
+      },
+      {
+        "id": "c",
+        "text": "An ARM template that installs all software at deployment"
+      },
+      {
+        "id": "d",
+        "text": "Snapshots of the OS disk copied to each region"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Azure Compute Gallery stores image definitions with multiple versions, replicates versions to target regions, and can be shared across subscriptions (and tenants). Deployments can target a specific version or 'latest', enabling rollback.",
+    "incorrectAnswerExplanations": {
+      "b": "Managed images have no versioning or built-in replication; you'd maintain many copies manually.",
+      "c": "Building at deployment time is slower and doesn't provide image versioning.",
+      "d": "Snapshots aren't images and lack versioning and generalization workflow."
+    },
+    "examTakeaway": "Versioned, replicated, shared images → Azure Compute Gallery.",
+    "relatedTopics": [
+      "managed-disks-images"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Compute Gallery",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery"
+      }
+    ]
+  },
+  {
+    "id": "cp-021",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "managed-disks-images",
+    "services": [
+      "managed-disks"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "multi",
+    "question": "Which TWO disk types can't be used as a VM's OS disk?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Premium SSD v2"
+      },
+      {
+        "id": "b",
+        "text": "Premium SSD"
+      },
+      {
+        "id": "c",
+        "text": "Ultra Disk"
+      },
+      {
+        "id": "d",
+        "text": "Standard SSD"
+      }
+    ],
+    "correctAnswer": [
+      "a",
+      "c"
+    ],
+    "explanation": "Ultra Disks and Premium SSD v2 are supported only as data disks. OS disks can use Standard HDD, Standard SSD or Premium SSD.",
+    "incorrectAnswerExplanations": {
+      "b": "Premium SSD is commonly used for production OS disks.",
+      "d": "Standard SSD is supported for OS disks."
+    },
+    "examTakeaway": "Ultra Disk and Premium SSD v2 = data disks only.",
+    "relatedTopics": [
+      "managed-disks-images"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure managed disk types",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/disks-types"
+      }
+    ]
+  },
+  {
+    "id": "cp-022",
+    "domain": "compute",
+    "objectiveId": "app-service",
+    "topic": "app-service",
+    "services": [
+      "app-service"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "What is the minimum App Service plan tier that supports deployment slots?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Basic"
+      },
+      {
+        "id": "b",
+        "text": "Isolated only"
+      },
+      {
+        "id": "c",
+        "text": "Standard"
+      },
+      {
+        "id": "d",
+        "text": "Free"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Deployment slots are available in Standard, Premium and Isolated tiers. Premium offers more slots than Standard.",
+    "incorrectAnswerExplanations": {
+      "a": "Basic supports custom TLS and manual scale-out but not slots.",
+      "b": "Isolated supports slots, but it's not the minimum.",
+      "d": "Free tier doesn't support slots."
+    },
+    "examTakeaway": "Slots and autoscale start at Standard.",
+    "relatedTopics": [
+      "app-service"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Set up staging environments",
+        "url": "https://learn.microsoft.com/azure/app-service/deploy-staging-slots"
+      }
+    ]
+  },
+  {
+    "id": "cp-023",
+    "domain": "compute",
+    "objectiveId": "app-service",
+    "topic": "app-service",
+    "services": [
+      "app-service"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "WebApp1 has a staging slot. Production must always use the production database connection string, and staging must always use the test database, even after swaps.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Store both connection strings in code and check an environment variable"
+      },
+      {
+        "id": "b",
+        "text": "Use auto swap"
+      },
+      {
+        "id": "c",
+        "text": "Add the connection string in each slot and mark it as a 'Deployment slot setting'"
+      },
+      {
+        "id": "d",
+        "text": "Create two separate App Service plans"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Settings marked as deployment slot settings ('sticky') stay with their slot when a swap happens, so each slot keeps its own database connection.",
+    "incorrectAnswerExplanations": {
+      "a": "Possible, but it adds code complexity and risk; App Service provides sticky settings for this.",
+      "b": "Auto swap automates swapping after deployment; it doesn't control which settings move.",
+      "d": "Separate plans don't help with slot settings and add cost."
+    },
+    "examTakeaway": "Environment-specific settings → mark as deployment slot settings.",
+    "relatedTopics": [
+      "app-service"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Which settings are swapped?",
+        "url": "https://learn.microsoft.com/azure/app-service/deploy-staging-slots#which-settings-are-swapped"
+      }
+    ]
+  },
+  {
+    "id": "cp-024",
+    "domain": "compute",
+    "objectiveId": "app-service",
+    "topic": "app-service",
+    "services": [
+      "app-service",
+      "azure-dns"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "You need to map www.contoso.com to the App Service app contoso-web. Your DNS is hosted in Azure DNS.",
+    "question": "Which DNS records should you create?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An MX record for www pointing to contoso-web.azurewebsites.net"
+      },
+      {
+        "id": "b",
+        "text": "A PTR record for the app's IP address"
+      },
+      {
+        "id": "c",
+        "text": "A CNAME record www → contoso-web.azurewebsites.net and a TXT record asuid.www with the app's custom domain verification ID"
+      },
+      {
+        "id": "d",
+        "text": "An NS record for www pointing to the app"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "For a subdomain, map with a CNAME to the app's default hostname and prove ownership with a TXT record named asuid.<subdomain> containing the verification ID. Then add the custom domain in the app and bind a certificate.",
+    "incorrectAnswerExplanations": {
+      "a": "MX records route email.",
+      "b": "PTR records are for reverse lookups.",
+      "d": "NS records delegate zones to name servers."
+    },
+    "examTakeaway": "Subdomain: CNAME + TXT asuid.<sub>. Apex: A + TXT asuid.",
+    "relatedTopics": [
+      "app-service",
+      "azure-dns"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Map an existing custom DNS name",
+        "url": "https://learn.microsoft.com/azure/app-service/app-service-web-tutorial-custom-domain"
+      }
+    ]
+  },
+  {
+    "id": "cp-025",
+    "domain": "compute",
+    "objectiveId": "app-service",
+    "topic": "app-service",
+    "services": [
+      "app-service"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Three web apps share App Service plan Plan1 (Standard S1, 2 instances). WebApp1 needs more instances during peak hours. WebApp2 and WebApp3 are low-traffic.",
+    "question": "If you configure autoscale on Plan1 to add instances, what happens?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Autoscale isn't available on Standard"
+      },
+      {
+        "id": "b",
+        "text": "WebApp2 and WebApp3 are moved to a new plan automatically"
+      },
+      {
+        "id": "c",
+        "text": "Only WebApp1 gets more instances"
+      },
+      {
+        "id": "d",
+        "text": "All three apps run on the additional instances, because scaling applies to the whole plan"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Scaling is a plan-level setting: every app in the plan runs on every instance (unless per-app scaling is configured on Premium). To scale WebApp1 independently, move it to its own plan.",
+    "incorrectAnswerExplanations": {
+      "a": "Autoscale is available from Standard tier.",
+      "b": "App Service doesn't move apps between plans automatically.",
+      "c": "Apps in a plan share its instances."
+    },
+    "examTakeaway": "Scale is per plan; isolate apps that scale differently into separate plans.",
+    "relatedTopics": [
+      "app-service"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Scale up an app / plan overview",
+        "url": "https://learn.microsoft.com/azure/app-service/overview-hosting-plans"
+      }
+    ]
+  },
+  {
+    "id": "cp-026",
+    "domain": "compute",
+    "objectiveId": "app-service",
+    "topic": "app-service",
+    "services": [
+      "app-service",
+      "virtual-network"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "WebApp1 (Premium v3) must connect to a SQL Server VM that has only a private IP in VNet1. Separately, internal users on the corporate network must reach WebApp1 privately, with public access disabled.",
+    "question": "Which combination should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A private endpoint for both directions"
+      },
+      {
+        "id": "b",
+        "text": "VNet integration for both directions"
+      },
+      {
+        "id": "c",
+        "text": "Access restrictions allowing VNet1"
+      },
+      {
+        "id": "d",
+        "text": "VNet integration for outbound calls to the SQL VM, and a private endpoint for inbound private access to WebApp1"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Regional VNet integration lets the app make outbound calls into the VNet. A private endpoint gives the app a private inbound IP so clients reach it privately; then public network access can be disabled.",
+    "incorrectAnswerExplanations": {
+      "a": "A private endpoint only handles inbound traffic to the app.",
+      "b": "VNet integration only handles outbound traffic from the app.",
+      "c": "Access restrictions filter traffic to the public endpoint; they don't provide private inbound access or outbound VNet connectivity."
+    },
+    "examTakeaway": "App Service: VNet integration = outbound; private endpoint = inbound.",
+    "relatedTopics": [
+      "app-service",
+      "private-service-endpoints"
+    ],
+    "documentationLinks": [
+      {
+        "title": "App Service networking features",
+        "url": "https://learn.microsoft.com/azure/app-service/networking-features"
+      }
+    ]
+  },
+  {
+    "id": "cp-027",
+    "domain": "compute",
+    "objectiveId": "app-service",
+    "topic": "app-service",
+    "services": [
+      "app-service"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "matching",
+    "question": "Match each requirement to the lowest App Service tier that supports it.",
+    "options": [
+      {
+        "id": "o1",
+        "text": "Custom domain with your own TLS certificate binding"
+      },
+      {
+        "id": "o2",
+        "text": "Autoscale based on CPU"
+      },
+      {
+        "id": "o3",
+        "text": "Free hosting for a quick prototype (no custom domain)"
+      }
+    ],
+    "matchTargets": [
+      {
+        "id": "free",
+        "text": "Free"
+      },
+      {
+        "id": "basic",
+        "text": "Basic"
+      },
+      {
+        "id": "standard",
+        "text": "Standard"
+      }
+    ],
+    "correctAnswer": {
+      "o1": "basic",
+      "o2": "standard",
+      "o3": "free"
+    },
+    "explanation": "Custom TLS bindings start at Basic; autoscale (and slots) start at Standard; Free is enough for a prototype on the default azurewebsites.net domain.",
+    "incorrectAnswerExplanations": {
+      "o1": "Basic is the lowest tier with custom domain TLS bindings.",
+      "o2": "Autoscale requires Standard or higher.",
+      "o3": "Free tier works for prototypes on the default domain."
+    },
+    "examTakeaway": "Basic = TLS + manual scale; Standard = autoscale + slots.",
+    "relatedTopics": [
+      "app-service"
+    ],
+    "documentationLinks": [
+      {
+        "title": "App Service pricing",
+        "url": "https://azure.microsoft.com/pricing/details/app-service/"
+      }
+    ],
+    "versionNote": "Tier feature boundaries change occasionally; verify current tiers."
+  },
+  {
+    "id": "cp-028",
+    "domain": "compute",
+    "objectiveId": "app-service",
+    "topic": "app-service",
+    "services": [
+      "app-service"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "WebApp1 runs slowly because each instance lacks memory. Adding instances doesn't help. What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Scale up the App Service plan to a larger size or higher tier"
+      },
+      {
+        "id": "b",
+        "text": "Enable Always On"
+      },
+      {
+        "id": "c",
+        "text": "Scale out the App Service plan"
+      },
+      {
+        "id": "d",
+        "text": "Add a deployment slot"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Scaling up increases the CPU and memory of each instance. Scaling out adds more instances of the same size, which doesn't help when each instance is memory-bound.",
+    "incorrectAnswerExplanations": {
+      "b": "Always On keeps the app loaded; it doesn't add memory.",
+      "c": "Scale out adds instances of the same size — the question says that doesn't help.",
+      "d": "Slots are for deployments, not resources."
+    },
+    "examTakeaway": "Bigger instances = scale up; more instances = scale out.",
+    "relatedTopics": [
+      "app-service"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Scale up an app in Azure App Service",
+        "url": "https://learn.microsoft.com/azure/app-service/manage-scale-up"
+      }
+    ]
+  },
+  {
+    "id": "cp-029",
+    "domain": "compute",
+    "objectiveId": "app-service",
+    "topic": "app-service",
+    "services": [
+      "app-service"
+    ],
+    "difficulty": "exam",
+    "questionType": "ordering",
+    "question": "You need to deploy a new version of WebApp1 with near-zero downtime and the ability to roll back quickly. Order the steps.",
+    "options": [
+      {
+        "id": "s1",
+        "text": "Create a staging deployment slot"
+      },
+      {
+        "id": "s2",
+        "text": "Deploy the new version to the staging slot"
+      },
+      {
+        "id": "s3",
+        "text": "Validate the app in staging (warm-up and smoke tests)"
+      },
+      {
+        "id": "s4",
+        "text": "Swap staging with production"
+      },
+      {
+        "id": "s5",
+        "text": "If issues appear, swap again to roll back"
+      }
+    ],
+    "correctAnswer": [
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5"
+    ],
+    "explanation": "Slots let you deploy and warm up a new version without affecting production, then swap with near-zero downtime. Because the previous version is now in staging, swapping again rolls back.",
+    "incorrectAnswerExplanations": {
+      "s1": "The slot must exist before deploying to it.",
+      "s2": "Deploy to staging, not production.",
+      "s3": "Validate before exposing users to the new version.",
+      "s4": "Swap to promote the warmed-up version.",
+      "s5": "Rollback is just another swap."
+    },
+    "examTakeaway": "Slot → deploy → validate → swap → swap back to roll back.",
+    "relatedTopics": [
+      "app-service"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Swap two slots",
+        "url": "https://learn.microsoft.com/azure/app-service/deploy-staging-slots#swap-two-slots"
+      }
+    ]
+  },
+  {
+    "id": "cp-030",
+    "domain": "compute",
+    "objectiveId": "app-service",
+    "topic": "app-service",
+    "services": [
+      "app-service"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "You need scheduled backups of WebApp1's content and configuration. What's required?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A Recovery Services vault"
+      },
+      {
+        "id": "b",
+        "text": "An App Service plan tier that supports backups (Basic or higher) and, for custom backups, a storage account"
+      },
+      {
+        "id": "c",
+        "text": "Azure Site Recovery"
+      },
+      {
+        "id": "d",
+        "text": "A deployment slot named backup"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "App Service has built-in backup and restore. It requires a supported tier, and custom backups are stored in a storage account container you specify (automatic backups are managed by the platform).",
+    "incorrectAnswerExplanations": {
+      "a": "App Service backups don't use Recovery Services vaults.",
+      "c": "Site Recovery replicates VMs; it doesn't back up App Service apps.",
+      "d": "Slots aren't backups."
+    },
+    "examTakeaway": "App Service backup is built in; needs a supporting tier (+ storage for custom backups).",
+    "relatedTopics": [
+      "app-service"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Back up and restore your app",
+        "url": "https://learn.microsoft.com/azure/app-service/manage-backup"
+      }
+    ],
+    "versionNote": "Backup tier requirements and automatic backup behavior have changed over time."
+  },
+  {
+    "id": "cp-031",
+    "domain": "compute",
+    "objectiveId": "containers",
+    "topic": "containers",
+    "services": [
+      "container-instances",
+      "azure-files"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "A container in Azure Container Instances processes uploaded files and writes results to /data. Results are lost whenever the container restarts.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Increase the container's memory"
+      },
+      {
+        "id": "b",
+        "text": "Change the restart policy to Never"
+      },
+      {
+        "id": "c",
+        "text": "Deploy the container group into a VNet"
+      },
+      {
+        "id": "d",
+        "text": "Mount an Azure file share as a volume at /data"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Container file systems are ephemeral. Mounting an Azure file share provides persistent storage that survives restarts and can be shared between containers.",
+    "incorrectAnswerExplanations": {
+      "a": "Memory doesn't make the file system persistent.",
+      "b": "Never restarting avoids restarts but doesn't persist data if the group is recreated or fails.",
+      "c": "VNet deployment changes networking, not storage persistence."
+    },
+    "examTakeaway": "Persistent ACI data → Azure Files volume.",
+    "relatedTopics": [
+      "containers",
+      "azure-files"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Mount an Azure file share in ACI",
+        "url": "https://learn.microsoft.com/azure/container-instances/container-instances-volume-azure-files"
+      }
+    ]
+  },
+  {
+    "id": "cp-032",
+    "domain": "compute",
+    "objectiveId": "containers",
+    "topic": "containers",
+    "services": [
+      "container-apps"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "A containerized order processor reads messages from an Azure Service Bus queue. It must scale out as the queue grows and scale to zero when the queue is empty, with minimal infrastructure management.",
+    "question": "What should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A VM scale set with CPU-based autoscale"
+      },
+      {
+        "id": "b",
+        "text": "Azure Container Instances with restart policy Always"
+      },
+      {
+        "id": "c",
+        "text": "Azure Container Apps with a KEDA Service Bus scale rule and minimum replicas set to 0"
+      },
+      {
+        "id": "d",
+        "text": "App Service Standard with manual scale"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Container Apps supports event-driven scale rules powered by KEDA, including Service Bus queue length, and can scale to zero replicas when idle.",
+    "incorrectAnswerExplanations": {
+      "a": "Scale sets require managing VMs and don't scale to zero on queue length natively.",
+      "b": "ACI doesn't autoscale; one container group runs continuously.",
+      "d": "Manual scaling doesn't respond to queue length and App Service doesn't scale to zero."
+    },
+    "examTakeaway": "Event-driven scaling to zero for containers → Container Apps + KEDA rules.",
+    "relatedTopics": [
+      "containers"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Set scaling rules in Azure Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/scale-app"
+      }
+    ]
+  },
+  {
+    "id": "cp-033",
+    "domain": "compute",
+    "objectiveId": "containers",
+    "topic": "containers",
+    "services": [
+      "container-registry"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Your container registry must replicate images to East US and North Europe so deployments in both regions pull locally, and it must be reachable only through private endpoints.",
+    "question": "Which ACR SKU is required?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Standard"
+      },
+      {
+        "id": "b",
+        "text": "Any SKU, with geo-replication enabled in settings"
+      },
+      {
+        "id": "c",
+        "text": "Premium"
+      },
+      {
+        "id": "d",
+        "text": "Basic"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Geo-replication and private link (private endpoints) are Premium-tier features of Azure Container Registry.",
+    "incorrectAnswerExplanations": {
+      "a": "Standard adds storage/throughput but not geo-replication or private link.",
+      "b": "Geo-replication isn't available on lower SKUs.",
+      "d": "Basic lacks geo-replication and private endpoints."
+    },
+    "examTakeaway": "ACR geo-replication or private link → Premium.",
+    "relatedTopics": [
+      "containers"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Container Registry service tiers",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-skus"
+      }
+    ]
+  },
+  {
+    "id": "cp-034",
+    "domain": "compute",
+    "objectiveId": "containers",
+    "topic": "containers",
+    "services": [
+      "container-registry",
+      "container-apps"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "A container app must pull images from a private ACR without storing registry passwords. What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Make the registry public"
+      },
+      {
+        "id": "b",
+        "text": "Grant the app Owner on the registry"
+      },
+      {
+        "id": "c",
+        "text": "Enable the ACR admin user and store its password as a secret"
+      },
+      {
+        "id": "d",
+        "text": "Assign the container app a managed identity and grant it the AcrPull role on the registry"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Managed identities authenticate to ACR via Entra ID with no secrets. AcrPull is the least-privileged role for pulling images.",
+    "incorrectAnswerExplanations": {
+      "a": "ACR registries aren't designed to be made public for anonymous pulls by default, and that would expose images.",
+      "b": "Owner is excessive.",
+      "c": "The admin user uses a shared password — not recommended for production and violates the requirement."
+    },
+    "examTakeaway": "Pull from ACR securely → managed identity + AcrPull.",
+    "relatedTopics": [
+      "containers"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Container Registry roles and permissions",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-roles"
+      }
+    ]
+  },
+  {
+    "id": "cp-035",
+    "domain": "compute",
+    "objectiveId": "containers",
+    "topic": "containers",
+    "services": [
+      "container-instances"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "You run a nightly ACI container that performs a backup task and exits. It should not restart after it completes successfully. Which restart policy should you set?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Continuous"
+      },
+      {
+        "id": "b",
+        "text": "Always"
+      },
+      {
+        "id": "c",
+        "text": "Unless-stopped"
+      },
+      {
+        "id": "d",
+        "text": "OnFailure"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "OnFailure restarts the container only if it exits with an error, so a successful run completes and stops. 'Never' would also stop after success but wouldn't retry failures.",
+    "incorrectAnswerExplanations": {
+      "a": "There's no 'Continuous' ACI restart policy.",
+      "b": "Always restarts the container even after successful completion — the default for long-running services.",
+      "c": "'Unless-stopped' is a Docker policy, not an ACI option."
+    },
+    "examTakeaway": "ACI restart policies: Always (default), OnFailure, Never.",
+    "relatedTopics": [
+      "containers"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Restart policies in ACI",
+        "url": "https://learn.microsoft.com/azure/container-instances/container-instances-restart-policy"
+      }
+    ]
+  },
+  {
+    "id": "cp-036",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "virtual-machines",
+    "services": [
+      "virtual-machines"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "An application writes cache files to the D: drive on a Windows VM. After a planned maintenance event, the files are gone.",
+    "question": "Why?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A ReadOnly lock was applied"
+      },
+      {
+        "id": "b",
+        "text": "Azure Backup deleted the files"
+      },
+      {
+        "id": "c",
+        "text": "D: is the temporary disk, which isn't persistent and can be wiped during maintenance, deallocation or resize"
+      },
+      {
+        "id": "d",
+        "text": "The OS disk was replaced"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "On many Windows VM sizes, D: is the local temporary disk. Its contents can be lost when the VM moves to another host (maintenance, deallocation, resize). Use a managed data disk for persistent data.",
+    "incorrectAnswerExplanations": {
+      "a": "Locks don't affect data inside a VM.",
+      "b": "Azure Backup doesn't delete data from VMs.",
+      "d": "OS disk replacement isn't part of normal maintenance and would affect C:, not D:."
+    },
+    "examTakeaway": "Never store important data on the temp disk.",
+    "relatedTopics": [
+      "virtual-machines",
+      "managed-disks-images"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Temporary disk",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/managed-disks-overview#temporary-disk"
+      }
+    ]
+  },
+  {
+    "id": "cp-037",
+    "domain": "compute",
+    "objectiveId": "virtual-machines",
+    "topic": "vm-scale-sets",
+    "services": [
+      "vm-scale-sets"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "You update a scale set's model to use a new image version. The upgrade policy is Manual. Existing instances keep running the old image.",
+    "question": "What should you do to apply the new image to existing instances?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Delete the scale set and recreate it"
+      },
+      {
+        "id": "b",
+        "text": "Wait — Manual policy applies updates within 24 hours"
+      },
+      {
+        "id": "c",
+        "text": "Change the scale-in policy to OldestVM"
+      },
+      {
+        "id": "d",
+        "text": "Upgrade the instances (for example, select them and choose Upgrade, or reimage them)"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "With Manual upgrade policy, model changes don't reach existing instances until you explicitly upgrade them. New instances created afterward use the new model.",
+    "incorrectAnswerExplanations": {
+      "a": "Recreating is unnecessary.",
+      "b": "Manual means nothing happens automatically.",
+      "c": "Scale-in policy only matters when instances are removed; you'd rely on scale-in/out churn rather than a deliberate upgrade."
+    },
+    "examTakeaway": "Manual upgrade policy → you must upgrade instances yourself.",
+    "relatedTopics": [
+      "vm-scale-sets"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Upgrade policies for scale sets",
+        "url": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-upgrade-policy"
+      }
+    ]
+  },
+  {
+    "id": "cp-038",
+    "domain": "compute",
+    "objectiveId": "containers",
+    "topic": "containers",
+    "services": [
+      "container-instances",
+      "container-apps",
+      "app-service"
+    ],
+    "difficulty": "exam",
+    "questionType": "matching",
+    "question": "Match each workload to the most appropriate container hosting service.",
+    "options": [
+      {
+        "id": "o1",
+        "text": "A one-off data-migration container that runs for 20 minutes"
+      },
+      {
+        "id": "o2",
+        "text": "Several microservices with traffic splitting between revisions and autoscaling"
+      },
+      {
+        "id": "o3",
+        "text": "A containerized website that needs deployment slots and a custom domain with TLS"
+      }
+    ],
+    "matchTargets": [
+      {
+        "id": "aci",
+        "text": "Azure Container Instances"
+      },
+      {
+        "id": "aca",
+        "text": "Azure Container Apps"
+      },
+      {
+        "id": "app",
+        "text": "Azure App Service"
+      }
+    ],
+    "correctAnswer": {
+      "o1": "aci",
+      "o2": "aca",
+      "o3": "app"
+    },
+    "explanation": "ACI is ideal for simple, short-lived containers; Container Apps for scalable microservices with revisions and traffic splitting; App Service for web apps that need slots, domains and TLS.",
+    "incorrectAnswerExplanations": {
+      "o1": "Short-lived single container → ACI (pay per second, no platform setup).",
+      "o2": "Revisions, traffic splitting and autoscale → Container Apps.",
+      "o3": "Slots + custom domain/TLS for a website → App Service."
+    },
+    "examTakeaway": "ACI = simple jobs; ACA = microservices; App Service = web apps with slots.",
+    "relatedTopics": [
+      "containers",
+      "app-service"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Comparing Container Apps with other Azure container options",
+        "url": "https://learn.microsoft.com/azure/container-apps/compare-options"
+      }
+    ]
+  }
+]

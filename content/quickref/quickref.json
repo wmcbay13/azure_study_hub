@@ -1,0 +1,577 @@
+[
+  {
+    "id": "azure-ports",
+    "title": "Common Ports for Azure Administrators",
+    "summary": "Ports and special addresses that appear in NSG, firewall and connectivity questions.",
+    "domain": "networking",
+    "icon": "plug-zap",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Management & web",
+        "columns": ["Port", "Protocol", "Used for"],
+        "rows": [
+          ["22", "TCP", "SSH (Linux VMs)"],
+          ["3389", "TCP", "RDP (Windows VMs)"],
+          ["80", "TCP", "HTTP"],
+          ["443", "TCP", "HTTPS; Azure Bastion sessions; SSTP and OpenVPN P2S; Azure File Sync agent"],
+          ["5985 / 5986", "TCP", "WinRM over HTTP / HTTPS (PowerShell remoting)"]
+        ]
+      },
+      {
+        "kind": "table",
+        "heading": "Data & file services",
+        "columns": ["Port", "Protocol", "Used for"],
+        "rows": [
+          ["445", "TCP", "SMB — mounting Azure Files (often blocked by ISPs)"],
+          ["2049", "TCP", "NFS — NFS Azure file shares"],
+          ["1433", "TCP", "Microsoft SQL Server / Azure SQL"],
+          ["3306", "TCP", "MySQL"],
+          ["5432", "TCP", "PostgreSQL"]
+        ]
+      },
+      {
+        "kind": "table",
+        "heading": "Identity, DNS & VPN",
+        "columns": ["Port", "Protocol", "Used for"],
+        "rows": [
+          ["53", "TCP/UDP", "DNS"],
+          ["88", "TCP/UDP", "Kerberos"],
+          ["389 / 636", "TCP", "LDAP / LDAPS"],
+          ["500 / 4500", "UDP", "IKE / IPsec NAT traversal (site-to-site VPN)"]
+        ]
+      },
+      {
+        "kind": "list",
+        "heading": "Special addresses",
+        "items": [
+          "168.63.129.16 — Azure platform virtual IP: Azure-provided DNS, Load Balancer health probes (AzureLoadBalancer tag), VM agent communication. Don't block it.",
+          "169.254.169.254 — Azure Instance Metadata Service (IMDS) and managed identity token endpoint, reachable only from inside a VM.",
+          "Azure reserves the first four and the last IP address of every subnet."
+        ]
+      }
+    ],
+    "topics": ["nsg-asg", "azure-files", "azure-bastion", "vpn-expressroute"],
+    "docLinks": [
+      { "title": "What is IP address 168.63.129.16?", "url": "https://learn.microsoft.com/azure/virtual-network/what-is-ip-address-168-63-129-16" },
+      { "title": "Azure Instance Metadata Service", "url": "https://learn.microsoft.com/azure/virtual-machines/instance-metadata-service" }
+    ]
+  },
+  {
+    "id": "rbac-scopes",
+    "title": "RBAC Scopes & Inheritance",
+    "summary": "Where role assignments can be made and how they combine.",
+    "domain": "identity-governance",
+    "icon": "user-cog",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Scopes (broadest to narrowest)",
+        "columns": ["Scope", "Example ID", "Applies to"],
+        "rows": [
+          ["Management group", "/providers/Microsoft.Management/managementGroups/corp", "All child MGs, subscriptions, RGs, resources"],
+          ["Subscription", "/subscriptions/{subId}", "All RGs and resources in the subscription"],
+          ["Resource group", "/subscriptions/{subId}/resourceGroups/rg1", "All resources in the RG"],
+          ["Resource", ".../providers/Microsoft.Compute/virtualMachines/vm1", "That resource only"]
+        ]
+      },
+      {
+        "kind": "list",
+        "heading": "Rules to remember",
+        "items": [
+          "Assignments inherit downward; you can't block inheritance (only deny assignments subtract).",
+          "Effective access = union of all roles from all group memberships and parent scopes.",
+          "Assign to groups, at the narrowest scope, with the least-privileged role.",
+          "NotActions subtracts from one role's Actions; it is not a deny.",
+          "Changes can take a few minutes to apply; sign out/in to refresh tokens."
+        ]
+      }
+    ],
+    "topics": ["azure-rbac", "management-hierarchy"],
+    "docLinks": [{ "title": "Understand scope for Azure RBAC", "url": "https://learn.microsoft.com/azure/role-based-access-control/scope-overview" }]
+  },
+  {
+    "id": "built-in-roles",
+    "title": "Azure Built-in Roles Cheat Sheet",
+    "summary": "The roles most often tested and what each can and cannot do.",
+    "domain": "identity-governance",
+    "icon": "badge-check",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Fundamental roles",
+        "columns": ["Role", "Can", "Cannot"],
+        "rows": [
+          ["Owner", "Manage all resources and assign roles", "Bypass locks or Azure Policy"],
+          ["Contributor", "Create and manage all resources", "Assign roles; manage locks; grant access"],
+          ["Reader", "View all resources", "Make any changes"],
+          ["User Access Administrator", "Manage role assignments", "Manage the resources themselves"],
+          ["Role Based Access Control Administrator", "Manage role assignments (optionally constrained by conditions)", "Manage the resources themselves"]
+        ]
+      },
+      {
+        "kind": "table",
+        "heading": "Common service roles",
+        "columns": ["Role", "Typical use"],
+        "rows": [
+          ["Virtual Machine Contributor", "Manage VMs (not the VNet/storage they use, not access)"],
+          ["Network Contributor", "Manage networks (VNets, NSGs, LBs, peering)"],
+          ["Storage Account Contributor", "Manage storage accounts (including listing keys)"],
+          ["Storage Blob Data Reader / Contributor / Owner", "Read / write / own blob data with Entra auth"],
+          ["Storage File Data SMB Share Reader / Contributor / Elevated Contributor", "Share-level access to Azure Files over SMB"],
+          ["Backup Contributor / Operator / Reader", "Manage backups / operate backups (no delete) / view"],
+          ["Monitoring Contributor / Reader", "Manage / view monitoring settings and data"],
+          ["Log Analytics Contributor / Reader", "Manage / query Log Analytics"],
+          ["Cost Management Contributor / Reader", "Manage budgets and exports / view costs"],
+          ["AcrPull / AcrPush", "Pull / push container images"],
+          ["Key Vault Secrets User / Administrator", "Read secrets / manage vault data (RBAC permission model)"]
+        ]
+      }
+    ],
+    "topics": ["azure-rbac"],
+    "docLinks": [{ "title": "Azure built-in roles", "url": "https://learn.microsoft.com/azure/role-based-access-control/built-in-roles" }],
+    "versionNote": "Microsoft adds and renames built-in roles over time; confirm exact names in the built-in roles reference."
+  },
+  {
+    "id": "storage-redundancy-ref",
+    "title": "Storage Redundancy at a Glance",
+    "summary": "Copies, placement and what each option survives.",
+    "domain": "storage",
+    "icon": "layers",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Options",
+        "columns": ["Option", "Primary region", "Secondary region", "Survives", "Readable secondary"],
+        "rows": [
+          ["LRS", "3 copies, 1 datacenter", "—", "Disk/rack failure", "—"],
+          ["ZRS", "3 copies across 3 zones", "—", "Zone/datacenter failure", "—"],
+          ["GRS", "LRS", "LRS (async)", "Regional disaster (after failover)", "No"],
+          ["RA-GRS", "LRS", "LRS (async)", "Regional disaster", "Yes"],
+          ["GZRS", "ZRS", "LRS (async)", "Zone + regional disaster", "No"],
+          ["RA-GZRS", "ZRS", "LRS (async)", "Zone + regional disaster", "Yes"]
+        ]
+      },
+      {
+        "kind": "list",
+        "heading": "Gotchas",
+        "items": [
+          "Premium accounts: LRS or ZRS only.",
+          "Geo-replication is asynchronous — check Last Sync Time for potential data loss.",
+          "Secondary endpoint: <account>-secondary.blob.core.windows.net (RA options).",
+          "Redundancy isn't backup — deletions replicate too. Use soft delete, versioning or Azure Backup."
+        ]
+      }
+    ],
+    "topics": ["storage-redundancy"],
+    "docLinks": [{ "title": "Azure Storage redundancy", "url": "https://learn.microsoft.com/azure/storage/common/storage-redundancy" }]
+  },
+  {
+    "id": "storage-access-tiers",
+    "title": "Blob Access Tiers",
+    "summary": "Hot, Cool, Cold and Archive compared.",
+    "domain": "storage",
+    "icon": "archive",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Tiers",
+        "columns": ["Tier", "Online?", "Minimum retention", "Best for"],
+        "rows": [
+          ["Hot", "Yes", "None", "Frequently accessed data"],
+          ["Cool", "Yes", "30 days", "Infrequent access, short-term backup"],
+          ["Cold", "Yes", "90 days", "Rare access, must stay immediately readable"],
+          ["Archive", "No (rehydrate first)", "180 days", "Long-term retention, compliance"]
+        ]
+      },
+      {
+        "kind": "list",
+        "heading": "Remember",
+        "items": [
+          "Cooler tiers: cheaper storage, more expensive access.",
+          "Early deletion/tier-change before the minimum is charged pro-rata.",
+          "Archive rehydration: standard priority can take up to ~15 hours; high priority is faster for smaller objects.",
+          "Set tiers per blob or automate with lifecycle management rules.",
+          "Archive is supported on LRS, GRS and RA-GRS accounts."
+        ]
+      }
+    ],
+    "topics": ["blob-storage"],
+    "docLinks": [{ "title": "Access tiers for blob data", "url": "https://learn.microsoft.com/azure/storage/blobs/access-tiers-overview" }],
+    "versionNote": "Retention minimums, rehydration times and redundancy support may change; verify on Microsoft Learn."
+  },
+  {
+    "id": "vnet-rules",
+    "title": "VNet & Subnet Rules",
+    "summary": "Address planning, reserved addresses and special subnets.",
+    "domain": "networking",
+    "icon": "network",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Usable addresses per subnet",
+        "columns": ["Prefix", "Total", "Usable in Azure"],
+        "rows": [
+          ["/29", "8", "3"],
+          ["/28", "16", "11"],
+          ["/27", "32", "27"],
+          ["/26", "64", "59"],
+          ["/24", "256", "251"]
+        ]
+      },
+      {
+        "kind": "table",
+        "heading": "Special subnets",
+        "columns": ["Name", "Minimum size", "Notes"],
+        "rows": [
+          ["GatewaySubnet", "/27 recommended", "VPN and ExpressRoute gateways only"],
+          ["AzureBastionSubnet", "/26", "Azure Bastion"],
+          ["AzureFirewallSubnet", "/26", "Azure Firewall"],
+          ["Application Gateway subnet", "Dedicated (any name)", "Only Application Gateways"]
+        ]
+      },
+      {
+        "kind": "list",
+        "heading": "Rules",
+        "items": [
+          "A VNet lives in one region and one subscription.",
+          "Address spaces must not overlap with peered or connected networks.",
+          "Subnets in a VNet communicate by default.",
+          "Peering is non-transitive; gateway transit shares a hub gateway.",
+          "Route tables and NSGs attach to subnets (NSGs also to NICs)."
+        ]
+      }
+    ],
+    "topics": ["vnets-subnets", "vnet-peering"],
+    "docLinks": [{ "title": "Virtual network FAQ", "url": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-faq" }]
+  },
+  {
+    "id": "nsg-behavior",
+    "title": "NSG Behavior",
+    "summary": "Priorities, defaults and evaluation order in one place.",
+    "domain": "networking",
+    "icon": "shield",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Default inbound rules",
+        "columns": ["Priority", "Name", "Effect"],
+        "rows": [
+          ["65000", "AllowVnetInBound", "Allow from VirtualNetwork"],
+          ["65001", "AllowAzureLoadBalancerInBound", "Allow from AzureLoadBalancer"],
+          ["65500", "DenyAllInBound", "Deny everything else"]
+        ]
+      },
+      {
+        "kind": "table",
+        "heading": "Default outbound rules",
+        "columns": ["Priority", "Name", "Effect"],
+        "rows": [
+          ["65000", "AllowVnetOutBound", "Allow to VirtualNetwork"],
+          ["65001", "AllowInternetOutBound", "Allow to Internet"],
+          ["65500", "DenyAllOutBound", "Deny everything else"]
+        ]
+      },
+      {
+        "kind": "list",
+        "heading": "Evaluation",
+        "items": [
+          "Custom priorities 100–4096; lowest number first; first match wins.",
+          "Inbound: subnet NSG → NIC NSG. Outbound: NIC NSG → subnet NSG. Both must allow.",
+          "Stateful — return traffic is allowed automatically.",
+          "ASGs must be in the same VNet as the NICs they group.",
+          "Tools: Effective security rules, IP flow verify, NSG diagnostics."
+        ]
+      }
+    ],
+    "topics": ["nsg-asg", "network-watcher"],
+    "docLinks": [{ "title": "How NSGs filter traffic", "url": "https://learn.microsoft.com/azure/virtual-network/network-security-group-how-it-works" }]
+  },
+  {
+    "id": "load-balancing-services",
+    "title": "Choosing a Load-Balancing Service",
+    "summary": "Load Balancer, Application Gateway, Front Door and Traffic Manager on one page.",
+    "domain": "networking",
+    "icon": "split",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Decision table",
+        "columns": ["Service", "Scope", "Layer", "Choose when"],
+        "rows": [
+          ["Load Balancer", "Regional", "L4 (TCP/UDP)", "Non-HTTP traffic, internal tiers, highest performance"],
+          ["Application Gateway", "Regional", "L7 (HTTP/S)", "Path/host routing, TLS offload, WAF in one region"],
+          ["Front Door", "Global", "L7 (HTTP/S)", "Global web apps, edge acceleration, global WAF"],
+          ["Traffic Manager", "Global", "DNS", "Global routing for any protocol (priority, weighted, performance, geographic)"]
+        ]
+      },
+      {
+        "kind": "list",
+        "heading": "Quick cues",
+        "items": [
+          "'URL path' or 'WAF' + one region → Application Gateway.",
+          "'Any TCP port' or 'internal' → Load Balancer.",
+          "'Users worldwide' + HTTP → Front Door.",
+          "'DNS-based failover between regions' → Traffic Manager."
+        ]
+      }
+    ],
+    "topics": ["load-balancer", "application-gateway"],
+    "docLinks": [{ "title": "Load-balancing options", "url": "https://learn.microsoft.com/azure/architecture/guide/technology-choices/load-balancing-overview" }]
+  },
+  {
+    "id": "dns-concepts",
+    "title": "Azure DNS Concepts",
+    "summary": "Record types, zones and resolution rules.",
+    "domain": "networking",
+    "icon": "globe",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Record types",
+        "columns": ["Type", "Purpose"],
+        "rows": [
+          ["A / AAAA", "Name → IPv4 / IPv6 address"],
+          ["CNAME", "Alias to another name (not allowed at the zone apex)"],
+          ["MX", "Mail servers"],
+          ["TXT", "Text, e.g., domain verification (App Service asuid)"],
+          ["NS", "Name servers that are authoritative for the zone"],
+          ["SOA", "Zone authority info (created automatically)"],
+          ["SRV", "Service locations"],
+          ["CAA", "Which CAs may issue certificates"],
+          ["Alias (Azure)", "Points to an Azure resource; works at the apex"]
+        ]
+      },
+      {
+        "kind": "list",
+        "heading": "Public vs private",
+        "items": [
+          "Public zone: delegate by setting the registrar's NS records to Azure's name servers.",
+          "Private zone: link to VNets; enable auto-registration on one zone per VNet.",
+          "Azure-provided DNS: 168.63.129.16.",
+          "Custom DNS servers must forward to 168.63.129.16 for private zones.",
+          "Hybrid: DNS Private Resolver inbound/outbound endpoints."
+        ]
+      }
+    ],
+    "topics": ["azure-dns"],
+    "docLinks": [{ "title": "DNS zones and records", "url": "https://learn.microsoft.com/azure/dns/dns-zones-records" }]
+  },
+  {
+    "id": "monitor-terminology",
+    "title": "Azure Monitor Terminology",
+    "summary": "The vocabulary of metrics, logs and alerting.",
+    "domain": "monitoring",
+    "icon": "activity",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Terms",
+        "columns": ["Term", "Meaning"],
+        "rows": [
+          ["Platform metrics", "Automatic numeric data from Azure resources (93 days)"],
+          ["Resource logs", "Per-resource operation logs; need a diagnostic setting"],
+          ["Activity log", "Subscription-level control-plane events (90 days)"],
+          ["Diagnostic setting", "Routes logs/metrics to Log Analytics, storage, Event Hubs or partners"],
+          ["Log Analytics workspace", "Log store queried with KQL"],
+          ["Azure Monitor Agent (AMA)", "Collects guest OS data per data collection rules"],
+          ["Data collection rule (DCR)", "What to collect and where to send it"],
+          ["Alert rule", "Condition on metrics, logs or activity log"],
+          ["Action group", "Notifications and automated actions"],
+          ["Alert processing rule", "Suppress or add actions to fired alerts (e.g., maintenance)"],
+          ["Insights", "Curated monitoring for VMs, storage, networks, containers"],
+          ["Workbook", "Interactive report combining text, queries and charts"]
+        ]
+      },
+      {
+        "kind": "list",
+        "heading": "KQL starter",
+        "items": [
+          "Heartbeat | summarize LastSeen = max(TimeGenerated) by Computer",
+          "AzureActivity | where OperationNameValue endswith \"DELETE\" | project TimeGenerated, Caller, ResourceId",
+          "Perf | where CounterName == \"% Processor Time\" | summarize avg(CounterValue) by bin(TimeGenerated, 5m), Computer",
+          "Event | where EventLevelName == \"Error\" | where TimeGenerated > ago(1d) | count"
+        ]
+      }
+    ],
+    "topics": ["azure-monitor", "alerts-action-groups"],
+    "docLinks": [{ "title": "Azure Monitor overview", "url": "https://learn.microsoft.com/azure/azure-monitor/overview" }]
+  },
+  {
+    "id": "backup-terminology",
+    "title": "Backup & DR Terminology",
+    "summary": "Vaults, policies, RPO/RTO and Site Recovery terms.",
+    "domain": "monitoring",
+    "icon": "database-backup",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Which vault?",
+        "columns": ["Workload", "Vault"],
+        "rows": [
+          ["Azure VMs", "Recovery Services vault"],
+          ["SQL Server / SAP HANA in Azure VMs", "Recovery Services vault"],
+          ["Azure Files", "Recovery Services vault"],
+          ["On-premises files/folders (MARS)", "Recovery Services vault"],
+          ["Azure managed disks", "Backup vault"],
+          ["Azure Blobs", "Backup vault"],
+          ["Azure Database for PostgreSQL, AKS", "Backup vault"]
+        ]
+      },
+      {
+        "kind": "table",
+        "heading": "Terms",
+        "columns": ["Term", "Meaning"],
+        "rows": [
+          ["RPO", "Maximum acceptable data loss (time)"],
+          ["RTO", "Maximum acceptable downtime"],
+          ["Backup policy", "Schedule + retention for recovery points"],
+          ["Instant restore", "Local snapshots used for fast VM restores"],
+          ["Soft delete", "Deleted backup data kept (default 14 days) for recovery"],
+          ["Cross Region Restore", "Restore in paired region from a GRS vault"],
+          ["Recovery plan (ASR)", "Ordered failover of groups of machines"],
+          ["Test failover (ASR)", "Non-disruptive DR drill into an isolated network"],
+          ["Re-protect / failback (ASR)", "Reverse replication and return to the original region"]
+        ]
+      }
+    ],
+    "topics": ["azure-backup", "site-recovery"],
+    "docLinks": [{ "title": "Azure Backup support matrix", "url": "https://learn.microsoft.com/azure/backup/backup-support-matrix" }]
+  },
+  {
+    "id": "vm-availability",
+    "title": "VM Availability Options",
+    "summary": "From single VMs to multi-region designs.",
+    "domain": "compute",
+    "icon": "shield-check",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Options",
+        "columns": ["Option", "Protects against", "Notes"],
+        "rows": [
+          ["Single VM (Premium SSD)", "—", "Lowest SLA; still a single point of failure"],
+          ["Availability set", "Rack failure, planned maintenance", "Up to 3 FDs, up to 20 UDs (default 5); one datacenter"],
+          ["Availability zones", "Datacenter failure", "Deploy 2+ VMs across zones; highest VM SLA"],
+          ["Scale set (zones/FDs)", "Hardware and zone failures; load changes", "Adds autoscaling"],
+          ["Site Recovery / multi-region", "Regional outage", "Failover to another region"]
+        ]
+      },
+      {
+        "kind": "list",
+        "heading": "Rules",
+        "items": [
+          "Choose availability options at creation time.",
+          "A VM can't be in both an availability set and a zone.",
+          "Use Standard LB and Standard public IPs for zone-redundant frontends.",
+          "Check the published SLA document for current percentages."
+        ]
+      }
+    ],
+    "topics": ["vm-availability", "vm-scale-sets", "site-recovery"],
+    "docLinks": [{ "title": "Availability options for Azure VMs", "url": "https://learn.microsoft.com/azure/virtual-machines/availability" }]
+  },
+  {
+    "id": "azure-hierarchy",
+    "title": "Azure Hierarchy & Governance Inheritance",
+    "summary": "What lives at each level and what inherits.",
+    "domain": "identity-governance",
+    "icon": "folder-tree",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Levels",
+        "columns": ["Level", "Holds", "Key facts"],
+        "rows": [
+          ["Entra tenant", "Identities", "Each subscription trusts one tenant"],
+          ["Management group", "MGs and subscriptions", "Root group at top; up to 6 levels below root"],
+          ["Subscription", "Resource groups", "Billing and quota boundary; one parent MG"],
+          ["Resource group", "Resources", "No nesting; location is metadata only"],
+          ["Resource", "—", "Belongs to exactly one RG"]
+        ]
+      },
+      {
+        "kind": "table",
+        "heading": "What inherits?",
+        "columns": ["Setting", "Inherited by child scopes?"],
+        "rows": [
+          ["RBAC role assignments", "Yes"],
+          ["Azure Policy assignments", "Yes (minus exclusions/exemptions)"],
+          ["Resource locks", "Yes"],
+          ["Tags", "No (use Policy to inherit)"],
+          ["Budgets", "Scope-based — a budget covers costs of everything in its scope"]
+        ]
+      }
+    ],
+    "topics": ["management-hierarchy", "locks-tags", "azure-policy"],
+    "docLinks": [{ "title": "Management groups overview", "url": "https://learn.microsoft.com/azure/governance/management-groups/overview" }]
+  },
+  {
+    "id": "identity-terminology",
+    "title": "Identity Terminology",
+    "summary": "Entra ID vocabulary for users, groups, roles and licensing.",
+    "domain": "identity-governance",
+    "icon": "fingerprint",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Terms",
+        "columns": ["Term", "Meaning"],
+        "rows": [
+          ["Tenant", "A dedicated Entra ID instance for an organization"],
+          ["Member user", "Internal identity (cloud-only or synced)"],
+          ["Guest user", "External B2B identity (UserType = Guest)"],
+          ["Security group", "Grants access; can contain users, devices, SPs, groups"],
+          ["Microsoft 365 group", "Collaboration group (mailbox, Teams, SharePoint); users only"],
+          ["Dynamic group", "Membership by rule (P1+); user or device, not both"],
+          ["Administrative unit", "Scope for delegated Entra roles"],
+          ["Service principal", "Identity of an app in a tenant"],
+          ["Managed identity", "Azure-managed SP for a resource (system- or user-assigned)"],
+          ["Usage location", "Required before assigning licenses"],
+          ["SSPR", "Self-service password reset; Selected (one group) or All"],
+          ["PIM", "Just-in-time role activation (P2/Governance)"]
+        ]
+      }
+    ],
+    "topics": ["entra-users-groups", "entra-external-sspr"],
+    "docLinks": [{ "title": "Microsoft Entra fundamentals", "url": "https://learn.microsoft.com/entra/fundamentals/whatis" }]
+  },
+  {
+    "id": "app-service-tiers",
+    "title": "App Service Tiers & Features",
+    "summary": "Which App Service plan tier unlocks which feature.",
+    "domain": "compute",
+    "icon": "app-window",
+    "sections": [
+      {
+        "kind": "table",
+        "heading": "Feature availability (typical)",
+        "columns": ["Feature", "Free/Shared", "Basic", "Standard", "Premium"],
+        "rows": [
+          ["Custom domains", "Shared only", "Yes", "Yes", "Yes"],
+          ["Custom TLS/SSL bindings", "No", "Yes", "Yes", "Yes"],
+          ["Manual scale-out", "No", "Yes", "Yes", "Yes"],
+          ["Autoscale", "No", "No", "Yes", "Yes (plus automatic scaling)"],
+          ["Deployment slots", "No", "No", "Yes", "Yes (more slots)"],
+          ["Backups", "No", "Yes", "Yes", "Yes"],
+          ["Dedicated compute", "No", "Yes", "Yes", "Yes"]
+        ]
+      },
+      {
+        "kind": "list",
+        "heading": "Remember",
+        "items": [
+          "Scaling is per plan — all apps in the plan scale together.",
+          "Isolated (App Service Environment) adds full network isolation.",
+          "Slot settings stick to their slot during swaps."
+        ]
+      }
+    ],
+    "topics": ["app-service"],
+    "docLinks": [
+      { "title": "App Service plans", "url": "https://learn.microsoft.com/azure/app-service/overview-hosting-plans" },
+      { "title": "App Service limits", "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/azure-subscription-service-limits#app-service-limits" }
+    ],
+    "versionNote": "Tier features and limits change; always confirm on the App Service pricing and limits pages."
+  }
+]

@@ -1,0 +1,1213 @@
+[
+  {
+    "id": "mn-001",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "azure-monitor",
+    "services": [
+      "azure-monitor",
+      "log-analytics"
+    ],
+    "difficulty": "beginner",
+    "questionType": "scenario",
+    "scenario": "You need to query Key Vault access events (who read which secret) in Log Analytics. No Key Vault data appears in the workspace.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A metric alert on the Key Vault"
+      },
+      {
+        "id": "b",
+        "text": "A diagnostic setting on the Key Vault that sends the AuditEvent logs to the Log Analytics workspace"
+      },
+      {
+        "id": "c",
+        "text": "Nothing — resource logs are collected automatically"
+      },
+      {
+        "id": "d",
+        "text": "An Azure Monitor Agent on the Key Vault"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Resource logs (such as Key Vault AuditEvent) aren't collected until you create a diagnostic setting that routes them to a destination like a Log Analytics workspace.",
+    "incorrectAnswerExplanations": {
+      "a": "Alerts notify on data; they don't collect logs.",
+      "c": "Only platform metrics and the Activity log are collected automatically.",
+      "d": "Agents run on VMs/servers; PaaS resources use diagnostic settings."
+    },
+    "examTakeaway": "Missing resource logs → create a diagnostic setting.",
+    "relatedTopics": [
+      "azure-monitor"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Diagnostic settings in Azure Monitor",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/essentials/diagnostic-settings"
+      }
+    ]
+  },
+  {
+    "id": "mn-002",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "azure-monitor",
+    "services": [
+      "azure-monitor"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "A VM was deleted yesterday. You need to find out who deleted it. Where should you look first?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Advisor"
+      },
+      {
+        "id": "b",
+        "text": "The Activity log for the subscription or resource group"
+      },
+      {
+        "id": "c",
+        "text": "Metrics explorer"
+      },
+      {
+        "id": "d",
+        "text": "The VM's guest OS event log"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "The Activity log records control-plane operations, including who (caller) performed create, update and delete operations on resources. It's retained for 90 days by default.",
+    "incorrectAnswerExplanations": {
+      "a": "Advisor gives recommendations, not audit history.",
+      "c": "Metrics are numeric performance data, not audit records.",
+      "d": "The guest OS logs are gone with the VM and wouldn't record Azure-level deletion."
+    },
+    "examTakeaway": "Who did what to a resource → Activity log.",
+    "relatedTopics": [
+      "azure-monitor"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Monitor activity log",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/essentials/activity-log"
+      }
+    ]
+  },
+  {
+    "id": "mn-003",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "azure-monitor",
+    "services": [
+      "azure-monitor"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "You need to alert when available memory inside Windows VMs drops below 1 GB. In Metrics explorer, the VM's host metrics don't include guest memory usage.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable boot diagnostics"
+      },
+      {
+        "id": "b",
+        "text": "Install the Azure Monitor Agent with a data collection rule collecting the memory performance counter (or enable VM insights), then alert on that data"
+      },
+      {
+        "id": "c",
+        "text": "Resize the VMs"
+      },
+      {
+        "id": "d",
+        "text": "Create an Activity log alert"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Guest OS performance counters (like available memory) require an agent. AMA with a DCR (or VM insights, which uses AMA) collects them so you can chart and alert.",
+    "incorrectAnswerExplanations": {
+      "a": "Boot diagnostics captures serial console and screenshots, not ongoing memory metrics.",
+      "c": "Resizing doesn't provide monitoring.",
+      "d": "Activity log alerts fire on management events, not performance data."
+    },
+    "examTakeaway": "Guest OS metrics need the Azure Monitor Agent.",
+    "relatedTopics": [
+      "azure-monitor",
+      "alerts-action-groups"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Collect data from VMs with Azure Monitor Agent",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/vm/data-collection"
+      }
+    ]
+  },
+  {
+    "id": "mn-004",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "azure-monitor",
+    "services": [
+      "log-analytics"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "Which KQL query returns the number of Error events per computer in the last 24 hours from the Event table?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Event | project Computer | take 24"
+      },
+      {
+        "id": "b",
+        "text": "SELECT COUNT(*) FROM Event WHERE Level = 'Error' GROUP BY Computer"
+      },
+      {
+        "id": "c",
+        "text": "Event | where EventLevelName == \"Error\" and TimeGenerated > ago(24h) | summarize count() by Computer"
+      },
+      {
+        "id": "d",
+        "text": "Event | summarize avg(TimeGenerated) by EventLevelName"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "KQL pipes a table through operators: where filters rows (level and time with ago()), and summarize count() by Computer aggregates per computer.",
+    "incorrectAnswerExplanations": {
+      "a": "project selects columns and take returns arbitrary rows; nothing is filtered or counted.",
+      "b": "That's SQL syntax, not KQL.",
+      "d": "Averaging timestamps by level doesn't answer the question."
+    },
+    "examTakeaway": "KQL: Table | where … | summarize count() by …",
+    "relatedTopics": [
+      "azure-monitor"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Tutorial: Use Kusto queries",
+        "url": "https://learn.microsoft.com/kusto/query/tutorials/learn-common-operators"
+      }
+    ]
+  },
+  {
+    "id": "mn-005",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "azure-monitor",
+    "services": [
+      "azure-monitor"
+    ],
+    "difficulty": "exam",
+    "questionType": "matching",
+    "question": "Match each logging requirement to the diagnostic setting destination.",
+    "options": [
+      {
+        "id": "o1",
+        "text": "Query and correlate logs with KQL and use them in alerts"
+      },
+      {
+        "id": "o2",
+        "text": "Retain raw logs for 7 years at the lowest cost"
+      },
+      {
+        "id": "o3",
+        "text": "Stream logs to a third-party SIEM in near real time"
+      }
+    ],
+    "matchTargets": [
+      {
+        "id": "law",
+        "text": "Log Analytics workspace"
+      },
+      {
+        "id": "st",
+        "text": "Storage account"
+      },
+      {
+        "id": "eh",
+        "text": "Event Hubs"
+      }
+    ],
+    "correctAnswer": {
+      "o1": "law",
+      "o2": "st",
+      "o3": "eh"
+    },
+    "explanation": "Log Analytics enables KQL querying and log alerts; storage accounts provide inexpensive long-term archival; Event Hubs streams data to external systems such as SIEMs.",
+    "incorrectAnswerExplanations": {
+      "o1": "KQL and log search alerts work on Log Analytics data.",
+      "o2": "Storage (cool/archive tiers) is cheapest for long retention.",
+      "o3": "Event Hubs is the streaming integration point for third-party tools."
+    },
+    "examTakeaway": "Analyze = Log Analytics; archive = storage; stream = Event Hubs.",
+    "relatedTopics": [
+      "azure-monitor"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Diagnostic settings destinations",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/essentials/diagnostic-settings#destinations"
+      }
+    ]
+  },
+  {
+    "id": "mn-006",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "alerts-action-groups",
+    "services": [
+      "azure-monitor"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Twelve alert rules across your subscription must notify the same operations team by email and SMS, and create a ticket via a webhook. The team's contact details change occasionally.",
+    "question": "How should you configure notifications with the least administrative effort?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create a Logic App per alert rule"
+      },
+      {
+        "id": "b",
+        "text": "Create one action group with the email, SMS and webhook actions and attach it to all twelve rules"
+      },
+      {
+        "id": "c",
+        "text": "Configure email, SMS and webhook separately in each alert rule"
+      },
+      {
+        "id": "d",
+        "text": "Use an alert processing rule to suppress the alerts"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Action groups are reusable notification/action sets. Attaching one action group to many rules means contact changes are made once.",
+    "incorrectAnswerExplanations": {
+      "a": "Per-rule Logic Apps add complexity without benefit.",
+      "c": "Alert rules reference action groups; duplicating configuration multiplies maintenance.",
+      "d": "Suppression stops notifications, the opposite of the requirement."
+    },
+    "examTakeaway": "Reuse notifications across alerts → one action group.",
+    "relatedTopics": [
+      "alerts-action-groups"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Action groups",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/action-groups"
+      }
+    ]
+  },
+  {
+    "id": "mn-007",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "alerts-action-groups",
+    "services": [
+      "azure-monitor"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Every Sunday from 02:00 to 04:00, VMs in RG-Prod are patched and restarted, triggering many alerts. Alerts must still be recorded, but no notifications should be sent during that window. Alert rules must not be modified.",
+    "question": "What should you create?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A script that disables all alert rules on Sunday and re-enables them"
+      },
+      {
+        "id": "b",
+        "text": "A resource lock on RG-Prod"
+      },
+      {
+        "id": "c",
+        "text": "A second action group with no recipients"
+      },
+      {
+        "id": "d",
+        "text": "An alert processing rule scoped to RG-Prod with a 'Suppress notifications' action and a weekly recurring schedule"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Alert processing rules modify fired alerts at scale. A suppression rule with a recurring schedule prevents action groups from firing while alerts are still created and visible.",
+    "incorrectAnswerExplanations": {
+      "a": "Disabling rules modifies them and stops alerts from being recorded at all.",
+      "b": "Locks prevent changes to resources and don't affect alert notifications.",
+      "c": "Swapping action groups requires modifying every rule."
+    },
+    "examTakeaway": "Maintenance windows → alert processing rule (suppression + schedule).",
+    "relatedTopics": [
+      "alerts-action-groups"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Alert processing rules",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-processing-rules"
+      }
+    ]
+  },
+  {
+    "id": "mn-008",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "alerts-action-groups",
+    "services": [
+      "azure-monitor"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "You need an alert whenever anyone deletes a network security group in Subscription1. Which alert type should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Budget alert"
+      },
+      {
+        "id": "b",
+        "text": "Activity log alert on the 'Delete Network Security Group' operation"
+      },
+      {
+        "id": "c",
+        "text": "Smart detection alert"
+      },
+      {
+        "id": "d",
+        "text": "Metric alert"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Activity log alerts fire on control-plane events such as resource deletion, filtered by operation, resource type and scope.",
+    "incorrectAnswerExplanations": {
+      "a": "Budget alerts monitor cost.",
+      "c": "Smart detection is an Application Insights feature for app anomalies.",
+      "d": "Metrics don't record deletion events."
+    },
+    "examTakeaway": "Alert on administrative operations → activity log alert.",
+    "relatedTopics": [
+      "alerts-action-groups",
+      "azure-monitor"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Activity log alerts",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-types#activity-log-alerts"
+      }
+    ]
+  },
+  {
+    "id": "mn-009",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "alerts-action-groups",
+    "services": [
+      "azure-monitor"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "A web app's request count follows strong daily and weekly seasonality. A static threshold either fires constantly at peak or misses anomalies at night.",
+    "question": "What should you configure on the metric alert?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Severity 0"
+      },
+      {
+        "id": "b",
+        "text": "A lower static threshold"
+      },
+      {
+        "id": "c",
+        "text": "A log search alert with count > 0"
+      },
+      {
+        "id": "d",
+        "text": "Dynamic thresholds"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Dynamic thresholds use machine learning on historical data to learn seasonal patterns and flag deviations, avoiding manual tuning of static values.",
+    "incorrectAnswerExplanations": {
+      "a": "Severity labels importance; it doesn't change when the alert fires.",
+      "b": "A lower static threshold would fire even more at peak times.",
+      "c": "Changing to a log alert doesn't solve seasonality."
+    },
+    "examTakeaway": "Seasonal metrics → dynamic threshold metric alerts.",
+    "relatedTopics": [
+      "alerts-action-groups"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Dynamic thresholds in metric alerts",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-dynamic-thresholds"
+      }
+    ]
+  },
+  {
+    "id": "mn-010",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "network-watcher",
+    "services": [
+      "network-watcher"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "You must continuously monitor reachability and round-trip latency from Azure VMs in two regions to an on-premises server, and be alerted if latency exceeds 80 ms or checks fail.",
+    "question": "What should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "NSG flow logs"
+      },
+      {
+        "id": "b",
+        "text": "Connection troubleshoot"
+      },
+      {
+        "id": "c",
+        "text": "IP flow verify"
+      },
+      {
+        "id": "d",
+        "text": "Connection Monitor in Network Watcher"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Connection Monitor runs periodic tests between sources and destinations (including on-premises), records latency/loss and integrates with Azure Monitor alerts.",
+    "incorrectAnswerExplanations": {
+      "a": "Flow logs record traffic but don't test latency or reachability.",
+      "b": "Connection troubleshoot is a one-time test.",
+      "c": "IP flow verify checks NSG rules for a single flow."
+    },
+    "examTakeaway": "Ongoing connectivity/latency monitoring → Connection Monitor.",
+    "relatedTopics": [
+      "network-watcher"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Connection monitor overview",
+        "url": "https://learn.microsoft.com/azure/network-watcher/connection-monitor-overview"
+      }
+    ]
+  },
+  {
+    "id": "mn-011",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "network-watcher",
+    "services": [
+      "network-watcher"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "matching",
+    "question": "Match each troubleshooting question to the Network Watcher tool.",
+    "options": [
+      {
+        "id": "o1",
+        "text": "Which NSG rule is blocking TCP 3389 to VM1?"
+      },
+      {
+        "id": "o2",
+        "text": "Is traffic to 10.5.0.4 going through the firewall?"
+      },
+      {
+        "id": "o3",
+        "text": "I need to inspect the actual packets between two VMs"
+      },
+      {
+        "id": "o4",
+        "text": "Can VM1 reach sql.contoso.com on 1433 right now, and where does it fail?"
+      }
+    ],
+    "matchTargets": [
+      {
+        "id": "ipfv",
+        "text": "IP flow verify"
+      },
+      {
+        "id": "nh",
+        "text": "Next hop"
+      },
+      {
+        "id": "pc",
+        "text": "Packet capture"
+      },
+      {
+        "id": "ct",
+        "text": "Connection troubleshoot"
+      }
+    ],
+    "correctAnswer": {
+      "o1": "ipfv",
+      "o2": "nh",
+      "o3": "pc",
+      "o4": "ct"
+    },
+    "explanation": "IP flow verify identifies NSG decisions; next hop shows routing; packet capture records traffic; connection troubleshoot performs an end-to-end test and reports where it fails.",
+    "incorrectAnswerExplanations": {
+      "o1": "Rule-level allow/deny → IP flow verify.",
+      "o2": "Path/route → next hop.",
+      "o3": "Actual packets → packet capture (requires the VM extension).",
+      "o4": "One-time connectivity test with hop details → connection troubleshoot."
+    },
+    "examTakeaway": "Pick the Network Watcher tool by the question asked.",
+    "relatedTopics": [
+      "network-watcher"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Network Watcher overview",
+        "url": "https://learn.microsoft.com/azure/network-watcher/network-watcher-overview"
+      }
+    ]
+  },
+  {
+    "id": "mn-012",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "azure-backup",
+    "services": [
+      "azure-backup"
+    ],
+    "difficulty": "beginner",
+    "questionType": "scenario",
+    "scenario": "You have 20 VMs in West Europe. You create a Recovery Services vault in North Europe, but the VMs don't appear when you try to configure backup.",
+    "question": "Why?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The VMs must be stopped first"
+      },
+      {
+        "id": "b",
+        "text": "Backup requires a Backup vault for VMs"
+      },
+      {
+        "id": "c",
+        "text": "The vault must use ZRS"
+      },
+      {
+        "id": "d",
+        "text": "The vault must be in the same region as the VMs"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Azure VM backup requires the Recovery Services vault to be in the same region as the VMs. Create a vault in West Europe.",
+    "incorrectAnswerExplanations": {
+      "a": "VMs can be backed up while running.",
+      "b": "Azure VMs are backed up with Recovery Services vaults.",
+      "c": "Vault redundancy doesn't affect which VMs are discoverable."
+    },
+    "examTakeaway": "VM backup vault = same region as the VMs.",
+    "relatedTopics": [
+      "azure-backup"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Back up an Azure VM from VM settings",
+        "url": "https://learn.microsoft.com/azure/backup/backup-azure-vms-first-look-arm"
+      }
+    ]
+  },
+  {
+    "id": "mn-013",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "azure-backup",
+    "services": [
+      "azure-backup"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "You created a Recovery Services vault with default settings (GRS) and protected 50 VMs. Compliance now requires that backup data never leaves the primary region, so you want LRS.",
+    "question": "What can you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Change the vault's storage replication type to LRS in its properties"
+      },
+      {
+        "id": "b",
+        "text": "Create a new vault configured with LRS before protecting any items, and move protection of the VMs to it (stopping protection in the old vault)"
+      },
+      {
+        "id": "c",
+        "text": "Disable Cross Region Restore"
+      },
+      {
+        "id": "d",
+        "text": "Apply an Azure Policy to the vault"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "A vault's storage redundancy can only be changed before any items are protected. With items already protected, create a new vault set to LRS and re-protect the VMs there.",
+    "incorrectAnswerExplanations": {
+      "a": "The setting is locked once items are protected.",
+      "c": "Disabling CRR doesn't change the vault's GRS replication.",
+      "d": "Policy can audit or require settings but can't change a locked redundancy setting on existing vault data."
+    },
+    "examTakeaway": "Set vault redundancy before protecting items — it's locked afterwards.",
+    "relatedTopics": [
+      "azure-backup"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Set storage redundancy for a vault",
+        "url": "https://learn.microsoft.com/azure/backup/backup-create-recovery-services-vault#set-storage-redundancy"
+      }
+    ]
+  },
+  {
+    "id": "mn-014",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "azure-backup",
+    "services": [
+      "azure-backup"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "A user deleted a single 2 MB spreadsheet from VM1 last Tuesday. VM1 is backed up daily to a Recovery Services vault. You must restore only that file with minimal disruption.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create a new VM from last Monday's recovery point and copy the file"
+      },
+      {
+        "id": "b",
+        "text": "Use File Recovery: select a recovery point from before the deletion, download and run the script to mount it, copy the file, then unmount"
+      },
+      {
+        "id": "c",
+        "text": "Use Azure Site Recovery test failover"
+      },
+      {
+        "id": "d",
+        "text": "Restore VM1 by replacing its disks with last Monday's recovery point"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "File Recovery (item-level restore) mounts a recovery point's disks as drives on a machine via a script, letting you copy individual files without restoring or replacing the VM.",
+    "incorrectAnswerExplanations": {
+      "a": "Works but is slower and more disruptive than file recovery.",
+      "c": "Site Recovery is for failover, not restoring files from backups.",
+      "d": "Replacing disks rolls back the entire VM, losing later changes."
+    },
+    "examTakeaway": "Single files from VM backup → File Recovery (mount recovery point).",
+    "relatedTopics": [
+      "azure-backup"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Recover files from Azure VM backup",
+        "url": "https://learn.microsoft.com/azure/backup/backup-azure-restore-files-from-vm"
+      }
+    ]
+  },
+  {
+    "id": "mn-015",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "azure-backup",
+    "services": [
+      "azure-backup",
+      "managed-disks",
+      "blob-storage"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "matching",
+    "question": "Match each workload to the vault type that protects it.",
+    "options": [
+      {
+        "id": "o1",
+        "text": "Azure VM"
+      },
+      {
+        "id": "o2",
+        "text": "Azure managed disk (disk-level snapshots)"
+      },
+      {
+        "id": "o3",
+        "text": "On-premises Windows file server via the MARS agent"
+      },
+      {
+        "id": "o4",
+        "text": "Azure Blob storage"
+      }
+    ],
+    "matchTargets": [
+      {
+        "id": "rsv",
+        "text": "Recovery Services vault"
+      },
+      {
+        "id": "bv",
+        "text": "Backup vault"
+      }
+    ],
+    "correctAnswer": {
+      "o1": "rsv",
+      "o2": "bv",
+      "o3": "rsv",
+      "o4": "bv"
+    },
+    "explanation": "Recovery Services vaults protect Azure VMs, SQL/SAP HANA in VMs, Azure Files and MARS/MABS workloads. Backup vaults protect newer data sources such as Azure Disks, Blobs, PostgreSQL and AKS.",
+    "incorrectAnswerExplanations": {
+      "o1": "Azure VMs → Recovery Services vault.",
+      "o2": "Azure Disk Backup → Backup vault.",
+      "o3": "MARS agent → Recovery Services vault.",
+      "o4": "Blob backup → Backup vault."
+    },
+    "examTakeaway": "VMs/Files/MARS → RSV; Disks/Blobs/PostgreSQL/AKS → Backup vault.",
+    "relatedTopics": [
+      "azure-backup"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Backup vaults overview",
+        "url": "https://learn.microsoft.com/azure/backup/backup-vault-overview"
+      }
+    ]
+  },
+  {
+    "id": "mn-016",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "azure-backup",
+    "services": [
+      "azure-backup"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Policy requires daily VM backups retained for 30 days, weekly backups (Sunday) retained for 12 weeks, and monthly backups (first Sunday) retained for 3 years.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Lifecycle management on the vault"
+      },
+      {
+        "id": "b",
+        "text": "Three Site Recovery replication policies"
+      },
+      {
+        "id": "c",
+        "text": "Three separate vaults"
+      },
+      {
+        "id": "d",
+        "text": "A single backup policy with a daily schedule and daily, weekly and monthly retention ranges"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "A VM backup policy defines the schedule plus retention for daily, weekly, monthly and yearly recovery points. Weekly and monthly points are designated from the scheduled daily backups.",
+    "incorrectAnswerExplanations": {
+      "a": "Lifecycle management is a blob storage feature, not a vault feature.",
+      "b": "Replication policies are for disaster recovery, not long-term retention.",
+      "c": "One policy handles multiple retention tiers; multiple vaults add overhead."
+    },
+    "examTakeaway": "GFS-style retention lives in one backup policy.",
+    "relatedTopics": [
+      "azure-backup"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Back up Azure VMs with an enhanced policy",
+        "url": "https://learn.microsoft.com/azure/backup/backup-azure-vms-enhanced-policy"
+      }
+    ]
+  },
+  {
+    "id": "mn-017",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "azure-backup",
+    "services": [
+      "azure-backup",
+      "log-analytics"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Management wants Backup Reports showing backup success rates and storage consumed across all vaults. The reports workbook shows no data.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Soft delete"
+      },
+      {
+        "id": "b",
+        "text": "An Azure Policy to tag vaults"
+      },
+      {
+        "id": "c",
+        "text": "Cross Region Restore"
+      },
+      {
+        "id": "d",
+        "text": "Diagnostic settings on each vault sending backup report data to a Log Analytics workspace"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Backup Reports are built on Log Analytics. Each vault must send its data via diagnostic settings (resource-specific tables) to a workspace; it can be enforced at scale with built-in policies.",
+    "incorrectAnswerExplanations": {
+      "a": "Soft delete protects backups from deletion.",
+      "b": "Tags don't produce report data.",
+      "c": "CRR enables restores in the secondary region."
+    },
+    "examTakeaway": "Backup reports → vault diagnostic settings to Log Analytics.",
+    "relatedTopics": [
+      "azure-backup",
+      "azure-monitor"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Configure Azure Backup reports",
+        "url": "https://learn.microsoft.com/azure/backup/configure-reports"
+      }
+    ]
+  },
+  {
+    "id": "mn-018",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "azure-backup",
+    "services": [
+      "azure-backup"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "An administrator stops protection of VM2 and deletes its backup data by mistake. Soft delete is enabled with default settings. What can you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Restore from the storage account's blob soft delete"
+      },
+      {
+        "id": "b",
+        "text": "Run Site Recovery failback"
+      },
+      {
+        "id": "c",
+        "text": "Nothing — deleted backup data is purged immediately"
+      },
+      {
+        "id": "d",
+        "text": "Undelete the backup item within the soft-delete retention period (14 days by default) and resume protection"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "With soft delete, deleted backup data is retained in a soft-deleted state for the retention period (14 days by default), during which you can undelete it and resume protection.",
+    "incorrectAnswerExplanations": {
+      "a": "Vault backup data isn't stored in a customer storage account.",
+      "b": "Site Recovery is unrelated to backup data.",
+      "c": "Soft delete exists precisely to prevent immediate loss."
+    },
+    "examTakeaway": "Vault soft delete = recover deleted backups (default 14 days).",
+    "relatedTopics": [
+      "azure-backup"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Soft delete for Azure Backup",
+        "url": "https://learn.microsoft.com/azure/backup/backup-azure-security-feature-cloud"
+      }
+    ]
+  },
+  {
+    "id": "mn-019",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "site-recovery",
+    "services": [
+      "site-recovery"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Business continuity requires that a three-tier app in East US be running in West US within 30 minutes of a regional outage, with no more than a few minutes of data loss. You must also perform quarterly DR drills without affecting production.",
+    "question": "What should you implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Availability zones in East US"
+      },
+      {
+        "id": "b",
+        "text": "Azure Backup with Cross Region Restore"
+      },
+      {
+        "id": "c",
+        "text": "GRS on all storage accounts"
+      },
+      {
+        "id": "d",
+        "text": "Azure Site Recovery replication to West US, a recovery plan for the three tiers, and test failovers into an isolated VNet"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Site Recovery continuously replicates VMs (low RPO), recovery plans orchestrate multi-tier failover quickly (low RTO), and test failovers validate DR without impacting production.",
+    "incorrectAnswerExplanations": {
+      "a": "Zones don't protect against a regional outage.",
+      "b": "Restoring from backup takes longer and has a larger RPO (since the last backup).",
+      "c": "GRS covers storage data, not running VMs and app failover."
+    },
+    "examTakeaway": "Low RPO/RTO regional DR + drills → Site Recovery + recovery plan + test failover.",
+    "relatedTopics": [
+      "site-recovery"
+    ],
+    "documentationLinks": [
+      {
+        "title": "About Site Recovery",
+        "url": "https://learn.microsoft.com/azure/site-recovery/site-recovery-overview"
+      }
+    ]
+  },
+  {
+    "id": "mn-020",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "site-recovery",
+    "services": [
+      "site-recovery"
+    ],
+    "difficulty": "exam",
+    "questionType": "ordering",
+    "question": "VM1 is replicating from East US to West US with Site Recovery. East US has an outage. Order the steps to fail over and eventually return to East US.",
+    "options": [
+      {
+        "id": "s1",
+        "text": "Fail over VM1 to West US, choosing a recovery point"
+      },
+      {
+        "id": "s2",
+        "text": "Commit the failover"
+      },
+      {
+        "id": "s3",
+        "text": "Re-protect VM1 so it replicates from West US back to East US"
+      },
+      {
+        "id": "s4",
+        "text": "When East US is healthy, fail back to East US"
+      }
+    ],
+    "correctAnswer": [
+      "s1",
+      "s2",
+      "s3",
+      "s4"
+    ],
+    "explanation": "Failover starts VM1 in the target region; commit finalizes the recovery point; re-protect reverses replication; failback (a planned failover in the reverse direction) returns the workload, after which you re-protect again.",
+    "incorrectAnswerExplanations": {
+      "s1": "Failover is the first action during an outage.",
+      "s2": "Commit after verifying the failed-over VM; it removes other recovery points.",
+      "s3": "Re-protect sets up replication back to the original region.",
+      "s4": "Failback happens once replication back to East US is healthy."
+    },
+    "examTakeaway": "Failover → commit → re-protect → failback.",
+    "relatedTopics": [
+      "site-recovery"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Fail over and reprotect Azure VMs",
+        "url": "https://learn.microsoft.com/azure/site-recovery/azure-to-azure-tutorial-failover-failback"
+      }
+    ]
+  },
+  {
+    "id": "mn-021",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "site-recovery",
+    "services": [
+      "site-recovery"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "For Azure-to-Azure disaster recovery from East US to West US, where should the Recovery Services vault used by Site Recovery be located?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Any region, including the source"
+      },
+      {
+        "id": "b",
+        "text": "East US (the source region)"
+      },
+      {
+        "id": "c",
+        "text": "A global location"
+      },
+      {
+        "id": "d",
+        "text": "West US (the target region) — any region other than the source"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "For Azure VM disaster recovery, the vault must not be in the source region so it remains available if the source fails. It's typically created in the target region.",
+    "incorrectAnswerExplanations": {
+      "a": "The source region isn't allowed for A2A DR vaults.",
+      "b": "A vault in the source region could be unavailable during the very outage you're protecting against.",
+      "c": "Vaults are regional resources."
+    },
+    "examTakeaway": "ASR vault for Azure VMs → not in the source region (use the target).",
+    "relatedTopics": [
+      "site-recovery"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Tutorial: Set up disaster recovery for Azure VMs",
+        "url": "https://learn.microsoft.com/azure/site-recovery/azure-to-azure-tutorial-enable-replication"
+      }
+    ]
+  },
+  {
+    "id": "mn-022",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "azure-monitor",
+    "services": [
+      "azure-monitor"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "multi",
+    "question": "You enable VM insights for 30 VMs. Which TWO capabilities do you gain?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Automatic patching of the guest OS"
+      },
+      {
+        "id": "b",
+        "text": "A map of processes and dependencies between VMs (when the dependency feature is enabled)"
+      },
+      {
+        "id": "c",
+        "text": "Performance trends for CPU, memory, disk and network from the guest OS"
+      },
+      {
+        "id": "d",
+        "text": "Automatic backup of the VMs"
+      }
+    ],
+    "correctAnswer": [
+      "b",
+      "c"
+    ],
+    "explanation": "VM insights collects guest performance data (via AMA) and optionally process/dependency data to show a map of connections between machines.",
+    "incorrectAnswerExplanations": {
+      "a": "Patching is handled by Azure Update Manager, not VM insights.",
+      "d": "Backup is configured with Azure Backup, not VM insights."
+    },
+    "examTakeaway": "VM insights = guest performance + dependency map.",
+    "relatedTopics": [
+      "azure-monitor"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Overview of VM insights",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/vm/vminsights-overview"
+      }
+    ]
+  },
+  {
+    "id": "mn-023",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "azure-monitor",
+    "services": [
+      "azure-monitor",
+      "storage-accounts"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "You want to quickly chart a storage account's transaction count and end-to-end latency over the last 7 days. What should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Cost analysis"
+      },
+      {
+        "id": "b",
+        "text": "Metrics explorer (or Storage insights)"
+      },
+      {
+        "id": "c",
+        "text": "The Activity log"
+      },
+      {
+        "id": "d",
+        "text": "Azure Policy compliance"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Storage accounts emit platform metrics such as Transactions and SuccessE2ELatency automatically; Metrics explorer and Storage insights chart them without any configuration.",
+    "incorrectAnswerExplanations": {
+      "a": "Cost analysis shows spend.",
+      "c": "The Activity log shows management operations, not performance.",
+      "d": "Policy compliance shows configuration compliance."
+    },
+    "examTakeaway": "Numeric performance over time → metrics.",
+    "relatedTopics": [
+      "azure-monitor"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Monitor Azure Blob Storage",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/monitor-blob-storage"
+      }
+    ]
+  },
+  {
+    "id": "mn-024",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "alerts-action-groups",
+    "services": [
+      "azure-monitor"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "When a critical alert fires for VM3 (high CPU), you want to automatically restart a Windows service on the VM using an existing PowerShell runbook.",
+    "question": "How should you configure the response?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add an Automation Runbook action to the action group used by the alert rule"
+      },
+      {
+        "id": "b",
+        "text": "Create an alert processing rule with a suppression action"
+      },
+      {
+        "id": "c",
+        "text": "Configure an autoscale rule on VM3"
+      },
+      {
+        "id": "d",
+        "text": "Enable boot diagnostics"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Action groups can trigger Automation runbooks (as well as Functions, Logic Apps and webhooks), enabling automated remediation when an alert fires.",
+    "incorrectAnswerExplanations": {
+      "b": "Suppression stops notifications; it doesn't run remediation.",
+      "c": "Autoscale applies to scale sets/App Service, not single VMs, and doesn't run scripts.",
+      "d": "Boot diagnostics is for troubleshooting boot issues."
+    },
+    "examTakeaway": "Automated remediation from an alert → action group with runbook/Function/Logic App.",
+    "relatedTopics": [
+      "alerts-action-groups"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Action group action types",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/action-groups#action-specific-information"
+      }
+    ]
+  }
+]

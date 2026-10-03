@@ -1,0 +1,1485 @@
+[
+  {
+    "id": "st-001",
+    "domain": "storage",
+    "objectiveId": "storage-accounts",
+    "topic": "storage-redundancy",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "Which storage redundancy option keeps three synchronous copies of data across three availability zones in the primary region, with no secondary region?",
+    "options": [
+      {
+        "id": "a",
+        "text": "GRS"
+      },
+      {
+        "id": "b",
+        "text": "RA-GZRS"
+      },
+      {
+        "id": "c",
+        "text": "LRS"
+      },
+      {
+        "id": "d",
+        "text": "ZRS"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Zone-redundant storage (ZRS) synchronously replicates data across three availability zones in the primary region, so the data remains available if a zone fails. It doesn't copy data to another region.",
+    "incorrectAnswerExplanations": {
+      "a": "GRS uses LRS in the primary region and adds an asynchronous copy in a secondary region.",
+      "b": "RA-GZRS combines ZRS with geo-replication and read access to the secondary — it includes a secondary region.",
+      "c": "LRS keeps three copies in a single datacenter, not across zones."
+    },
+    "examTakeaway": "Zones in one region = ZRS.",
+    "relatedTopics": [
+      "storage-redundancy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Storage redundancy",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-redundancy"
+      }
+    ]
+  },
+  {
+    "id": "st-002",
+    "domain": "storage",
+    "objectiveId": "storage-accounts",
+    "topic": "storage-redundancy",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "A reporting application reads data from a storage account in East US 2. If East US 2 becomes unavailable, the application must continue to READ data without waiting for a failover. Writes can pause during the outage. The solution must also survive the loss of a single availability zone in East US 2 without interruption.",
+    "question": "Which redundancy option should you choose?",
+    "options": [
+      {
+        "id": "a",
+        "text": "GRS"
+      },
+      {
+        "id": "b",
+        "text": "RA-GZRS"
+      },
+      {
+        "id": "c",
+        "text": "RA-GRS"
+      },
+      {
+        "id": "d",
+        "text": "ZRS"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "RA-GZRS combines zone redundancy in the primary region (surviving a zone outage without interruption) with asynchronous geo-replication and continuous read access to the secondary endpoint (reading during a regional outage without failover).",
+    "incorrectAnswerExplanations": {
+      "a": "GRS has a secondary region but it isn't readable until failover, and the primary is LRS (not zone-resilient).",
+      "c": "RA-GRS provides secondary read access but the primary copy is LRS in one datacenter, so a zone outage could interrupt access.",
+      "d": "ZRS survives a zone failure but has no secondary region to read from during a regional outage."
+    },
+    "examTakeaway": "Zone resilience + readable secondary = RA-GZRS.",
+    "relatedTopics": [
+      "storage-redundancy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Read access to data in the secondary region",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-redundancy#read-access-to-data-in-the-secondary-region"
+      }
+    ]
+  },
+  {
+    "id": "st-003",
+    "domain": "storage",
+    "objectiveId": "storage-accounts",
+    "topic": "storage-redundancy",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "You plan to create a Premium block blob storage account for an IoT workload that requires low latency. The data must survive the loss of a datacenter in the region.",
+    "question": "Which redundancy option should you select?",
+    "options": [
+      {
+        "id": "a",
+        "text": "RA-GRS"
+      },
+      {
+        "id": "b",
+        "text": "GZRS"
+      },
+      {
+        "id": "c",
+        "text": "LRS"
+      },
+      {
+        "id": "d",
+        "text": "ZRS"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Premium storage accounts support only LRS and ZRS. ZRS spreads copies across availability zones, so data survives a datacenter (zone) loss.",
+    "incorrectAnswerExplanations": {
+      "a": "RA-GRS isn't available for Premium accounts.",
+      "b": "Geo-redundant options aren't available for Premium accounts.",
+      "c": "LRS stores all copies in one datacenter, so a datacenter loss could make data unavailable."
+    },
+    "examTakeaway": "Premium storage = LRS or ZRS only.",
+    "relatedTopics": [
+      "storage-redundancy",
+      "storage-accounts"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Storage account overview",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-account-overview"
+      }
+    ]
+  },
+  {
+    "id": "st-004",
+    "domain": "storage",
+    "objectiveId": "storage-accounts",
+    "topic": "storage-redundancy",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "A GRS storage account's primary region suffers an extended outage. You initiate a customer-managed failover. The Last Sync Time shown before failover was 10 minutes earlier than the outage.",
+    "question": "What should you expect after the failover completes?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Writes made after the Last Sync Time may be lost, and the account becomes LRS in the new primary region until you reconfigure geo-redundancy"
+      },
+      {
+        "id": "b",
+        "text": "The account becomes read-only permanently"
+      },
+      {
+        "id": "c",
+        "text": "No data loss; the account remains GRS automatically"
+      },
+      {
+        "id": "d",
+        "text": "The account converts to ZRS in the secondary region"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Geo-replication is asynchronous, so data written after the Last Sync Time may not have reached the secondary. After failover, the former secondary becomes the primary and the account is locally redundant there until you re-enable geo-redundancy.",
+    "incorrectAnswerExplanations": {
+      "b": "After failover the account accepts reads and writes in the new primary.",
+      "c": "Async replication means some recent writes can be lost; geo-redundancy isn't automatically restored.",
+      "d": "The secondary stores data with LRS; failover doesn't convert it to ZRS."
+    },
+    "examTakeaway": "Geo-failover RPO > 0 (check Last Sync Time); account is LRS after failover.",
+    "relatedTopics": [
+      "storage-redundancy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Disaster recovery and storage account failover",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-disaster-recovery-guidance"
+      }
+    ]
+  },
+  {
+    "id": "st-005",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "blob-storage",
+    "services": [
+      "blob-storage"
+    ],
+    "difficulty": "beginner",
+    "questionType": "scenario",
+    "scenario": "You must store scanned contracts for 10 years for compliance. They're almost never read, and when needed, retrieval within a day is acceptable. Storage cost must be minimized.",
+    "question": "Which access tier should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Hot"
+      },
+      {
+        "id": "b",
+        "text": "Cold"
+      },
+      {
+        "id": "c",
+        "text": "Archive"
+      },
+      {
+        "id": "d",
+        "text": "Cool"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Archive has the lowest storage cost and is intended for data kept at least 180 days that can tolerate hours of retrieval latency while it's rehydrated.",
+    "incorrectAnswerExplanations": {
+      "a": "Hot is the most expensive tier for storage — designed for frequent access.",
+      "b": "Cold is online and costs more to store than Archive; it's for data that must be readable immediately.",
+      "d": "Cool is cheaper than Hot but more expensive than Archive; it's for data accessed occasionally and needing immediate availability."
+    },
+    "examTakeaway": "Rarely accessed + hours of latency OK + cheapest = Archive.",
+    "relatedTopics": [
+      "blob-storage"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Access tiers for blob data",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/access-tiers-overview"
+      }
+    ]
+  },
+  {
+    "id": "st-006",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "blob-storage",
+    "services": [
+      "blob-storage"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Log blobs in container 'logs' are read frequently for 30 days, occasionally for the next 60 days, and must then be kept for one year before deletion. You must minimize cost and administrative effort.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An Azure Automation runbook that changes tiers monthly"
+      },
+      {
+        "id": "b",
+        "text": "A lifecycle management rule filtered on prefix logs/: tier to Cool after 30 days since modification, tier to Archive after 90 days, delete after 455 days"
+      },
+      {
+        "id": "c",
+        "text": "Set the account default access tier to Archive"
+      },
+      {
+        "id": "d",
+        "text": "Enable blob versioning and soft delete with 365-day retention"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Lifecycle management policies automate tier transitions and deletion based on age, with filters such as prefix. A single rule handles the full lifecycle without custom code: Cool after 30 days, Archive after 90 and delete after 90 + 365 = 455 days.",
+    "incorrectAnswerExplanations": {
+      "a": "A runbook works but adds code and maintenance — more administrative effort than a built-in policy.",
+      "c": "The account default tier can be Hot or Cool (not Archive), and a default doesn't move blobs over time.",
+      "d": "Versioning and soft delete protect against overwrites/deletes; they don't tier data or manage retention-based deletion."
+    },
+    "examTakeaway": "Age-based tiering/deletion → lifecycle management rule.",
+    "relatedTopics": [
+      "blob-storage"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Configure a lifecycle management policy",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/lifecycle-management-policy-configure"
+      }
+    ]
+  },
+  {
+    "id": "st-007",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "blob-storage",
+    "services": [
+      "blob-storage"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "A user needs to download a blob that's in the Archive tier. What must happen first?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create a snapshot of the blob"
+      },
+      {
+        "id": "b",
+        "text": "Enable soft delete on the container"
+      },
+      {
+        "id": "c",
+        "text": "Change the storage account's redundancy to GRS"
+      },
+      {
+        "id": "d",
+        "text": "Rehydrate the blob to an online tier (Hot, Cool or Cold) or copy it to an online tier"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Archived blobs are offline. You must rehydrate them by changing the tier or copying to an online tier; standard priority can take up to about 15 hours, high priority is faster for smaller blobs.",
+    "incorrectAnswerExplanations": {
+      "a": "You can't read an archived blob's data via a snapshot; it's still offline.",
+      "b": "Soft delete protects against deletion and doesn't make archived data readable.",
+      "c": "Redundancy doesn't affect whether a blob is online."
+    },
+    "examTakeaway": "Archive = offline until rehydrated.",
+    "relatedTopics": [
+      "blob-storage"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Blob rehydration from the Archive tier",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/archive-rehydrate-overview"
+      }
+    ]
+  },
+  {
+    "id": "st-008",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "blob-storage",
+    "services": [
+      "blob-storage"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "multi",
+    "question": "Users sometimes overwrite or delete important blobs in a container. You must be able to restore the previous content of overwritten blobs and recover deleted blobs. Which TWO features should you enable?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Blob soft delete"
+      },
+      {
+        "id": "b",
+        "text": "Object replication"
+      },
+      {
+        "id": "c",
+        "text": "Lifecycle management"
+      },
+      {
+        "id": "d",
+        "text": "Blob versioning"
+      }
+    ],
+    "correctAnswer": [
+      "a",
+      "d"
+    ],
+    "explanation": "Versioning automatically keeps previous versions when blobs are overwritten (and when deleted, the previous version remains). Soft delete retains deleted blobs and snapshots for a retention period so they can be undeleted. Microsoft recommends enabling both.",
+    "incorrectAnswerExplanations": {
+      "b": "Object replication copies blobs to another account asynchronously, including deletes and overwrites, so it's not a recovery mechanism.",
+      "c": "Lifecycle management moves or deletes blobs on a schedule — it doesn't protect against accidental changes."
+    },
+    "examTakeaway": "Overwrite protection = versioning; delete protection = soft delete.",
+    "relatedTopics": [
+      "blob-storage"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Data protection overview",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/data-protection-overview"
+      }
+    ]
+  },
+  {
+    "id": "st-009",
+    "domain": "storage",
+    "objectiveId": "storage-access",
+    "topic": "storage-security",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "You issued 20 service SAS tokens for the container 'exports' to a partner. Each token references a stored access policy named partner-read. You learn the tokens may have leaked. Other applications use the account keys and must not be disrupted.",
+    "question": "What should you do to revoke the partner's tokens immediately?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable soft delete on the container"
+      },
+      {
+        "id": "b",
+        "text": "Delete (or change the expiry of) the stored access policy partner-read"
+      },
+      {
+        "id": "c",
+        "text": "Change the container's public access level to Private"
+      },
+      {
+        "id": "d",
+        "text": "Regenerate both storage account keys"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Service SAS tokens tied to a stored access policy inherit their constraints from it. Deleting or modifying the policy (e.g., setting expiry in the past) revokes all associated tokens immediately, without touching the account keys.",
+    "incorrectAnswerExplanations": {
+      "a": "Soft delete protects data from deletion; it doesn't revoke access.",
+      "c": "SAS tokens grant access regardless of the container's anonymous access level.",
+      "d": "Regenerating keys would revoke the SAS tokens but also break every app using the keys."
+    },
+    "examTakeaway": "Revocable SAS → stored access policy; revoke by deleting/editing the policy.",
+    "relatedTopics": [
+      "storage-security"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Define a stored access policy",
+        "url": "https://learn.microsoft.com/rest/api/storageservices/define-stored-access-policy"
+      }
+    ]
+  },
+  {
+    "id": "st-010",
+    "domain": "storage",
+    "objectiveId": "storage-access",
+    "topic": "storage-security",
+    "services": [
+      "storage-accounts",
+      "blob-storage"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "Which type of SAS is secured with Microsoft Entra credentials rather than the storage account key?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ad hoc SAS"
+      },
+      {
+        "id": "b",
+        "text": "User delegation SAS"
+      },
+      {
+        "id": "c",
+        "text": "Service SAS"
+      },
+      {
+        "id": "d",
+        "text": "Account SAS"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "A user delegation SAS is signed with a user delegation key obtained using Entra credentials. It applies to Blob Storage (and Data Lake) and is Microsoft's recommended SAS type because it doesn't depend on the account key.",
+    "incorrectAnswerExplanations": {
+      "a": "'Ad hoc SAS' just means a SAS whose constraints are in the URI rather than a stored access policy; it's still signed with a key.",
+      "c": "Service SAS is signed with an account key.",
+      "d": "Account SAS is signed with an account key."
+    },
+    "examTakeaway": "Entra-signed SAS = user delegation SAS (blob only).",
+    "relatedTopics": [
+      "storage-security"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Create a user delegation SAS",
+        "url": "https://learn.microsoft.com/rest/api/storageservices/create-user-delegation-sas"
+      }
+    ]
+  },
+  {
+    "id": "st-011",
+    "domain": "storage",
+    "objectiveId": "storage-access",
+    "topic": "storage-security",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Storage account st1 must accept connections only from VMs in Subnet1 of VNet1 and from your office's public IP 203.0.113.50. All other networks must be denied.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Disable shared key access"
+      },
+      {
+        "id": "b",
+        "text": "Create an NSG on Subnet1 that allows outbound traffic to Storage"
+      },
+      {
+        "id": "c",
+        "text": "Set public network access to 'Enabled from selected virtual networks and IP addresses', add Subnet1 as a virtual network rule (enabling the Microsoft.Storage service endpoint), and add 203.0.113.50 as an IP rule"
+      },
+      {
+        "id": "d",
+        "text": "Add Subnet1's address range 10.0.1.0/24 and 203.0.113.50 to the IP rules"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "The storage firewall's default action becomes deny when you choose selected networks. VNet traffic is allowed with virtual network rules (requiring a service endpoint on the subnet), and public internet sources with IP rules.",
+    "incorrectAnswerExplanations": {
+      "a": "Disabling shared key changes the authorization method, not network access.",
+      "b": "An NSG controls traffic leaving the subnet but doesn't stop other networks from reaching the storage account.",
+      "d": "IP rules accept only public IP addresses; private address ranges like 10.0.1.0/24 can't be used."
+    },
+    "examTakeaway": "Storage firewall: VNet rules (service endpoints) for subnets, IP rules for public IPs only.",
+    "relatedTopics": [
+      "storage-security",
+      "private-service-endpoints"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Configure Azure Storage firewalls and virtual networks",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-network-security"
+      }
+    ]
+  },
+  {
+    "id": "st-012",
+    "domain": "storage",
+    "objectiveId": "storage-access",
+    "topic": "storage-security",
+    "services": [
+      "storage-accounts",
+      "key-vault"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "ordering",
+    "question": "Several apps use key1 of a storage account. You must rotate the keys without downtime. Put the steps in order.",
+    "options": [
+      {
+        "id": "s1",
+        "text": "Update all apps to use key2"
+      },
+      {
+        "id": "s2",
+        "text": "Regenerate key1"
+      },
+      {
+        "id": "s3",
+        "text": "Update all apps to use the new key1"
+      },
+      {
+        "id": "s4",
+        "text": "Regenerate key2"
+      }
+    ],
+    "correctAnswer": [
+      "s1",
+      "s2",
+      "s3",
+      "s4"
+    ],
+    "explanation": "Two keys exist so one can be in use while the other is regenerated. Move apps to key2, regenerate key1, move apps back to the new key1, then regenerate key2 so both keys are fresh.",
+    "incorrectAnswerExplanations": {
+      "s1": "First move traffic off key1 so regenerating it doesn't break anything.",
+      "s2": "Regenerate key1 only after no app depends on it.",
+      "s3": "Switch apps to the newly generated key1 so key2 can be rotated.",
+      "s4": "Finally regenerate key2, completing rotation of both keys."
+    },
+    "examTakeaway": "Rotate keys one at a time, moving clients between them.",
+    "relatedTopics": [
+      "storage-security"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Manage storage account access keys",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-account-keys-manage"
+      }
+    ]
+  },
+  {
+    "id": "st-013",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "azure-files",
+    "services": [
+      "azure-files"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Users at home try to map an Azure file share using the UNC path \\\\st1.file.core.windows.net\\share1 over their ISP connection. The connection times out. Mounting from an Azure VM in the same region works.",
+    "question": "What is the most likely cause?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The share is in the Cool tier"
+      },
+      {
+        "id": "b",
+        "text": "The storage account uses LRS"
+      },
+      {
+        "id": "c",
+        "text": "Outbound TCP port 445 is blocked by the ISP"
+      },
+      {
+        "id": "d",
+        "text": "Azure Files doesn't support Windows clients"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "SMB uses TCP 445, which many ISPs and corporate networks block. Options include connecting over a VPN or ExpressRoute, using Azure File Sync on a local server, or (where suitable) SMB over QUIC/REST-based tools.",
+    "incorrectAnswerExplanations": {
+      "a": "The tier affects price and performance, not reachability.",
+      "b": "Redundancy doesn't affect client connectivity.",
+      "d": "Windows clients are fully supported (SMB 3.x)."
+    },
+    "examTakeaway": "SMB over the internet fails → port 445 blocked.",
+    "relatedTopics": [
+      "azure-files"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Troubleshoot Azure Files connectivity (port 445)",
+        "url": "https://learn.microsoft.com/troubleshoot/azure/azure-storage/files/connectivity/files-troubleshoot-smb-connectivity"
+      }
+    ]
+  },
+  {
+    "id": "st-014",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "azure-files",
+    "services": [
+      "azure-file-sync",
+      "azure-files"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "You have a Storage Sync Service named Sync1 with a sync group named Group1. Group1 has a cloud endpoint for share1. You have three Windows Servers: Server1 (registered to Sync1), Server2 (registered to another Storage Sync Service named Sync2) and Server3 (not registered).",
+    "question": "Which servers can you add as server endpoints in Group1 without further changes?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Server1 and Server3"
+      },
+      {
+        "id": "b",
+        "text": "Server1 and Server2"
+      },
+      {
+        "id": "c",
+        "text": "Server1 only"
+      },
+      {
+        "id": "d",
+        "text": "Server1, Server2 and Server3"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "A server endpoint can only be created on a server registered to the same Storage Sync Service as the sync group. A server can be registered to only one Storage Sync Service at a time, so Server2 would need to be unregistered from Sync2 first, and Server3 must be registered to Sync1.",
+    "incorrectAnswerExplanations": {
+      "a": "Server3 isn't registered; you must install the agent and register it with Sync1 first.",
+      "b": "Server2 is registered to Sync2; it can't participate in Sync1's sync groups unless re-registered.",
+      "d": "Only servers registered to Sync1 qualify."
+    },
+    "examTakeaway": "Server endpoints require the server to be registered to the sync group's Storage Sync Service (one service per server).",
+    "relatedTopics": [
+      "azure-files"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Deploy Azure File Sync",
+        "url": "https://learn.microsoft.com/azure/storage/file-sync/file-sync-deployment-guide"
+      }
+    ]
+  },
+  {
+    "id": "st-015",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "azure-files",
+    "services": [
+      "azure-file-sync"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "How many cloud endpoints can a single Azure File Sync sync group contain?",
+    "options": [
+      {
+        "id": "a",
+        "text": "One"
+      },
+      {
+        "id": "b",
+        "text": "Unlimited"
+      },
+      {
+        "id": "c",
+        "text": "Two — one per region"
+      },
+      {
+        "id": "d",
+        "text": "Up to 50"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "A sync group has exactly one cloud endpoint (an Azure file share) and can have multiple server endpoints. The cloud endpoint is the hub that all server endpoints sync with.",
+    "incorrectAnswerExplanations": {
+      "b": "Only one cloud endpoint is allowed.",
+      "c": "There's no per-region cloud endpoint; one sync group = one Azure file share.",
+      "d": "This confuses cloud endpoints with server endpoints, which can be multiple."
+    },
+    "examTakeaway": "Sync group = 1 cloud endpoint + 1..n server endpoints.",
+    "relatedTopics": [
+      "azure-files"
+    ],
+    "documentationLinks": [
+      {
+        "title": "What is Azure File Sync?",
+        "url": "https://learn.microsoft.com/azure/storage/file-sync/file-sync-introduction"
+      }
+    ]
+  },
+  {
+    "id": "st-016",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "azure-files",
+    "services": [
+      "azure-files"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "matching",
+    "question": "Match each data-protection need for Azure Files to the feature that meets it.",
+    "options": [
+      {
+        "id": "o1",
+        "text": "Restore a file that a user edited by mistake this morning"
+      },
+      {
+        "id": "o2",
+        "text": "Recover an entire file share that was deleted yesterday"
+      },
+      {
+        "id": "o3",
+        "text": "Keep scheduled recovery points of a share for 12 months, managed by policy"
+      }
+    ],
+    "matchTargets": [
+      {
+        "id": "snap",
+        "text": "Share snapshots"
+      },
+      {
+        "id": "soft",
+        "text": "Share soft delete"
+      },
+      {
+        "id": "backup",
+        "text": "Azure Backup for Azure Files"
+      }
+    ],
+    "correctAnswer": {
+      "o1": "snap",
+      "o2": "soft",
+      "o3": "backup"
+    },
+    "explanation": "Share snapshots provide point-in-time read-only copies to restore files (via Previous Versions). Soft delete retains deleted shares for undelete. Azure Backup automates snapshot schedules and long-term retention with policies.",
+    "incorrectAnswerExplanations": {
+      "o1": "Point-in-time file restore → a share snapshot taken before the edit.",
+      "o2": "A deleted share → share soft delete (must have been enabled beforehand).",
+      "o3": "Policy-driven schedules and long retention → Azure Backup (which manages snapshots for you)."
+    },
+    "examTakeaway": "Snapshots restore files; soft delete restores shares; Backup manages schedules and retention.",
+    "relatedTopics": [
+      "azure-files",
+      "azure-backup"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Prevent accidental deletion of Azure file shares",
+        "url": "https://learn.microsoft.com/azure/storage/files/storage-files-prevent-file-share-deletion"
+      }
+    ]
+  },
+  {
+    "id": "st-017",
+    "domain": "storage",
+    "objectiveId": "storage-access",
+    "topic": "azure-files",
+    "services": [
+      "azure-files",
+      "entra-id"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Your users sign in with hybrid identities synchronized from on-premises AD DS to Microsoft Entra ID. You enable identity-based authentication for an Azure file share using on-premises AD DS. Users can see the storage account but get 'Access denied' when mounting the share, even though NTFS permissions grant them Modify.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Regenerate the storage account keys"
+      },
+      {
+        "id": "b",
+        "text": "Enable blob soft delete"
+      },
+      {
+        "id": "c",
+        "text": "Give users the Storage Account Contributor role"
+      },
+      {
+        "id": "d",
+        "text": "Assign a share-level permission, such as the Storage File Data SMB Share Contributor role, to the users' group (or configure a default share-level permission)"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Identity-based access to Azure Files has two layers: share-level permissions (Azure RBAC roles such as Storage File Data SMB Share Reader/Contributor/Elevated Contributor, or a default share-level permission) and file/directory-level NTFS ACLs. Without share-level permission, access is denied regardless of NTFS ACLs.",
+    "incorrectAnswerExplanations": {
+      "a": "Keys aren't involved in identity-based access, and rotating them doesn't grant permissions.",
+      "b": "Blob soft delete is unrelated to Azure Files access.",
+      "c": "Storage Account Contributor is a management-plane role and doesn't grant SMB data access via identity."
+    },
+    "examTakeaway": "Azure Files identity access = share-level RBAC role + NTFS ACLs.",
+    "relatedTopics": [
+      "azure-files",
+      "storage-security"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Assign share-level permissions",
+        "url": "https://learn.microsoft.com/azure/storage/files/storage-files-identity-assign-share-level-permissions"
+      }
+    ]
+  },
+  {
+    "id": "st-018",
+    "domain": "storage",
+    "objectiveId": "storage-accounts",
+    "topic": "storage-accounts",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "You need to asynchronously copy new and updated block blobs from a container in a storage account in West Europe to a container in a different storage account in Australia East, so that users in Australia get lower read latency.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A lifecycle management policy"
+      },
+      {
+        "id": "b",
+        "text": "Change the source account to RA-GRS"
+      },
+      {
+        "id": "c",
+        "text": "Azure File Sync"
+      },
+      {
+        "id": "d",
+        "text": "Object replication between the two accounts (with blob versioning on both and change feed on the source)"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Object replication asynchronously copies block blobs between containers in different accounts — any region you choose. It requires versioning on both accounts and change feed on the source.",
+    "incorrectAnswerExplanations": {
+      "a": "Lifecycle management tiers or deletes blobs; it doesn't copy them.",
+      "b": "RA-GRS replicates to the fixed paired region (not Australia East from West Europe), and you don't control the destination account.",
+      "c": "Azure File Sync syncs Azure file shares with Windows Servers, not blobs."
+    },
+    "examTakeaway": "Copy blobs to a chosen account/region → object replication.",
+    "relatedTopics": [
+      "storage-accounts",
+      "storage-redundancy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Object replication for block blobs",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/object-replication-overview"
+      }
+    ]
+  },
+  {
+    "id": "st-019",
+    "domain": "storage",
+    "objectiveId": "storage-accounts",
+    "topic": "storage-accounts",
+    "services": [
+      "storage-accounts",
+      "key-vault"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Compliance requires that you control and can revoke the encryption key used for data at rest in storage account st1, and that you can rotate the key yourself.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Client-side encryption in every application"
+      },
+      {
+        "id": "b",
+        "text": "Require secure transfer (HTTPS)"
+      },
+      {
+        "id": "c",
+        "text": "Customer-managed keys stored in Azure Key Vault (or Managed HSM), with the storage account's managed identity granted access to the key"
+      },
+      {
+        "id": "d",
+        "text": "Microsoft-managed keys with infrastructure encryption"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Customer-managed keys (CMK) let you hold the key in Key Vault or Managed HSM, rotate it and revoke access (making data inaccessible). The storage account uses a managed identity with permissions to wrap/unwrap the key.",
+    "incorrectAnswerExplanations": {
+      "a": "Client-side encryption is possible but is significant app effort and isn't needed to meet 'control the at-rest key' for the storage service.",
+      "b": "Secure transfer protects data in transit, not at rest.",
+      "d": "Microsoft-managed keys are controlled by Microsoft; infrastructure encryption adds a second layer but doesn't give you key control."
+    },
+    "examTakeaway": "Control/rotate/revoke the at-rest key → customer-managed keys in Key Vault.",
+    "relatedTopics": [
+      "storage-accounts"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Customer-managed keys for Azure Storage encryption",
+        "url": "https://learn.microsoft.com/azure/storage/common/customer-managed-keys-overview"
+      }
+    ]
+  },
+  {
+    "id": "st-020",
+    "domain": "storage",
+    "objectiveId": "storage-accounts",
+    "topic": "storage-accounts",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "You need to copy 2 TB of files from an on-premises server to Blob Storage using a scriptable command-line tool that can resume and only copy changed files on later runs. Which tool should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure File Sync"
+      },
+      {
+        "id": "b",
+        "text": "Azure Storage Explorer"
+      },
+      {
+        "id": "c",
+        "text": "AzCopy (azcopy sync)"
+      },
+      {
+        "id": "d",
+        "text": "Azure Resource Mover"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "AzCopy is the high-performance command-line tool for Azure Storage transfers. 'azcopy sync' copies only new or changed files and is easy to script; AzCopy also supports resuming jobs.",
+    "incorrectAnswerExplanations": {
+      "a": "File Sync syncs Windows Servers with Azure file shares, not Blob Storage.",
+      "b": "Storage Explorer is a GUI tool; it uses AzCopy under the hood but isn't designed for scripting.",
+      "d": "Resource Mover moves Azure resources between regions; it doesn't transfer on-premises data."
+    },
+    "examTakeaway": "Scriptable bulk transfer → AzCopy; GUI → Storage Explorer.",
+    "relatedTopics": [
+      "storage-accounts"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Synchronize with Azure Blob storage by using AzCopy",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-use-azcopy-blobs-synchronize"
+      }
+    ]
+  },
+  {
+    "id": "st-021",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "blob-storage",
+    "services": [
+      "blob-storage"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Security requires that no blob in any container of storage account st1 can ever be read anonymously, even if someone later sets a container's access level to Blob or Container.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Disable 'Allow Blob anonymous access' on the storage account"
+      },
+      {
+        "id": "b",
+        "text": "Set each container's public access level to Private"
+      },
+      {
+        "id": "c",
+        "text": "Enable blob versioning"
+      },
+      {
+        "id": "d",
+        "text": "Assign Reader to all users"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Disallowing anonymous access at the account level overrides container settings — no container can be made publicly readable while it's disabled. Setting containers to Private alone could be undone later.",
+    "incorrectAnswerExplanations": {
+      "b": "This fixes today's containers but doesn't prevent someone from changing a container's level later.",
+      "c": "Versioning protects against overwrites, not anonymous access.",
+      "d": "RBAC assignments don't stop anonymous requests, which don't involve identities."
+    },
+    "examTakeaway": "Prevent anonymous blob access account-wide → disable 'Allow Blob anonymous access'.",
+    "relatedTopics": [
+      "blob-storage",
+      "storage-security"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Prevent anonymous read access to blobs",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/anonymous-read-access-prevent"
+      }
+    ]
+  },
+  {
+    "id": "st-022",
+    "domain": "storage",
+    "objectiveId": "storage-access",
+    "topic": "storage-security",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "You set 'Allow storage account key access' to Disabled on st1 to force Microsoft Entra authorization. A legacy app that uses an account SAS stops working, and so does a partner using a service SAS. An internal app using a user delegation SAS continues to work.",
+    "question": "Why do only the account and service SAS tokens fail?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Account and service SAS tokens are signed with the account key, so they're rejected when shared key authorization is disabled"
+      },
+      {
+        "id": "b",
+        "text": "Disabling key access automatically deletes all stored access policies"
+      },
+      {
+        "id": "c",
+        "text": "User delegation SAS tokens bypass all security settings"
+      },
+      {
+        "id": "d",
+        "text": "The tokens expired at the same moment by coincidence"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Disallowing shared key authorization rejects requests authorized with the account key, including account SAS and service SAS (which are signed with the key). User delegation SAS is signed with an Entra-derived key and keeps working.",
+    "incorrectAnswerExplanations": {
+      "b": "Stored access policies aren't deleted; they just can't be used with key-signed SAS while shared key is disabled.",
+      "c": "User delegation SAS is still subject to its permissions, expiry and Entra RBAC of the signer — it works because it doesn't rely on the key.",
+      "d": "The behavior is deterministic, not a coincidence."
+    },
+    "examTakeaway": "Disabling shared key breaks account/service SAS; user delegation SAS still works.",
+    "relatedTopics": [
+      "storage-security"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Prevent Shared Key authorization",
+        "url": "https://learn.microsoft.com/azure/storage/common/shared-key-authorization-prevent"
+      }
+    ]
+  },
+  {
+    "id": "st-023",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "azure-files",
+    "services": [
+      "azure-file-sync"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "A branch file server has a 2 TB D: volume. The Azure file share it syncs with holds 10 TB. You want frequently used files kept locally while keeping at least 20% of the volume free.",
+    "question": "What should you configure on the server endpoint?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Increase the share quota to 20 TB"
+      },
+      {
+        "id": "b",
+        "text": "A second cloud endpoint"
+      },
+      {
+        "id": "c",
+        "text": "Blob lifecycle management"
+      },
+      {
+        "id": "d",
+        "text": "Cloud tiering with a volume free space policy of 20%"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Cloud tiering keeps hot files local and tiers cold files to Azure as pointers. The volume free space policy maintains a percentage of free space on the volume, tiering the least recently used files first.",
+    "incorrectAnswerExplanations": {
+      "a": "The share quota doesn't affect space on the local server.",
+      "b": "A sync group can have only one cloud endpoint, and it wouldn't manage local space.",
+      "c": "Lifecycle management applies to blobs, not Azure file shares or local volumes."
+    },
+    "examTakeaway": "Keep local space free with File Sync → cloud tiering volume free space policy.",
+    "relatedTopics": [
+      "azure-files"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Choose cloud tiering policies",
+        "url": "https://learn.microsoft.com/azure/storage/file-sync/file-sync-choose-cloud-tiering-policies"
+      }
+    ]
+  },
+  {
+    "id": "st-024",
+    "domain": "storage",
+    "objectiveId": "storage-accounts",
+    "topic": "storage-accounts",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "Which storage account type is recommended for most scenarios and supports blobs, files, queues and tables with all redundancy options?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Premium block blobs"
+      },
+      {
+        "id": "b",
+        "text": "Legacy BlobStorage"
+      },
+      {
+        "id": "c",
+        "text": "Premium file shares"
+      },
+      {
+        "id": "d",
+        "text": "Standard general-purpose v2"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Standard general-purpose v2 supports all core storage services and all redundancy options, and is Microsoft's recommended default.",
+    "incorrectAnswerExplanations": {
+      "a": "Premium block blob accounts support only block/append blobs and LRS/ZRS.",
+      "b": "Legacy account types aren't recommended for new deployments.",
+      "c": "Premium file share accounts support only Azure Files and LRS/ZRS."
+    },
+    "examTakeaway": "Default choice = Standard GPv2.",
+    "relatedTopics": [
+      "storage-accounts"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Types of storage accounts",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-account-overview#types-of-storage-accounts"
+      }
+    ]
+  },
+  {
+    "id": "st-025",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "blob-storage",
+    "services": [
+      "blob-storage"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "A lifecycle rule should move blobs to Cool when they haven't been READ for 45 days (some old blobs are still read often and must stay Hot). The rule is configured with daysAfterLastAccessTimeGreaterThan: 45, but no blobs are ever moved.",
+    "question": "What is the most likely cause?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Last access rules only work on page blobs"
+      },
+      {
+        "id": "b",
+        "text": "Lifecycle rules only support deletion, not tiering"
+      },
+      {
+        "id": "c",
+        "text": "The account must be RA-GRS for last-access rules"
+      },
+      {
+        "id": "d",
+        "text": "Access time tracking isn't enabled on the storage account"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Rules based on last access time require last access time tracking to be enabled on the account; otherwise there's no last-access data to evaluate. Once enabled, rules use the recorded access times (applied going forward).",
+    "incorrectAnswerExplanations": {
+      "a": "Lifecycle management applies to block blobs (and append blobs for delete), not page blobs.",
+      "b": "Lifecycle rules support tiering actions (Cool, Cold, Archive) and deletion.",
+      "c": "Redundancy has no effect on lifecycle rules."
+    },
+    "examTakeaway": "Last-access-based lifecycle rules need access time tracking enabled.",
+    "relatedTopics": [
+      "blob-storage"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Move data based on last accessed time",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/lifecycle-management-overview#move-data-based-on-last-accessed-time"
+      }
+    ]
+  },
+  {
+    "id": "st-026",
+    "domain": "storage",
+    "objectiveId": "storage-access",
+    "topic": "storage-security",
+    "services": [
+      "storage-accounts",
+      "private-link"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "On-premises servers connected to Azure via ExpressRoute private peering must access storage account st1 using private IP addresses only. Public network access to st1 must be disabled.",
+    "question": "What should you implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A private endpoint for st1 in a VNet connected to ExpressRoute, plus DNS resolution of st1's name to the private IP for on-premises clients"
+      },
+      {
+        "id": "b",
+        "text": "Microsoft peering on the ExpressRoute circuit"
+      },
+      {
+        "id": "c",
+        "text": "A service endpoint for Microsoft.Storage on the GatewaySubnet"
+      },
+      {
+        "id": "d",
+        "text": "An IP rule on st1 for the on-premises public IP range"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "A private endpoint gives st1 a private IP in the VNet, reachable from on-premises over ExpressRoute private peering. On-premises DNS must resolve st1's FQDN to that private IP (e.g., via conditional forwarding to a DNS Private Resolver). Public network access can then be disabled.",
+    "incorrectAnswerExplanations": {
+      "b": "Microsoft peering reaches Microsoft public endpoints, not private IPs.",
+      "c": "Service endpoints don't apply to on-premises traffic and don't provide private IPs.",
+      "d": "IP rules allow traffic to the public endpoint, which conflicts with disabling public access and using private IPs."
+    },
+    "examTakeaway": "On-premises + private IP + no public access → private endpoint + DNS.",
+    "relatedTopics": [
+      "private-service-endpoints",
+      "storage-security",
+      "azure-dns"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Use private endpoints for Azure Storage",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-private-endpoints"
+      }
+    ]
+  },
+  {
+    "id": "st-027",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "blob-storage",
+    "services": [
+      "blob-storage"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "A blob was moved to the Cool tier 10 days ago and is now deleted. What charge applies?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A rehydration charge"
+      },
+      {
+        "id": "b",
+        "text": "No additional charge"
+      },
+      {
+        "id": "c",
+        "text": "A charge for 180 days of Archive storage"
+      },
+      {
+        "id": "d",
+        "text": "An early deletion charge equivalent to the remaining 20 days of Cool storage"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Cool has a 30-day minimum. Deleting or moving a blob out of Cool earlier incurs a prorated early deletion charge for the remaining days (here, 20 days).",
+    "incorrectAnswerExplanations": {
+      "a": "Rehydration applies to reading Archive blobs, not deleting Cool blobs.",
+      "b": "Early deletion charges apply to Cool, Cold and Archive within their minimum periods.",
+      "c": "The blob was in Cool, so the Archive 180-day minimum doesn't apply."
+    },
+    "examTakeaway": "Cool 30 / Cold 90 / Archive 180 days minimum — early removal is charged.",
+    "relatedTopics": [
+      "blob-storage"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Summary of access tier options",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/access-tiers-overview#summary-of-access-tier-options"
+      }
+    ]
+  },
+  {
+    "id": "st-028",
+    "domain": "storage",
+    "objectiveId": "files-blobs",
+    "topic": "azure-files",
+    "services": [
+      "azure-files"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "Linux VMs need to mount an Azure file share using NFS 4.1. What type of storage account must host the share?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Any account with hierarchical namespace enabled"
+      },
+      {
+        "id": "b",
+        "text": "Premium file shares (FileStorage) account"
+      },
+      {
+        "id": "c",
+        "text": "Premium block blobs account"
+      },
+      {
+        "id": "d",
+        "text": "Standard general-purpose v2 with transaction optimized shares"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "NFS Azure file shares are supported on premium (SSD-based) file share accounts. They also require secure network access such as private endpoints or service endpoints.",
+    "incorrectAnswerExplanations": {
+      "a": "Hierarchical namespace relates to Data Lake Storage (blobs), enabling NFS 3.0 for blobs, not NFS file shares.",
+      "c": "Premium block blob accounts don't host Azure file shares.",
+      "d": "Standard file shares support SMB, not NFS."
+    },
+    "examTakeaway": "NFS file shares → premium file share accounts.",
+    "relatedTopics": [
+      "azure-files"
+    ],
+    "documentationLinks": [
+      {
+        "title": "NFS file shares in Azure Files",
+        "url": "https://learn.microsoft.com/azure/storage/files/files-nfs-protocol"
+      }
+    ]
+  },
+  {
+    "id": "st-029",
+    "domain": "storage",
+    "objectiveId": "storage-accounts",
+    "topic": "storage-redundancy",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "matching",
+    "question": "Match each requirement to the least expensive redundancy option that satisfies it.",
+    "options": [
+      {
+        "id": "o1",
+        "text": "Test data that can be regenerated; cost is the only concern"
+      },
+      {
+        "id": "o2",
+        "text": "Survive a datacenter outage; data must not leave the region"
+      },
+      {
+        "id": "o3",
+        "text": "Recover from a full regional disaster; reading the secondary before failover isn't needed"
+      }
+    ],
+    "matchTargets": [
+      {
+        "id": "lrs",
+        "text": "LRS"
+      },
+      {
+        "id": "zrs",
+        "text": "ZRS"
+      },
+      {
+        "id": "grs",
+        "text": "GRS"
+      },
+      {
+        "id": "ragzrs",
+        "text": "RA-GZRS"
+      }
+    ],
+    "correctAnswer": {
+      "o1": "lrs",
+      "o2": "zrs",
+      "o3": "grs"
+    },
+    "explanation": "LRS is cheapest; ZRS adds zone resilience within the region; GRS adds a secondary region copy. RA-GZRS exceeds all three requirements at higher cost.",
+    "incorrectAnswerExplanations": {
+      "o1": "Regenerable test data → LRS, the lowest-cost option.",
+      "o2": "Datacenter outage + data residency → ZRS (geo options replicate to another region).",
+      "o3": "Regional disaster without secondary reads → GRS; RA- variants cost more and aren't needed."
+    },
+    "examTakeaway": "Pick the cheapest option that covers the failure scope.",
+    "relatedTopics": [
+      "storage-redundancy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Storage redundancy",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-redundancy"
+      }
+    ]
+  },
+  {
+    "id": "st-030",
+    "domain": "storage",
+    "objectiveId": "storage-access",
+    "topic": "storage-security",
+    "services": [
+      "blob-storage"
+    ],
+    "difficulty": "exam",
+    "questionType": "multi",
+    "question": "You must give an external auditor read-only access to blobs in one container for 7 days, following security best practices. Which TWO actions should you take?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Generate a user delegation SAS (or a service SAS) for the container with Read and List permissions only"
+      },
+      {
+        "id": "b",
+        "text": "Set the SAS expiry to 7 days and require HTTPS"
+      },
+      {
+        "id": "c",
+        "text": "Share the storage account key with the auditor"
+      },
+      {
+        "id": "d",
+        "text": "Generate an account SAS with all services and permissions"
+      }
+    ],
+    "correctAnswer": [
+      "a",
+      "b"
+    ],
+    "explanation": "Least privilege means a SAS scoped to the container with only Read/List permissions, a 7-day expiry, and HTTPS-only. A user delegation SAS is preferred because it's signed with Entra credentials.",
+    "incorrectAnswerExplanations": {
+      "c": "The account key grants full access to the entire account and can't be scoped or time-limited.",
+      "d": "An account SAS with all services and permissions grants far more than needed."
+    },
+    "examTakeaway": "SAS best practice: narrowest scope, minimal permissions, short expiry, HTTPS only.",
+    "relatedTopics": [
+      "storage-security"
+    ],
+    "documentationLinks": [
+      {
+        "title": "SAS best practices",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-sas-overview#best-practices-when-using-sas"
+      }
+    ]
+  }
+]

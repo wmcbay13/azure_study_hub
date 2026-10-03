@@ -1,0 +1,65 @@
+[
+  {
+    "id": "cs-bluebridge",
+    "title": "Bluebridge Logistics",
+    "domain": "identity-governance",
+    "overview": [
+      "Bluebridge Logistics is a freight company with headquarters in Rotterdam and regional offices in Lisbon and Warsaw. It's moving its line-of-business applications to Azure.",
+      "The company has one Microsoft Entra tenant with Microsoft Entra ID P1 licenses for all employees. Users are synchronized from an on-premises Active Directory domain."
+    ],
+    "existingEnvironment": [
+      "Three subscriptions: Sub-Prod, Sub-Dev and Sub-Shared. All are currently directly under the tenant root group.",
+      "A group named IT-Ops contains the central operations team.",
+      "Each regional office has a small help desk team.",
+      "Storage account stbbdocs (Standard GPv2, LRS) holds shipping documents in a container named manifests."
+    ],
+    "requirements": [
+      "Production subscriptions must only allow resources in West Europe and North Europe; development subscriptions may use any region. The rule must apply automatically to new production subscriptions.",
+      "Each regional help desk must be able to reset passwords only for users in its own office.",
+      "Every resource must carry a CostCenter tag. Resources that inherit from their resource group should be tagged automatically.",
+      "Shipping documents must remain readable if a single datacenter in the region fails. Cost must be minimized.",
+      "Use least privilege and minimize administrative effort."
+    ]
+  },
+  {
+    "id": "cs-harborview",
+    "title": "Harborview Clinics",
+    "domain": "networking",
+    "overview": [
+      "Harborview Clinics operates 12 outpatient clinics and a central datacenter. It's deploying a patient portal and internal services to Azure in the East US region.",
+      "Security and compliance teams require private connectivity to data services and strict network segmentation."
+    ],
+    "existingEnvironment": [
+      "Hub VNet vnet-hub (10.0.0.0/16) contains a VPN gateway connected to the datacenter (172.20.0.0/16) by site-to-site VPN.",
+      "Spoke VNets vnet-portal (10.10.0.0/16) and vnet-data (10.20.0.0/16) are peered with vnet-hub.",
+      "The patient portal runs on VMs in vnet-portal behind a web tier. Patient documents are stored in storage account sthvdocs.",
+      "Clinic staff connect over the internet from clinic sites; administrators work from the datacenter."
+    ],
+    "requirements": [
+      "The portal must route /api/* requests to API servers and all other requests to web servers, and must be protected against common web exploits.",
+      "VMs in both spokes must reach the datacenter through the existing VPN gateway; no additional gateways may be deployed.",
+      "sthvdocs must not be reachable from the internet. Datacenter servers and VMs in both spokes must access it using private IP addresses.",
+      "Administrators must manage VMs over RDP/SSH without public IP addresses on VMs."
+    ]
+  },
+  {
+    "id": "cs-summit",
+    "title": "Summit Outdoor Retail",
+    "domain": "monitoring",
+    "overview": [
+      "Summit Outdoor Retail runs its e-commerce platform on Azure VMs in Central US, with a secondary region of East US 2.",
+      "The operations team is small and wants automated monitoring and recovery wherever possible."
+    ],
+    "existingEnvironment": [
+      "Web and order-processing VMs run Windows Server in Central US.",
+      "A Log Analytics workspace law-ops exists in Central US.",
+      "No backups or disaster recovery are configured."
+    ],
+    "requirements": [
+      "The on-call engineer must receive an SMS and email when any web VM's CPU stays above 90% for 15 minutes; the same contacts are used for all critical alerts.",
+      "Notifications must be suppressed during the weekly maintenance window on Sunday 01:00–03:00 without modifying alert rules.",
+      "VMs must be backed up daily with 30-day retention; individual files must be restorable without restoring entire VMs.",
+      "If Central US becomes unavailable, the order-processing tier must be running in East US 2 within one hour, starting the database VMs before the application VMs."
+    ]
+  }
+]
