@@ -75,7 +75,7 @@ export function ProgressPage() {
         <Stat icon="circle-check" color="green" label="Correct answers" value={t.totalCorrect} />
         <Stat icon="circle-x" color="red" label="Incorrect answers" value={t.totalAttempts - t.totalCorrect} />
         <Stat icon="timer" color="blue" label="Study time" value={formatDuration(progress.studySeconds)} />
-        <Stat icon="flame" color="orange" label="Current streak" value={`${current} days`} hint={`longest ${longest}`} />
+        <Stat icon="flame" color="orange" label="Current streak" value={`${current} day${current === 1 ? '' : 's'}`} hint={`longest ${longest}`} />
       </div>
 
       <Card>
