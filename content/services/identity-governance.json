@@ -1,0 +1,143 @@
+[
+  {
+    "id": "entra-id",
+    "name": "Microsoft Entra ID",
+    "category": "Identity",
+    "icon": "fingerprint",
+    "tagline": "Cloud identity and access management for users, groups, apps and Azure.",
+    "whatItIs": "Microsoft's cloud-based identity service (formerly Azure Active Directory). It stores users, groups, devices, applications and service principals, and authenticates sign-ins to Azure, Microsoft 365 and thousands of SaaS apps.",
+    "primaryPurpose": "Authenticate identities and provide the directory that Azure RBAC, Conditional Access and app access rely on.",
+    "useCases": ["Single sign-on to Azure and SaaS apps", "Hybrid identity with on-premises Active Directory", "B2B collaboration with guest users", "Self-service password reset and MFA"],
+    "keyFeatures": ["Users and groups (assigned or dynamic)", "Administrative units for delegated admin", "Conditional Access and MFA (P1+)", "Privileged Identity Management (P2/Governance)", "Managed identities for Azure resources"],
+    "security": ["Enforce MFA and Conditional Access", "Use PIM for just-in-time admin roles", "Limit Global Administrators and monitor sign-in/audit logs"],
+    "networking": ["Cloud service reached over the internet; Conditional Access can restrict by named locations/IPs"],
+    "pricing": "Free tier included with Azure subscriptions; premium capabilities (P1, P2, Governance) are licensed per user.",
+    "relatedServices": ["azure-policy", "management-groups", "key-vault"],
+    "confusedWith": [
+      { "name": "Active Directory Domain Services (AD DS)", "difference": "AD DS is on-premises Kerberos/LDAP; Entra ID is a cloud identity service using modern protocols (OAuth, OIDC, SAML)." },
+      { "name": "Microsoft Entra Domain Services", "difference": "A managed domain providing LDAP/Kerberos/Group Policy for legacy apps in Azure; Entra ID itself doesn't offer domain join of servers in that classic sense." }
+    ],
+    "relevance": "core",
+    "relevanceNote": "Users, groups, licenses, guests, SSPR and the relationship to Azure RBAC are directly tested.",
+    "examTips": ["Dynamic groups and group-based licensing require P1+", "A license can't be assigned without a usage location", "Entra roles ≠ Azure RBAC roles"],
+    "topics": ["entra-users-groups", "entra-external-sspr", "entra-roles-vs-rbac"],
+    "docLinks": [{ "title": "What is Microsoft Entra ID?", "url": "https://learn.microsoft.com/entra/fundamentals/whatis" }]
+  },
+  {
+    "id": "management-groups",
+    "name": "Management Groups",
+    "category": "Governance",
+    "icon": "folder-tree",
+    "tagline": "Organize subscriptions into a hierarchy for governance at scale.",
+    "whatItIs": "Containers above subscriptions that let you apply Azure Policy and RBAC to many subscriptions at once. Every tenant has a root management group.",
+    "primaryPurpose": "Apply consistent governance across many subscriptions.",
+    "useCases": ["Enterprise landing zones (Platform, Landing zones, Sandbox)", "Separating production and non-production policies", "Assigning auditors Reader across all subscriptions"],
+    "keyFeatures": ["Hierarchy up to six levels deep below the root", "Policy and RBAC inheritance", "Default management group for new subscriptions", "Single parent per subscription and management group"],
+    "security": ["Restrict who can create management groups and move subscriptions (hierarchy settings)", "Assign broad roles carefully — they inherit to everything below"],
+    "networking": ["Not applicable — a governance construct"],
+    "pricing": "No charge.",
+    "relatedServices": ["azure-policy", "cost-management", "entra-id"],
+    "confusedWith": [
+      { "name": "Resource groups", "difference": "Resource groups contain resources inside a subscription; management groups contain subscriptions." },
+      { "name": "Administrative units", "difference": "AUs scope Entra directory roles over users/groups; management groups scope Azure governance over subscriptions." }
+    ],
+    "relevance": "core",
+    "relevanceNote": "Configuring management groups and understanding inheritance is in the skills outline.",
+    "examTips": ["Assign at a management group to cover all current and future subscriptions under it", "A subscription can be in only one management group"],
+    "topics": ["management-hierarchy", "azure-policy"],
+    "docLinks": [{ "title": "Management groups overview", "url": "https://learn.microsoft.com/azure/governance/management-groups/overview" }]
+  },
+  {
+    "id": "azure-policy",
+    "name": "Azure Policy",
+    "category": "Governance",
+    "icon": "scroll-text",
+    "tagline": "Enforce rules on resource configuration and report compliance.",
+    "whatItIs": "A service that evaluates resources against policy definitions and initiatives, then denies, audits, modifies or deploys configuration to keep resources compliant.",
+    "primaryPurpose": "Guardrails and compliance at scale, regardless of who deploys resources.",
+    "useCases": ["Allowed regions and VM sizes", "Required or inherited tags", "Deploy diagnostic settings or agents automatically", "Regulatory compliance reporting"],
+    "keyFeatures": ["Built-in and custom definitions", "Initiatives (policy sets)", "Effects: Deny, Audit, Append, Modify, DeployIfNotExists, AuditIfNotExists, Disabled", "Remediation tasks", "Exclusions and exemptions"],
+    "security": ["Remediation uses a managed identity — grant it only the roles it needs", "Use Deny for hard guardrails and Audit while piloting"],
+    "networking": ["Can enforce network settings, e.g., deny public IPs or require private endpoints"],
+    "pricing": "No charge for Azure resources (some guest configuration features may be billed).",
+    "relatedServices": ["management-groups", "entra-id", "azure-monitor"],
+    "confusedWith": [
+      { "name": "Azure RBAC", "difference": "RBAC grants permissions to principals; Policy constrains resource properties for everyone." },
+      { "name": "Resource locks", "difference": "Locks block delete/modify of specific resources; Policy evaluates configurations." }
+    ],
+    "relevance": "core",
+    "relevanceNote": "Implementing and managing Azure Policy is an explicit AZ-104 skill.",
+    "examTips": ["'Prevent' → Deny; 'report' → Audit; 'automatically add/fix' → Modify/DeployIfNotExists", "Existing resources need a remediation task"],
+    "topics": ["azure-policy", "locks-tags"],
+    "docLinks": [{ "title": "What is Azure Policy?", "url": "https://learn.microsoft.com/azure/governance/policy/overview" }]
+  },
+  {
+    "id": "cost-management",
+    "name": "Microsoft Cost Management",
+    "category": "Governance",
+    "icon": "wallet",
+    "tagline": "Analyze, budget and optimize cloud spending.",
+    "whatItIs": "Tools in the Azure portal to view costs, forecast spending, allocate costs with tags, and create budgets with alerts.",
+    "primaryPurpose": "Visibility and control over Azure spend.",
+    "useCases": ["Monthly budgets per subscription or resource group", "Chargeback by tag", "Investigating cost spikes", "Scheduled cost exports"],
+    "keyFeatures": ["Cost analysis with grouping and forecasts", "Budgets with actual and forecasted alert thresholds", "Action groups on budget alerts", "Exports to storage"],
+    "security": ["Access controlled by RBAC (Cost Management Reader/Contributor) and billing roles"],
+    "networking": ["Not applicable"],
+    "pricing": "No charge for Azure usage analysis.",
+    "relatedServices": ["azure-advisor", "management-groups", "azure-monitor"],
+    "confusedWith": [
+      { "name": "Spending limit", "difference": "Only on certain offers; disables resources at the limit. Budgets just alert (and can trigger automation)." }
+    ],
+    "relevance": "core",
+    "relevanceNote": "Managing costs with alerts, budgets and Advisor recommendations is in the outline.",
+    "examTips": ["Budgets don't stop resources by themselves", "Use forecasted-cost alerts to warn early"],
+    "topics": ["cost-management"],
+    "docLinks": [{ "title": "Tutorial: Create and manage budgets", "url": "https://learn.microsoft.com/azure/cost-management-billing/costs/tutorial-acm-create-budgets" }]
+  },
+  {
+    "id": "azure-advisor",
+    "name": "Azure Advisor",
+    "category": "Governance",
+    "icon": "lightbulb",
+    "tagline": "Personalized best-practice recommendations.",
+    "whatItIs": "A free service that analyzes your configuration and usage and recommends improvements across Cost, Security, Reliability, Operational Excellence and Performance.",
+    "primaryPurpose": "Find and act on optimization opportunities.",
+    "useCases": ["Right-size or shut down underused VMs", "Buy reservations", "Improve availability (e.g., use availability zones)", "Score progress with Advisor Score"],
+    "keyFeatures": ["Five recommendation categories", "Advisor Score", "Alerts on new recommendations", "Postpone/dismiss recommendations"],
+    "security": ["Security recommendations come from Microsoft Defender for Cloud"],
+    "networking": ["Not applicable"],
+    "pricing": "No charge.",
+    "relatedServices": ["cost-management", "azure-monitor"],
+    "confusedWith": [
+      { "name": "Microsoft Defender for Cloud", "difference": "Defender for Cloud is the security posture/threat protection service; Advisor surfaces its recommendations alongside cost, reliability and performance ones." }
+    ],
+    "relevance": "important",
+    "relevanceNote": "Named in the cost management skill.",
+    "examTips": ["'Identify underutilized VMs to reduce cost' → Azure Advisor"],
+    "topics": ["cost-management"],
+    "docLinks": [{ "title": "Introduction to Azure Advisor", "url": "https://learn.microsoft.com/azure/advisor/advisor-overview" }]
+  },
+  {
+    "id": "key-vault",
+    "name": "Azure Key Vault",
+    "category": "Security",
+    "icon": "key",
+    "tagline": "Secure storage for secrets, keys and certificates.",
+    "whatItIs": "A managed service for storing and controlling access to secrets, cryptographic keys and certificates, with HSM-backed options.",
+    "primaryPurpose": "Keep secrets and keys out of code and centrally control access to them.",
+    "useCases": ["Customer-managed keys for Storage and disks", "Azure Disk Encryption keys", "App secrets and connection strings", "TLS certificates for App Service and Application Gateway"],
+    "keyFeatures": ["Access via Azure RBAC (recommended) or vault access policies", "Soft delete and purge protection", "Key rotation policies", "Private endpoints and firewall"],
+    "security": ["Enable purge protection for CMK scenarios", "Use managed identities to access secrets", "Restrict network access with private endpoints"],
+    "networking": ["Firewall with VNet rules and trusted services; private endpoints"],
+    "pricing": "Per operation and per key type (software vs HSM-protected); certificates renewals may be charged.",
+    "relatedServices": ["storage-accounts", "virtual-machines", "app-service"],
+    "confusedWith": [
+      { "name": "Storage account keys", "difference": "Account keys grant storage access; Key Vault can store and rotate them." }
+    ],
+    "relevance": "important",
+    "relevanceNote": "Appears in encryption (ADE, CMK) and certificate scenarios.",
+    "examTips": ["ADE requires the vault in the same region and subscription as the VM with disk encryption enabled for the vault"],
+    "topics": ["storage-accounts", "virtual-machines"],
+    "docLinks": [{ "title": "About Azure Key Vault", "url": "https://learn.microsoft.com/azure/key-vault/general/overview" }]
+  }
+]

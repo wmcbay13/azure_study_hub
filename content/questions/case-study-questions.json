@@ -1,0 +1,545 @@
+[
+  {
+    "id": "cs-bb-01",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "azure-policy",
+    "services": [
+      "azure-policy",
+      "management-groups"
+    ],
+    "difficulty": "exam",
+    "questionType": "caseStudy",
+    "caseStudyId": "cs-bluebridge",
+    "question": "How should you implement the region restriction for production?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assign 'Allowed locations' to the tenant root group"
+      },
+      {
+        "id": "b",
+        "text": "Create a Production management group, move Sub-Prod into it, and assign 'Allowed locations' (West Europe, North Europe) to the management group"
+      },
+      {
+        "id": "c",
+        "text": "Assign 'Allowed locations' to Sub-Prod directly"
+      },
+      {
+        "id": "d",
+        "text": "Create resource groups only in West Europe"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "A Production management group lets the policy apply to Sub-Prod and any production subscription added later, while Sub-Dev (outside that group) remains unrestricted.",
+    "incorrectAnswerExplanations": {
+      "a": "The root group would also restrict Sub-Dev, which may use any region.",
+      "c": "Works for Sub-Prod today but doesn't apply automatically to new production subscriptions.",
+      "d": "Resource group location doesn't restrict resource locations."
+    },
+    "examTakeaway": "Group subscriptions by governance need into management groups and assign there.",
+    "relatedTopics": [
+      "azure-policy",
+      "management-hierarchy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Management groups overview",
+        "url": "https://learn.microsoft.com/azure/governance/management-groups/overview"
+      }
+    ]
+  },
+  {
+    "id": "cs-bb-02",
+    "domain": "identity-governance",
+    "objectiveId": "entra-users-groups",
+    "topic": "entra-users-groups",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "exam",
+    "questionType": "caseStudy",
+    "caseStudyId": "cs-bluebridge",
+    "question": "What should you configure for the regional help desks?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create dynamic groups per office and make the help desks group owners"
+      },
+      {
+        "id": "b",
+        "text": "One administrative unit per office containing that office's users, with each help desk assigned Helpdesk Administrator (or Password Administrator) scoped to its AU"
+      },
+      {
+        "id": "c",
+        "text": "Assign User Access Administrator on each subscription"
+      },
+      {
+        "id": "d",
+        "text": "Assign Helpdesk Administrator at tenant scope to all help desks"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Administrative units scope Entra roles to subsets of users. Per-office AUs (which can use dynamic membership rules based on office attributes with P1) let each help desk reset passwords only for its users.",
+    "incorrectAnswerExplanations": {
+      "a": "Group ownership manages membership, not passwords.",
+      "c": "User Access Administrator is an Azure RBAC role for resource access, not passwords.",
+      "d": "Tenant scope lets every help desk reset passwords for all users."
+    },
+    "examTakeaway": "Regional delegated admin → administrative units.",
+    "relatedTopics": [
+      "entra-users-groups",
+      "entra-roles-vs-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Administrative units",
+        "url": "https://learn.microsoft.com/entra/identity/role-based-access-control/administrative-units"
+      }
+    ]
+  },
+  {
+    "id": "cs-bb-03",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "locks-tags",
+    "services": [
+      "azure-policy"
+    ],
+    "difficulty": "exam",
+    "questionType": "caseStudy",
+    "caseStudyId": "cs-bluebridge",
+    "question": "Which TWO actions meet the tagging requirement with the least administrative effort?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Apply a CanNotDelete lock on every resource group"
+      },
+      {
+        "id": "b",
+        "text": "Assign the built-in policy 'Inherit a tag from the resource group if missing' for CostCenter"
+      },
+      {
+        "id": "c",
+        "text": "Ask resource owners to tag resources manually each month"
+      },
+      {
+        "id": "d",
+        "text": "Create a remediation task for existing resources"
+      }
+    ],
+    "correctAnswer": [
+      "b",
+      "d"
+    ],
+    "explanation": "The Modify-based inherit policy tags new and updated resources automatically; a remediation task applies the tag to existing resources.",
+    "incorrectAnswerExplanations": {
+      "a": "Locks don't apply tags.",
+      "c": "Manual tagging is high effort and unreliable."
+    },
+    "examTakeaway": "Tag inheritance = Modify policy + remediation task.",
+    "relatedTopics": [
+      "locks-tags",
+      "azure-policy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Assign policy definitions for tag compliance",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-policies"
+      }
+    ]
+  },
+  {
+    "id": "cs-bb-04",
+    "domain": "storage",
+    "objectiveId": "storage-accounts",
+    "topic": "storage-redundancy",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "exam",
+    "questionType": "caseStudy",
+    "caseStudyId": "cs-bluebridge",
+    "question": "Which redundancy should stbbdocs use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "RA-GZRS"
+      },
+      {
+        "id": "b",
+        "text": "Keep LRS"
+      },
+      {
+        "id": "c",
+        "text": "GRS"
+      },
+      {
+        "id": "d",
+        "text": "ZRS"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "The requirement is to survive a single datacenter failure in the region at minimum cost. ZRS spreads copies across availability zones, and is cheaper than geo-redundant options.",
+    "incorrectAnswerExplanations": {
+      "a": "RA-GZRS meets the requirement but isn't the cheapest option.",
+      "b": "LRS keeps all copies in one datacenter.",
+      "c": "GRS's primary copy is LRS, so a datacenter failure interrupts access until failover; it also costs more."
+    },
+    "examTakeaway": "Datacenter resilience at minimum cost → ZRS.",
+    "relatedTopics": [
+      "storage-redundancy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Storage redundancy",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-redundancy"
+      }
+    ]
+  },
+  {
+    "id": "cs-hv-01",
+    "domain": "networking",
+    "objectiveId": "dns-load-balancing",
+    "topic": "application-gateway",
+    "services": [
+      "application-gateway"
+    ],
+    "difficulty": "exam",
+    "questionType": "caseStudy",
+    "caseStudyId": "cs-harborview",
+    "question": "What should you deploy in front of the patient portal?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Application Gateway (WAF_v2) with a path-based rule sending /api/* to the API pool and other paths to the web pool"
+      },
+      {
+        "id": "b",
+        "text": "Traffic Manager with priority routing"
+      },
+      {
+        "id": "c",
+        "text": "A NAT gateway"
+      },
+      {
+        "id": "d",
+        "text": "A public Standard Load Balancer"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Application Gateway provides Layer 7 path-based routing in a region, and the WAF_v2 SKU protects against common web exploits.",
+    "incorrectAnswerExplanations": {
+      "b": "Traffic Manager is DNS-based and can't inspect paths.",
+      "c": "NAT Gateway is outbound-only.",
+      "d": "Load Balancer can't route by URL path or provide WAF."
+    },
+    "examTakeaway": "Path routing + WAF → Application Gateway WAF_v2.",
+    "relatedTopics": [
+      "application-gateway"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Application Gateway overview",
+        "url": "https://learn.microsoft.com/azure/application-gateway/overview"
+      }
+    ]
+  },
+  {
+    "id": "cs-hv-02",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "vnet-peering",
+    "services": [
+      "vpn-gateway",
+      "virtual-network"
+    ],
+    "difficulty": "exam",
+    "questionType": "caseStudy",
+    "caseStudyId": "cs-harborview",
+    "question": "How should you configure the peerings so both spokes reach the datacenter?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add a service endpoint to each spoke"
+      },
+      {
+        "id": "b",
+        "text": "Deploy a VPN gateway in each spoke"
+      },
+      {
+        "id": "c",
+        "text": "Enable Allow gateway transit on the vnet-hub side of each peering and Use remote gateways on the vnet-portal and vnet-data sides"
+      },
+      {
+        "id": "d",
+        "text": "Peer vnet-portal and vnet-data with each other"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Gateway transit lets the spokes use the hub's VPN gateway without deploying new gateways, and propagates the datacenter routes to them.",
+    "incorrectAnswerExplanations": {
+      "a": "Service endpoints are for PaaS access, not on-premises connectivity.",
+      "b": "The requirements forbid additional gateways.",
+      "d": "Spoke-to-spoke peering doesn't provide on-premises connectivity."
+    },
+    "examTakeaway": "Share a hub gateway → gateway transit.",
+    "relatedTopics": [
+      "vnet-peering",
+      "vpn-expressroute"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Gateway transit",
+        "url": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-peering-gateway-transit"
+      }
+    ]
+  },
+  {
+    "id": "cs-hv-03",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "private-service-endpoints",
+    "services": [
+      "private-link",
+      "azure-dns",
+      "storage-accounts"
+    ],
+    "difficulty": "challenging",
+    "questionType": "caseStudy",
+    "caseStudyId": "cs-harborview",
+    "question": "Which TWO actions should you take for sthvdocs?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable a Microsoft.Storage service endpoint on the GatewaySubnet"
+      },
+      {
+        "id": "b",
+        "text": "Configure datacenter DNS to forward the blob.core.windows.net (privatelink) zone to an Azure DNS Private Resolver inbound endpoint, and disable public network access on sthvdocs"
+      },
+      {
+        "id": "c",
+        "text": "Add the datacenter's public IP range to the storage firewall"
+      },
+      {
+        "id": "d",
+        "text": "Create a private endpoint for sthvdocs (blob) in vnet-data, integrated with the privatelink.blob.core.windows.net zone linked to the hub and spoke VNets"
+      }
+    ],
+    "correctAnswer": [
+      "b",
+      "d"
+    ],
+    "explanation": "A private endpoint gives sthvdocs a private IP reachable from peered spokes and, via the VPN, the datacenter. DNS must resolve the name to that IP everywhere: zone links for VNets and conditional forwarding through a Private Resolver for on-premises. Then public access can be disabled.",
+    "incorrectAnswerExplanations": {
+      "a": "Service endpoints don't serve on-premises traffic or provide private IPs.",
+      "c": "IP rules allow access to the public endpoint, contradicting 'not reachable from the internet' and private IP access."
+    },
+    "examTakeaway": "Private endpoint + hybrid DNS + disable public access.",
+    "relatedTopics": [
+      "private-service-endpoints",
+      "azure-dns"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Private endpoint DNS integration",
+        "url": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns-integration"
+      }
+    ]
+  },
+  {
+    "id": "cs-hv-04",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "azure-bastion",
+    "services": [
+      "azure-bastion"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "caseStudy",
+    "caseStudyId": "cs-harborview",
+    "question": "What should you do to meet the administration requirement with the least effort?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deploy Azure Bastion in each spoke"
+      },
+      {
+        "id": "b",
+        "text": "Deploy Azure Bastion in AzureBastionSubnet in vnet-hub"
+      },
+      {
+        "id": "c",
+        "text": "Create inbound NAT rules on a public load balancer"
+      },
+      {
+        "id": "d",
+        "text": "Add public IPs to VMs and restrict RDP to the datacenter IP"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "A single Bastion in the hub can reach VMs in peered spoke VNets via private IPs, with no public IPs on VMs.",
+    "incorrectAnswerExplanations": {
+      "a": "Works but duplicates cost and effort.",
+      "c": "Exposes management ports through a public frontend.",
+      "d": "Violates the no-public-IP requirement."
+    },
+    "examTakeaway": "One hub Bastion serves peered spokes.",
+    "relatedTopics": [
+      "azure-bastion"
+    ],
+    "documentationLinks": [
+      {
+        "title": "VNet peering and Azure Bastion",
+        "url": "https://learn.microsoft.com/azure/bastion/vnet-peering"
+      }
+    ]
+  },
+  {
+    "id": "cs-su-01",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "alerts-action-groups",
+    "services": [
+      "azure-monitor"
+    ],
+    "difficulty": "exam",
+    "questionType": "caseStudy",
+    "caseStudyId": "cs-summit",
+    "question": "Which TWO items should you configure to meet the alerting and maintenance-window requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An alert processing rule that suppresses notifications every Sunday 01:00–03:00"
+      },
+      {
+        "id": "b",
+        "text": "A separate action group per alert rule with identical contacts"
+      },
+      {
+        "id": "c",
+        "text": "A Cost Management budget"
+      },
+      {
+        "id": "d",
+        "text": "A metric alert on Percentage CPU > 90 averaged over 15 minutes for the web VMs, using a shared action group with SMS and email"
+      }
+    ],
+    "correctAnswer": [
+      "a",
+      "d"
+    ],
+    "explanation": "A metric alert with a 15-minute window detects sustained high CPU; a shared action group reuses contacts for all critical alerts; an alert processing rule suppresses notifications during maintenance without editing rules.",
+    "incorrectAnswerExplanations": {
+      "b": "Duplicated action groups increase maintenance.",
+      "c": "Budgets monitor cost."
+    },
+    "examTakeaway": "Metric alert + shared action group + processing rule for maintenance.",
+    "relatedTopics": [
+      "alerts-action-groups"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Alert processing rules",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-processing-rules"
+      }
+    ]
+  },
+  {
+    "id": "cs-su-02",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "azure-backup",
+    "services": [
+      "azure-backup"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "caseStudy",
+    "caseStudyId": "cs-summit",
+    "question": "Where should you create the vault for VM backups, and what policy should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A Recovery Services vault in Central US with a daily backup policy retaining daily points for 30 days"
+      },
+      {
+        "id": "b",
+        "text": "A Recovery Services vault in East US 2 with a daily policy"
+      },
+      {
+        "id": "c",
+        "text": "A Backup vault in East US 2 with weekly backups"
+      },
+      {
+        "id": "d",
+        "text": "A storage account with lifecycle management"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Azure VM backups use a Recovery Services vault in the same region as the VMs (Central US). A daily schedule with 30-day retention meets the policy, and File Recovery provides item-level restores.",
+    "incorrectAnswerExplanations": {
+      "b": "The vault must be in the VMs' region.",
+      "c": "Backup vaults don't protect Azure VMs, and weekly doesn't meet the daily requirement.",
+      "d": "Storage lifecycle policies aren't a VM backup solution."
+    },
+    "examTakeaway": "VM backup → RSV in the same region; file recovery for single files.",
+    "relatedTopics": [
+      "azure-backup"
+    ],
+    "documentationLinks": [
+      {
+        "title": "About Azure VM backup",
+        "url": "https://learn.microsoft.com/azure/backup/backup-azure-vms-introduction"
+      }
+    ]
+  },
+  {
+    "id": "cs-su-03",
+    "domain": "monitoring",
+    "objectiveId": "backup-recovery",
+    "topic": "site-recovery",
+    "services": [
+      "site-recovery"
+    ],
+    "difficulty": "exam",
+    "questionType": "caseStudy",
+    "caseStudyId": "cs-summit",
+    "question": "What should you configure for the order-processing tier's regional recovery?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Availability zones in Central US"
+      },
+      {
+        "id": "b",
+        "text": "GRS on the VMs' managed disks"
+      },
+      {
+        "id": "c",
+        "text": "Azure Site Recovery replication to East US 2 and a recovery plan with the database VMs in group 1 and application VMs in group 2"
+      },
+      {
+        "id": "d",
+        "text": "Cross Region Restore from Azure Backup"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Site Recovery replicates VMs continuously to East US 2 and recovery plans orchestrate ordered failover (databases first, then apps), meeting the one-hour RTO.",
+    "incorrectAnswerExplanations": {
+      "a": "Zones don't protect against a regional outage.",
+      "b": "Managed disks don't offer GRS, and data replication alone doesn't fail over running VMs.",
+      "d": "Restoring from backup in another region is slower and has a larger RPO; it also lacks ordered orchestration."
+    },
+    "examTakeaway": "Ordered regional failover → ASR recovery plan with groups.",
+    "relatedTopics": [
+      "site-recovery"
+    ],
+    "documentationLinks": [
+      {
+        "title": "About recovery plans",
+        "url": "https://learn.microsoft.com/azure/site-recovery/recovery-plan-overview"
+      }
+    ]
+  }
+]

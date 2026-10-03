@@ -1,0 +1,1846 @@
+[
+  {
+    "id": "vnet-architecture",
+    "title": "VNet & Subnet Architecture",
+    "summary": "A three-tier VNet with NSG-protected subnets, Azure Bastion, a VPN gateway and NAT Gateway for outbound traffic.",
+    "domain": "networking",
+    "topics": [
+      "vnets-subnets",
+      "azure-bastion",
+      "routing-udr",
+      "nsg-asg"
+    ],
+    "width": 1020,
+    "height": 560,
+    "groups": [
+      {
+        "id": "vnet",
+        "label": "VNet 10.0.0.0/16 · East US",
+        "x": 165,
+        "y": 30,
+        "w": 705,
+        "h": 510,
+        "color": "blue"
+      },
+      {
+        "id": "web",
+        "label": "Web subnet 10.0.1.0/24",
+        "x": 185,
+        "y": 70,
+        "w": 320,
+        "h": 135,
+        "color": "green"
+      },
+      {
+        "id": "app",
+        "label": "App subnet 10.0.2.0/24",
+        "x": 185,
+        "y": 225,
+        "w": 320,
+        "h": 135,
+        "color": "green"
+      },
+      {
+        "id": "data",
+        "label": "Data subnet 10.0.3.0/24",
+        "x": 185,
+        "y": 380,
+        "w": 320,
+        "h": 135,
+        "color": "green"
+      },
+      {
+        "id": "bas",
+        "label": "AzureBastionSubnet /26",
+        "x": 530,
+        "y": 70,
+        "w": 320,
+        "h": 135,
+        "color": "purple"
+      },
+      {
+        "id": "gws",
+        "label": "GatewaySubnet /27",
+        "x": 530,
+        "y": 225,
+        "w": 320,
+        "h": 135,
+        "color": "amber"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "inet",
+        "label": "Internet",
+        "icon": "globe",
+        "x": 80,
+        "y": 145,
+        "w": 125,
+        "color": "gray",
+        "detail": "Inbound internet traffic reaches only resources with public IPs or behind a public load balancer/gateway, and only if NSGs allow it."
+      },
+      {
+        "id": "webvm",
+        "label": "Web VMs",
+        "sublabel": "NSG: allow 443 in",
+        "icon": "server",
+        "x": 395,
+        "y": 145,
+        "w": 180,
+        "color": "green",
+        "detail": "The web subnet's NSG allows HTTPS from the Internet and denies everything else inbound (default DenyAllInBound)."
+      },
+      {
+        "id": "appvm",
+        "label": "App VMs",
+        "sublabel": "NSG: allow from web",
+        "icon": "server",
+        "x": 395,
+        "y": 300,
+        "w": 180,
+        "color": "green",
+        "detail": "Only the web tier can reach the app tier, e.g., an NSG rule allowing the Web ASG on port 8080."
+      },
+      {
+        "id": "dbvm",
+        "label": "Database",
+        "sublabel": "NSG: 1433 from app",
+        "icon": "database",
+        "x": 395,
+        "y": 455,
+        "w": 180,
+        "color": "green",
+        "detail": "The data tier is reachable only from the app tier on the database port."
+      },
+      {
+        "id": "bastion",
+        "label": "Azure Bastion",
+        "sublabel": "RDP/SSH over TLS 443",
+        "icon": "lock-keyhole",
+        "x": 690,
+        "y": 145,
+        "w": 220,
+        "color": "purple",
+        "detail": "Admins connect through the portal over 443; VMs need no public IPs and management ports aren't exposed."
+      },
+      {
+        "id": "vpngw",
+        "label": "VPN gateway",
+        "sublabel": "route-based",
+        "icon": "cable",
+        "x": 690,
+        "y": 300,
+        "w": 200,
+        "color": "amber",
+        "detail": "Gateways must be deployed in the subnet named GatewaySubnet. Don't put other resources (or an NSG) there."
+      },
+      {
+        "id": "nat",
+        "label": "NAT gateway",
+        "sublabel": "outbound for app subnet",
+        "icon": "route",
+        "x": 690,
+        "y": 455,
+        "w": 220,
+        "color": "teal",
+        "detail": "Associated with the app subnet to give outbound internet access through fixed Standard public IPs. Outbound only."
+      },
+      {
+        "id": "admin",
+        "label": "Admin",
+        "sublabel": "browser",
+        "icon": "laptop",
+        "x": 945,
+        "y": 145,
+        "w": 125,
+        "color": "gray",
+        "detail": "Uses the Azure portal to start a Bastion session."
+      },
+      {
+        "id": "onprem",
+        "label": "On-prem",
+        "sublabel": "192.168.0.0/16",
+        "icon": "building",
+        "x": 945,
+        "y": 300,
+        "w": 125,
+        "color": "gray",
+        "detail": "Its address space must not overlap 10.0.0.0/16."
+      }
+    ],
+    "edges": [
+      {
+        "from": "inet",
+        "to": "webvm",
+        "label": "HTTPS 443",
+        "color": "green"
+      },
+      {
+        "from": "webvm",
+        "to": "appvm",
+        "label": "8080",
+        "color": "green"
+      },
+      {
+        "from": "appvm",
+        "to": "dbvm",
+        "label": "1433",
+        "color": "green"
+      },
+      {
+        "from": "admin",
+        "to": "bastion",
+        "label": "443",
+        "color": "purple"
+      },
+      {
+        "from": "bastion",
+        "to": "webvm",
+        "label": "RDP/SSH",
+        "style": "dashed",
+        "color": "purple"
+      },
+      {
+        "from": "onprem",
+        "to": "vpngw",
+        "label": "IPsec",
+        "bidirectional": true,
+        "color": "amber"
+      },
+      {
+        "from": "appvm",
+        "to": "nat",
+        "label": "outbound",
+        "style": "dashed",
+        "color": "teal"
+      }
+    ],
+    "legend": [
+      {
+        "color": "green",
+        "label": "Workload subnets"
+      },
+      {
+        "color": "purple",
+        "label": "Bastion"
+      },
+      {
+        "color": "amber",
+        "label": "Gateway"
+      },
+      {
+        "color": "teal",
+        "label": "Outbound (NAT)"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Address space and subnets",
+        "text": "The VNet is carved into subnets per tier. Each subnet loses 5 addresses to Azure.",
+        "highlight": [
+          "webvm",
+          "appvm",
+          "dbvm"
+        ]
+      },
+      {
+        "title": "Tier-to-tier rules",
+        "text": "NSGs allow only the next tier in, on the right port — classic segmentation.",
+        "highlight": [
+          "inet",
+          "webvm",
+          "appvm",
+          "dbvm"
+        ]
+      },
+      {
+        "title": "Secure management",
+        "text": "Bastion in AzureBastionSubnet gives RDP/SSH without public IPs on VMs.",
+        "highlight": [
+          "admin",
+          "bastion",
+          "webvm"
+        ]
+      },
+      {
+        "title": "Hybrid and outbound",
+        "text": "A VPN gateway in GatewaySubnet connects on-premises; NAT Gateway gives the app tier outbound internet via fixed IPs.",
+        "highlight": [
+          "onprem",
+          "vpngw",
+          "appvm",
+          "nat"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Special subnets have exact names and minimum sizes: GatewaySubnet, AzureBastionSubnet (/26+), AzureFirewallSubnet (/26).",
+      "Subnets in a VNet can communicate by default; segment with NSGs/ASGs.",
+      "Calculate usable IPs: subnet size minus 5.",
+      "Avoid public IPs on VMs: use Bastion for management and load balancers/gateways for app traffic."
+    ],
+    "docLinks": [
+      {
+        "title": "Virtual network overview",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-overview"
+      },
+      {
+        "title": "Azure Bastion overview",
+        "url": "https://learn.microsoft.com/azure/bastion/bastion-overview"
+      }
+    ]
+  },
+  {
+    "id": "vnet-peering",
+    "title": "VNet Peering & Gateway Transit (Hub and Spoke)",
+    "summary": "Peered spokes reach on-premises through the hub's gateway, but peering isn't transitive between spokes.",
+    "domain": "networking",
+    "topics": [
+      "vnet-peering",
+      "vpn-expressroute",
+      "routing-udr"
+    ],
+    "width": 980,
+    "height": 500,
+    "groups": [
+      {
+        "id": "hub",
+        "label": "Hub VNet 10.0.0.0/16",
+        "x": 320,
+        "y": 150,
+        "w": 340,
+        "h": 160,
+        "color": "blue"
+      },
+      {
+        "id": "s1",
+        "label": "Spoke 1 · 10.1.0.0/16",
+        "x": 30,
+        "y": 340,
+        "w": 260,
+        "h": 130,
+        "color": "green"
+      },
+      {
+        "id": "s2",
+        "label": "Spoke 2 · 10.2.0.0/16",
+        "x": 690,
+        "y": 340,
+        "w": 260,
+        "h": 130,
+        "color": "green"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "onprem",
+        "label": "On-premises",
+        "sublabel": "192.168.0.0/16",
+        "icon": "building",
+        "x": 490,
+        "y": 55,
+        "w": 190,
+        "color": "gray",
+        "detail": "Connected to the hub with a site-to-site VPN or ExpressRoute."
+      },
+      {
+        "id": "gw",
+        "label": "VPN gateway",
+        "sublabel": "allow gateway transit",
+        "icon": "cable",
+        "x": 410,
+        "y": 240,
+        "w": 160,
+        "color": "amber",
+        "detail": "The hub peering links enable 'Allow gateway transit' so spokes can use this gateway."
+      },
+      {
+        "id": "fw",
+        "label": "Azure Firewall",
+        "sublabel": "or NVA",
+        "icon": "shield",
+        "x": 575,
+        "y": 240,
+        "w": 150,
+        "color": "red",
+        "detail": "To route spoke-to-spoke through the hub, add UDRs pointing to the firewall and enable 'Allow forwarded traffic'."
+      },
+      {
+        "id": "s1vm",
+        "label": "App VMs",
+        "sublabel": "use remote gateways",
+        "icon": "server",
+        "x": 160,
+        "y": 415,
+        "w": 200,
+        "color": "green",
+        "detail": "Spoke peering link enables 'Use remote gateways' — the spoke must not have its own gateway."
+      },
+      {
+        "id": "s2vm",
+        "label": "App VMs",
+        "sublabel": "peered to hub",
+        "icon": "server",
+        "x": 820,
+        "y": 415,
+        "w": 190,
+        "color": "green",
+        "detail": "Peered with the hub only."
+      }
+    ],
+    "edges": [
+      {
+        "from": "onprem",
+        "to": "gw",
+        "label": "S2S VPN",
+        "bidirectional": true,
+        "color": "amber"
+      },
+      {
+        "from": "s1vm",
+        "to": "gw",
+        "label": "peering",
+        "bidirectional": true,
+        "color": "blue"
+      },
+      {
+        "from": "s2vm",
+        "to": "fw",
+        "label": "peering",
+        "bidirectional": true,
+        "color": "blue"
+      },
+      {
+        "from": "s1vm",
+        "to": "s2vm",
+        "label": "✗ not transitive by default",
+        "style": "dashed",
+        "color": "red"
+      }
+    ],
+    "legend": [
+      {
+        "color": "blue",
+        "label": "VNet peering"
+      },
+      {
+        "color": "amber",
+        "label": "Hybrid connection"
+      },
+      {
+        "color": "red",
+        "label": "Blocked / needs extra routing"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Hub and spokes",
+        "text": "Spokes peer with a hub that holds shared services: gateway and firewall.",
+        "highlight": [
+          "gw",
+          "fw",
+          "s1vm",
+          "s2vm"
+        ]
+      },
+      {
+        "title": "Gateway transit",
+        "text": "Allow gateway transit (hub) + Use remote gateways (spoke) lets Spoke 1 reach on-premises through the hub's VPN gateway.",
+        "highlight": [
+          "onprem",
+          "gw",
+          "s1vm"
+        ]
+      },
+      {
+        "title": "Not transitive",
+        "text": "Spoke 1 can't reach Spoke 2 just because both peer with the hub.",
+        "highlight": [
+          "s1vm",
+          "s2vm"
+        ]
+      },
+      {
+        "title": "Fix spoke-to-spoke",
+        "text": "Either peer the spokes directly or route through the firewall with UDRs and allow forwarded traffic.",
+        "highlight": [
+          "fw",
+          "s1vm",
+          "s2vm"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Peering requires non-overlapping address spaces and is non-transitive.",
+      "Gateway transit settings: hub = Allow gateway transit; spoke = Use remote gateways.",
+      "Spoke-to-spoke needs direct peering or hub routing (NVA/Firewall + UDR).",
+      "Global peering connects VNets across regions over the Microsoft backbone."
+    ],
+    "docLinks": [
+      {
+        "title": "Virtual network peering",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-network-peering-overview"
+      },
+      {
+        "title": "Gateway transit for peering",
+        "url": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-peering-gateway-transit"
+      }
+    ]
+  },
+  {
+    "id": "nsg-processing",
+    "title": "NSG Rule Processing",
+    "summary": "Inbound traffic is checked by the subnet NSG and then the NIC NSG; within each, the lowest priority number that matches wins.",
+    "domain": "networking",
+    "topics": [
+      "nsg-asg",
+      "network-watcher"
+    ],
+    "width": 960,
+    "height": 500,
+    "groups": [
+      {
+        "id": "subnsg",
+        "label": "Subnet NSG (evaluated 1st inbound)",
+        "x": 230,
+        "y": 200,
+        "w": 250,
+        "h": 280,
+        "color": "blue"
+      },
+      {
+        "id": "nicnsg",
+        "label": "NIC NSG (evaluated 2nd inbound)",
+        "x": 505,
+        "y": 200,
+        "w": 250,
+        "h": 280,
+        "color": "purple"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "pkt",
+        "label": "Inbound packet",
+        "sublabel": "TCP 443 from Internet",
+        "icon": "globe",
+        "x": 110,
+        "y": 100,
+        "w": 200,
+        "color": "gray",
+        "detail": "A 5-tuple: source IP/port, destination IP/port and protocol."
+      },
+      {
+        "id": "sn",
+        "label": "Subnet NSG",
+        "sublabel": "result: Allow",
+        "icon": "shield",
+        "x": 355,
+        "y": 100,
+        "w": 190,
+        "color": "blue",
+        "detail": "Rule 100 matches first, so the subnet NSG allows the packet and evaluation moves to the NIC NSG."
+      },
+      {
+        "id": "nn",
+        "label": "NIC NSG",
+        "sublabel": "result: Deny",
+        "icon": "shield",
+        "x": 630,
+        "y": 100,
+        "w": 190,
+        "color": "purple",
+        "detail": "No custom rule matches Internet traffic, so default rule 65500 denies it. Both NSGs must allow traffic."
+      },
+      {
+        "id": "vm",
+        "label": "VM",
+        "sublabel": "never receives it",
+        "icon": "server",
+        "x": 860,
+        "y": 100,
+        "w": 170,
+        "color": "red",
+        "detail": "Fix: add an allow rule for 443 from Internet (or the needed source) on the NIC NSG, or remove the NIC NSG."
+      },
+      {
+        "id": "r100",
+        "label": "100 · Allow 443",
+        "sublabel": "source: Internet ✓ match",
+        "icon": "circle-check",
+        "x": 355,
+        "y": 270,
+        "w": 220,
+        "color": "green",
+        "detail": "Lowest number = highest priority. First match wins and evaluation stops."
+      },
+      {
+        "id": "r4000",
+        "label": "4000 · Deny any",
+        "sublabel": "not reached",
+        "icon": "ban",
+        "x": 355,
+        "y": 350,
+        "w": 220,
+        "color": "gray",
+        "detail": "Never evaluated for this packet because rule 100 already matched."
+      },
+      {
+        "id": "rdef1",
+        "label": "65500 · DenyAllInBound",
+        "sublabel": "default",
+        "icon": "ban",
+        "x": 355,
+        "y": 430,
+        "w": 230,
+        "color": "gray",
+        "detail": "Default rules can't be deleted, only overridden by lower-numbered rules."
+      },
+      {
+        "id": "r110",
+        "label": "110 · Allow 443",
+        "sublabel": "source: VirtualNetwork ✗",
+        "icon": "circle-x",
+        "x": 630,
+        "y": 270,
+        "w": 220,
+        "color": "amber",
+        "detail": "Only allows traffic from the VirtualNetwork service tag, so an Internet source doesn't match."
+      },
+      {
+        "id": "rvnet",
+        "label": "65000 · AllowVnetInBound",
+        "sublabel": "default ✗",
+        "icon": "circle-x",
+        "x": 630,
+        "y": 350,
+        "w": 230,
+        "color": "gray",
+        "detail": "Allows traffic from the VNet and connected networks — not the Internet."
+      },
+      {
+        "id": "rdef2",
+        "label": "65500 · DenyAllInBound",
+        "sublabel": "default ✓ match",
+        "icon": "ban",
+        "x": 630,
+        "y": 430,
+        "w": 230,
+        "color": "red",
+        "detail": "This catch-all matches, so the NIC NSG denies the packet."
+      }
+    ],
+    "edges": [
+      {
+        "from": "pkt",
+        "to": "sn",
+        "color": "gray"
+      },
+      {
+        "from": "sn",
+        "to": "nn",
+        "label": "allowed",
+        "color": "green"
+      },
+      {
+        "from": "nn",
+        "to": "vm",
+        "label": "denied",
+        "style": "dashed",
+        "color": "red"
+      }
+    ],
+    "legend": [
+      {
+        "color": "green",
+        "label": "Matching allow"
+      },
+      {
+        "color": "red",
+        "label": "Matching deny"
+      },
+      {
+        "color": "gray",
+        "label": "Not evaluated / no match"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Subnet NSG first (inbound)",
+        "text": "Rules are checked by priority. Rule 100 matches HTTPS from Internet → allowed.",
+        "highlight": [
+          "pkt",
+          "sn",
+          "r100"
+        ]
+      },
+      {
+        "title": "First match wins",
+        "text": "Rule 4000 and the defaults are never reached for this packet.",
+        "highlight": [
+          "r100",
+          "r4000",
+          "rdef1"
+        ]
+      },
+      {
+        "title": "Then the NIC NSG",
+        "text": "Rule 110 only allows VirtualNetwork sources; AllowVnetInBound doesn't match Internet either.",
+        "highlight": [
+          "nn",
+          "r110",
+          "rvnet"
+        ]
+      },
+      {
+        "title": "Default deny",
+        "text": "65500 DenyAllInBound matches, so the packet is dropped. Outbound traffic is evaluated in the reverse order: NIC NSG first, then subnet NSG.",
+        "highlight": [
+          "nn",
+          "rdef2",
+          "vm"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Evaluate by priority (lowest first), not by list order; first match wins.",
+      "Inbound: subnet NSG → NIC NSG. Outbound: NIC NSG → subnet NSG. Both must allow.",
+      "Know the default rules and that NSGs are stateful.",
+      "Use IP flow verify / NSG diagnostics to identify the rule that blocks a flow."
+    ],
+    "docLinks": [
+      {
+        "title": "How network security groups filter traffic",
+        "url": "https://learn.microsoft.com/azure/virtual-network/network-security-group-how-it-works"
+      }
+    ]
+  },
+  {
+    "id": "private-vs-service-endpoint",
+    "title": "Private Endpoint vs Service Endpoint",
+    "summary": "Service endpoints secure a service's public endpoint to your subnet; private endpoints bring the service into your VNet with a private IP.",
+    "domain": "networking",
+    "topics": [
+      "private-service-endpoints",
+      "storage-security"
+    ],
+    "width": 1000,
+    "height": 520,
+    "groups": [
+      {
+        "id": "se",
+        "label": "Service endpoint",
+        "x": 20,
+        "y": 30,
+        "w": 470,
+        "h": 470,
+        "color": "amber"
+      },
+      {
+        "id": "pe",
+        "label": "Private endpoint (Private Link)",
+        "x": 510,
+        "y": 30,
+        "w": 470,
+        "h": 470,
+        "color": "green"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "vm1",
+        "label": "VM in Subnet A",
+        "sublabel": "endpoint: Microsoft.Storage",
+        "icon": "server",
+        "x": 135,
+        "y": 120,
+        "w": 210,
+        "color": "blue",
+        "detail": "The service endpoint is enabled on the subnet. Traffic takes an optimized backbone route and carries the subnet identity."
+      },
+      {
+        "id": "fw1",
+        "label": "Storage firewall",
+        "sublabel": "allow Subnet A",
+        "icon": "shield",
+        "x": 375,
+        "y": 260,
+        "w": 190,
+        "color": "amber",
+        "detail": "The service's network rules must allow the subnet. Both halves are required."
+      },
+      {
+        "id": "st1",
+        "label": "Storage account",
+        "sublabel": "public endpoint & IP",
+        "icon": "database",
+        "x": 375,
+        "y": 430,
+        "w": 200,
+        "color": "amber",
+        "detail": "The account still resolves to a public IP. The endpoint applies to the whole service type from that subnet."
+      },
+      {
+        "id": "op1",
+        "label": "On-premises",
+        "sublabel": "not covered",
+        "icon": "building",
+        "x": 115,
+        "y": 430,
+        "w": 180,
+        "color": "red",
+        "detail": "Service endpoints don't extend to on-premises networks; they'd have to use the public endpoint and IP rules."
+      },
+      {
+        "id": "vm2",
+        "label": "VM in Subnet B",
+        "sublabel": "resolves private IP",
+        "icon": "server",
+        "x": 625,
+        "y": 120,
+        "w": 200,
+        "color": "blue",
+        "detail": "Connects to mystorage.blob.core.windows.net, which DNS resolves to the private endpoint's IP."
+      },
+      {
+        "id": "pep",
+        "label": "Private endpoint",
+        "sublabel": "NIC 10.1.2.5",
+        "icon": "plug-zap",
+        "x": 865,
+        "y": 250,
+        "w": 180,
+        "color": "green",
+        "detail": "A NIC in your subnet mapped to one specific resource and sub-resource (e.g., this account's blob service)."
+      },
+      {
+        "id": "st2",
+        "label": "Storage account",
+        "sublabel": "public access disabled",
+        "icon": "database",
+        "x": 865,
+        "y": 400,
+        "w": 200,
+        "color": "green",
+        "detail": "With private endpoints in place you can disable public network access entirely."
+      },
+      {
+        "id": "dns",
+        "label": "Private DNS zone",
+        "sublabel": "privatelink.blob…",
+        "icon": "globe",
+        "x": 615,
+        "y": 250,
+        "w": 190,
+        "color": "purple",
+        "detail": "privatelink.blob.core.windows.net linked to the VNet holds the A record pointing to 10.1.2.5."
+      },
+      {
+        "id": "op2",
+        "label": "On-premises",
+        "sublabel": "via VPN / ExpressRoute",
+        "icon": "building",
+        "x": 625,
+        "y": 400,
+        "w": 200,
+        "color": "green",
+        "detail": "On-premises clients reach the private IP over the hybrid connection, given DNS forwarding to resolve the privatelink zone."
+      }
+    ],
+    "edges": [
+      {
+        "from": "vm1",
+        "to": "fw1",
+        "label": "backbone",
+        "color": "amber"
+      },
+      {
+        "from": "fw1",
+        "to": "st1",
+        "color": "amber"
+      },
+      {
+        "from": "op1",
+        "to": "st1",
+        "label": "internet",
+        "style": "dashed",
+        "color": "red"
+      },
+      {
+        "from": "vm2",
+        "to": "dns",
+        "label": "lookup",
+        "style": "dashed",
+        "color": "purple"
+      },
+      {
+        "from": "vm2",
+        "to": "pep",
+        "label": "private IP",
+        "color": "green"
+      },
+      {
+        "from": "pep",
+        "to": "st2",
+        "label": "Private Link",
+        "color": "green"
+      },
+      {
+        "from": "op2",
+        "to": "pep",
+        "label": "private path",
+        "color": "green"
+      }
+    ],
+    "legend": [
+      {
+        "color": "amber",
+        "label": "Service endpoint path"
+      },
+      {
+        "color": "green",
+        "label": "Private endpoint path"
+      },
+      {
+        "color": "purple",
+        "label": "DNS"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Service endpoint",
+        "text": "Enable it on the subnet, then allow the subnet in the storage firewall. The service keeps its public IP.",
+        "highlight": [
+          "vm1",
+          "fw1",
+          "st1"
+        ]
+      },
+      {
+        "title": "Limitation",
+        "text": "On-premises clients can't use the service endpoint.",
+        "highlight": [
+          "op1",
+          "st1"
+        ]
+      },
+      {
+        "title": "Private endpoint",
+        "text": "A private IP in your VNet maps to the specific storage account; public access can be disabled.",
+        "highlight": [
+          "vm2",
+          "pep",
+          "st2"
+        ]
+      },
+      {
+        "title": "DNS makes it work",
+        "text": "The privatelink zone resolves the normal name to the private IP — including for on-premises clients via DNS forwarding.",
+        "highlight": [
+          "vm2",
+          "dns",
+          "op2",
+          "pep"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Private endpoint = private IP for one resource, reachable from peered and on-premises networks; public access can be disabled.",
+      "Service endpoint = subnet identity to the service's public endpoint; no private IP; not usable from on-premises.",
+      "Private endpoints need DNS integration (privatelink zones).",
+      "Service endpoints require configuration on both the subnet and the service firewall."
+    ],
+    "docLinks": [
+      {
+        "title": "What is a private endpoint?",
+        "url": "https://learn.microsoft.com/azure/private-link/private-endpoint-overview"
+      },
+      {
+        "title": "Virtual network service endpoints",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-network-service-endpoints-overview"
+      }
+    ]
+  },
+  {
+    "id": "load-balancer-architecture",
+    "title": "Azure Load Balancer Architecture",
+    "summary": "Frontend IP, load-balancing rule, health probe and backend pool working together at Layer 4.",
+    "domain": "networking",
+    "topics": [
+      "load-balancer",
+      "vm-availability"
+    ],
+    "width": 960,
+    "height": 470,
+    "groups": [
+      {
+        "id": "lb",
+        "label": "Azure Load Balancer (Standard)",
+        "x": 215,
+        "y": 40,
+        "w": 470,
+        "h": 400,
+        "color": "orange"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "client",
+        "label": "Clients",
+        "sublabel": "TCP 80",
+        "icon": "users",
+        "x": 95,
+        "y": 120,
+        "w": 150,
+        "color": "gray",
+        "detail": "Connect to the frontend IP; Load Balancer doesn't terminate connections — it forwards flows."
+      },
+      {
+        "id": "fe",
+        "label": "Frontend IP",
+        "sublabel": "Standard public IP",
+        "icon": "globe",
+        "x": 340,
+        "y": 120,
+        "w": 200,
+        "color": "orange",
+        "detail": "Public frontend for internet traffic, or a private IP from a subnet for an internal load balancer."
+      },
+      {
+        "id": "rule",
+        "label": "LB rule",
+        "sublabel": "TCP 80 → 80",
+        "icon": "workflow",
+        "x": 340,
+        "y": 240,
+        "w": 200,
+        "color": "orange",
+        "detail": "Maps frontend IP:port to backend pool:port, with a probe and session persistence setting."
+      },
+      {
+        "id": "probe",
+        "label": "Health probe",
+        "sublabel": "HTTP /health",
+        "icon": "activity",
+        "x": 340,
+        "y": 360,
+        "w": 200,
+        "color": "amber",
+        "detail": "Probes come from 168.63.129.16 (AzureLoadBalancer service tag). Instances that fail stop receiving new flows."
+      },
+      {
+        "id": "pool",
+        "label": "Backend pool",
+        "sublabel": "VM NICs in one VNet",
+        "icon": "boxes",
+        "x": 580,
+        "y": 240,
+        "w": 180,
+        "color": "orange",
+        "detail": "Backends are NICs or IP addresses within a single virtual network."
+      },
+      {
+        "id": "vm1",
+        "label": "VM 1",
+        "sublabel": "healthy",
+        "icon": "server",
+        "x": 845,
+        "y": 120,
+        "w": 150,
+        "color": "green",
+        "detail": "Receives new flows."
+      },
+      {
+        "id": "vm2",
+        "label": "VM 2",
+        "sublabel": "healthy",
+        "icon": "server",
+        "x": 845,
+        "y": 240,
+        "w": 150,
+        "color": "green",
+        "detail": "Receives new flows."
+      },
+      {
+        "id": "vm3",
+        "label": "VM 3",
+        "sublabel": "probe failing",
+        "icon": "server",
+        "x": 845,
+        "y": 360,
+        "w": 150,
+        "color": "red",
+        "detail": "Taken out of rotation until the probe succeeds again. Check the app, the probe path and NSGs."
+      }
+    ],
+    "edges": [
+      {
+        "from": "client",
+        "to": "fe",
+        "color": "gray"
+      },
+      {
+        "from": "fe",
+        "to": "rule",
+        "color": "orange"
+      },
+      {
+        "from": "rule",
+        "to": "pool",
+        "color": "orange"
+      },
+      {
+        "from": "probe",
+        "to": "pool",
+        "label": "checks",
+        "style": "dashed",
+        "color": "amber"
+      },
+      {
+        "from": "pool",
+        "to": "vm1",
+        "color": "green"
+      },
+      {
+        "from": "pool",
+        "to": "vm2",
+        "color": "green"
+      },
+      {
+        "from": "pool",
+        "to": "vm3",
+        "label": "no new flows",
+        "style": "dashed",
+        "color": "red"
+      }
+    ],
+    "legend": [
+      {
+        "color": "orange",
+        "label": "Load balancer components"
+      },
+      {
+        "color": "green",
+        "label": "Healthy backend"
+      },
+      {
+        "color": "red",
+        "label": "Unhealthy backend"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Frontend",
+        "text": "Clients connect to the frontend IP (public or internal).",
+        "highlight": [
+          "client",
+          "fe"
+        ]
+      },
+      {
+        "title": "Rule",
+        "text": "The load-balancing rule maps the frontend port to the backend pool port using a 5-tuple hash by default.",
+        "highlight": [
+          "fe",
+          "rule",
+          "pool"
+        ]
+      },
+      {
+        "title": "Health probe",
+        "text": "Probes decide which instances are eligible.",
+        "highlight": [
+          "probe",
+          "pool",
+          "vm3"
+        ]
+      },
+      {
+        "title": "Distribution",
+        "text": "New flows go only to healthy VMs 1 and 2.",
+        "highlight": [
+          "pool",
+          "vm1",
+          "vm2"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Layer 4 only: TCP/UDP, no URL routing or TLS termination.",
+      "Troubleshoot 'no traffic' via health probe configuration and NSG rules (allow AzureLoadBalancer).",
+      "Public vs internal frontends; Standard SKU is secure by default.",
+      "Session persistence options: None (5-tuple), Client IP, Client IP and protocol."
+    ],
+    "docLinks": [
+      {
+        "title": "Load Balancer components",
+        "url": "https://learn.microsoft.com/azure/load-balancer/components"
+      },
+      {
+        "title": "Health probes",
+        "url": "https://learn.microsoft.com/azure/load-balancer/load-balancer-custom-probe-overview"
+      }
+    ]
+  },
+  {
+    "id": "app-gateway-architecture",
+    "title": "Application Gateway Architecture",
+    "summary": "Layer 7 routing: listener → WAF → path-based rule → backend pools, with TLS termination.",
+    "domain": "networking",
+    "topics": [
+      "application-gateway"
+    ],
+    "width": 1000,
+    "height": 520,
+    "groups": [
+      {
+        "id": "agw",
+        "label": "Application Gateway (WAF_v2) · dedicated subnet",
+        "x": 185,
+        "y": 40,
+        "w": 500,
+        "h": 450,
+        "color": "orange"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "client",
+        "label": "Browsers",
+        "sublabel": "https://contoso.com",
+        "icon": "users",
+        "x": 90,
+        "y": 150,
+        "w": 160,
+        "color": "gray",
+        "detail": "Clients connect over HTTPS to the gateway's frontend IP."
+      },
+      {
+        "id": "listener",
+        "label": "Listener",
+        "sublabel": "HTTPS 443 · TLS cert",
+        "icon": "lock",
+        "x": 320,
+        "y": 150,
+        "w": 210,
+        "color": "orange",
+        "detail": "A multi-site listener matches host name contoso.com. TLS terminates here using the certificate (optionally from Key Vault)."
+      },
+      {
+        "id": "waf",
+        "label": "WAF policy",
+        "sublabel": "OWASP rules",
+        "icon": "shield-alert",
+        "x": 320,
+        "y": 280,
+        "w": 210,
+        "color": "red",
+        "detail": "Inspects requests for attacks such as SQL injection and XSS; Detection or Prevention mode."
+      },
+      {
+        "id": "rule",
+        "label": "Path-based rule",
+        "sublabel": "URL path map",
+        "icon": "signpost",
+        "x": 560,
+        "y": 280,
+        "w": 200,
+        "color": "orange",
+        "detail": "Matches the URL path to choose a backend pool and backend settings."
+      },
+      {
+        "id": "probe",
+        "label": "Health probes",
+        "sublabel": "per backend setting",
+        "icon": "activity",
+        "x": 560,
+        "y": 420,
+        "w": 200,
+        "color": "amber",
+        "detail": "Unhealthy servers are removed from rotation."
+      },
+      {
+        "id": "img",
+        "label": "Images pool",
+        "sublabel": "/images/*",
+        "icon": "boxes",
+        "x": 870,
+        "y": 140,
+        "w": 180,
+        "color": "blue",
+        "detail": "Backend pool for static content servers."
+      },
+      {
+        "id": "api",
+        "label": "API pool",
+        "sublabel": "/api/*",
+        "icon": "boxes",
+        "x": 870,
+        "y": 280,
+        "w": 180,
+        "color": "blue",
+        "detail": "Backend pool for API servers; could be App Service or VMSS."
+      },
+      {
+        "id": "def",
+        "label": "Default pool",
+        "sublabel": "all other paths",
+        "icon": "boxes",
+        "x": 870,
+        "y": 420,
+        "w": 180,
+        "color": "blue",
+        "detail": "Requests that match no path rule go to the default backend."
+      }
+    ],
+    "edges": [
+      {
+        "from": "client",
+        "to": "listener",
+        "label": "HTTPS",
+        "color": "gray"
+      },
+      {
+        "from": "listener",
+        "to": "waf",
+        "color": "orange"
+      },
+      {
+        "from": "waf",
+        "to": "rule",
+        "color": "orange"
+      },
+      {
+        "from": "rule",
+        "to": "img",
+        "label": "/images/*",
+        "color": "blue"
+      },
+      {
+        "from": "rule",
+        "to": "api",
+        "label": "/api/*",
+        "color": "blue"
+      },
+      {
+        "from": "rule",
+        "to": "def",
+        "label": "default",
+        "color": "blue"
+      },
+      {
+        "from": "probe",
+        "to": "def",
+        "style": "dashed",
+        "color": "amber"
+      }
+    ],
+    "legend": [
+      {
+        "color": "orange",
+        "label": "Gateway components"
+      },
+      {
+        "color": "red",
+        "label": "WAF"
+      },
+      {
+        "color": "blue",
+        "label": "Backend pools"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Listener",
+        "text": "The listener accepts HTTPS for contoso.com and terminates TLS.",
+        "highlight": [
+          "client",
+          "listener"
+        ]
+      },
+      {
+        "title": "WAF",
+        "text": "Requests are inspected for common web attacks.",
+        "highlight": [
+          "listener",
+          "waf"
+        ]
+      },
+      {
+        "title": "Path-based routing",
+        "text": "/images/* and /api/* go to different pools; everything else goes to the default pool.",
+        "highlight": [
+          "rule",
+          "img",
+          "api",
+          "def"
+        ]
+      },
+      {
+        "title": "Health",
+        "text": "Probes keep only healthy servers in each pool.",
+        "highlight": [
+          "probe",
+          "def"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Path-based routing, multi-site hosting, TLS termination and WAF are Application Gateway features.",
+      "It's regional and lives in its own dedicated subnet.",
+      "Know components: frontend IP, listener, rule, backend settings, backend pool, probe.",
+      "For global HTTP load balancing, consider Front Door."
+    ],
+    "docLinks": [
+      {
+        "title": "Application Gateway components",
+        "url": "https://learn.microsoft.com/azure/application-gateway/application-gateway-components"
+      }
+    ]
+  },
+  {
+    "id": "vpn-connectivity",
+    "title": "Hybrid Connectivity: VPN Gateway & ExpressRoute",
+    "summary": "Site-to-site and point-to-site VPN over the internet versus a private ExpressRoute circuit.",
+    "domain": "networking",
+    "topics": [
+      "vpn-expressroute",
+      "vnet-peering"
+    ],
+    "width": 1000,
+    "height": 520,
+    "groups": [
+      {
+        "id": "op",
+        "label": "On-premises 192.168.0.0/16",
+        "x": 20,
+        "y": 40,
+        "w": 280,
+        "h": 290,
+        "color": "gray"
+      },
+      {
+        "id": "az",
+        "label": "Azure VNet 10.0.0.0/16",
+        "x": 640,
+        "y": 40,
+        "w": 340,
+        "h": 420,
+        "color": "blue"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "dev",
+        "label": "VPN device",
+        "sublabel": "public IP 203.0.113.10",
+        "icon": "router",
+        "x": 160,
+        "y": 130,
+        "w": 220,
+        "color": "gray",
+        "detail": "Your on-premises VPN appliance; its public IP goes in the local network gateway."
+      },
+      {
+        "id": "srv",
+        "label": "Servers",
+        "sublabel": "on-prem workloads",
+        "icon": "server",
+        "x": 160,
+        "y": 260,
+        "w": 190,
+        "color": "gray",
+        "detail": "On-premises address ranges are listed in the local network gateway (or learned via BGP)."
+      },
+      {
+        "id": "lng",
+        "label": "Local network gateway",
+        "sublabel": "on-prem IP + prefixes",
+        "icon": "map-pin",
+        "x": 470,
+        "y": 270,
+        "w": 230,
+        "color": "purple",
+        "detail": "An Azure resource that represents your on-premises site. The connection resource links it to the VPN gateway with a shared key."
+      },
+      {
+        "id": "gw",
+        "label": "VPN gateway",
+        "sublabel": "GatewaySubnet · route-based",
+        "icon": "cable",
+        "x": 810,
+        "y": 130,
+        "w": 240,
+        "color": "amber",
+        "detail": "Terminates IPsec/IKE tunnels and P2S connections. Route-based is required for P2S and ExpressRoute coexistence."
+      },
+      {
+        "id": "ergw",
+        "label": "ExpressRoute gateway",
+        "sublabel": "GatewaySubnet",
+        "icon": "zap",
+        "x": 810,
+        "y": 270,
+        "w": 240,
+        "color": "teal",
+        "detail": "Connects the VNet to an ExpressRoute circuit's private peering."
+      },
+      {
+        "id": "vms",
+        "label": "Workload VMs",
+        "icon": "server",
+        "x": 810,
+        "y": 395,
+        "w": 200,
+        "color": "blue",
+        "detail": "Reachable from on-premises over either path."
+      },
+      {
+        "id": "prov",
+        "label": "Connectivity provider",
+        "sublabel": "ExpressRoute circuit",
+        "icon": "building-2",
+        "x": 470,
+        "y": 445,
+        "w": 230,
+        "color": "teal",
+        "detail": "A private connection via a provider — not over the internet, and not encrypted by default."
+      },
+      {
+        "id": "p2s",
+        "label": "Remote laptop",
+        "sublabel": "P2S: OpenVPN / IKEv2",
+        "icon": "laptop",
+        "x": 470,
+        "y": 45,
+        "w": 220,
+        "color": "pink",
+        "detail": "Individual clients connect with point-to-site, authenticating with certificates, Entra ID or RADIUS."
+      }
+    ],
+    "edges": [
+      {
+        "from": "dev",
+        "to": "gw",
+        "label": "S2S IPsec tunnel (internet)",
+        "bidirectional": true,
+        "color": "amber"
+      },
+      {
+        "from": "lng",
+        "to": "dev",
+        "label": "represents",
+        "style": "dashed",
+        "color": "purple"
+      },
+      {
+        "from": "lng",
+        "to": "gw",
+        "label": "connection + shared key",
+        "style": "dashed",
+        "color": "purple"
+      },
+      {
+        "from": "srv",
+        "to": "dev",
+        "color": "gray"
+      },
+      {
+        "from": "srv",
+        "to": "prov",
+        "label": "private circuit",
+        "color": "teal"
+      },
+      {
+        "from": "prov",
+        "to": "ergw",
+        "label": "private peering",
+        "color": "teal"
+      },
+      {
+        "from": "gw",
+        "to": "vms",
+        "color": "blue"
+      },
+      {
+        "from": "ergw",
+        "to": "vms",
+        "color": "blue"
+      },
+      {
+        "from": "p2s",
+        "to": "gw",
+        "label": "P2S",
+        "style": "dashed",
+        "color": "pink"
+      }
+    ],
+    "legend": [
+      {
+        "color": "amber",
+        "label": "VPN over internet"
+      },
+      {
+        "color": "teal",
+        "label": "ExpressRoute (private)"
+      },
+      {
+        "color": "purple",
+        "label": "Configuration objects"
+      },
+      {
+        "color": "pink",
+        "label": "Point-to-site"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Site-to-site VPN",
+        "text": "An IPsec tunnel over the internet between the on-premises device and the Azure VPN gateway.",
+        "highlight": [
+          "dev",
+          "gw"
+        ]
+      },
+      {
+        "title": "Configuration objects",
+        "text": "The local network gateway describes on-premises (public IP + prefixes); a connection with a shared key links it to the VPN gateway.",
+        "highlight": [
+          "lng",
+          "dev",
+          "gw"
+        ]
+      },
+      {
+        "title": "Point-to-site",
+        "text": "Individual devices connect directly to the VPN gateway.",
+        "highlight": [
+          "p2s",
+          "gw"
+        ]
+      },
+      {
+        "title": "ExpressRoute",
+        "text": "A private circuit through a provider reaches the ExpressRoute gateway — no internet path. Often paired with S2S VPN as failover.",
+        "highlight": [
+          "srv",
+          "prov",
+          "ergw",
+          "vms"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Local network gateway = on-premises public IP and address prefixes.",
+      "S2S for sites, P2S for individual clients; route-based VPN for most scenarios.",
+      "ExpressRoute is private (not internet) and not encrypted by default.",
+      "Both gateway types live in GatewaySubnet; gateway creation takes a long time."
+    ],
+    "docLinks": [
+      {
+        "title": "VPN Gateway overview",
+        "url": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpngateways"
+      },
+      {
+        "title": "ExpressRoute overview",
+        "url": "https://learn.microsoft.com/azure/expressroute/expressroute-introduction"
+      }
+    ]
+  },
+  {
+    "id": "dns-resolution",
+    "title": "DNS Resolution in Azure",
+    "summary": "How a VM resolves names through Azure-provided DNS, private DNS zones and public DNS — and how on-premises joins in.",
+    "domain": "networking",
+    "topics": [
+      "azure-dns",
+      "private-service-endpoints"
+    ],
+    "width": 1000,
+    "height": 480,
+    "nodes": [
+      {
+        "id": "vm",
+        "label": "VM in VNet",
+        "sublabel": "mystore.blob.core…",
+        "icon": "server",
+        "x": 115,
+        "y": 110,
+        "w": 190,
+        "color": "blue",
+        "detail": "By default the VNet uses Azure-provided DNS, so the VM sends its query to 168.63.129.16."
+      },
+      {
+        "id": "az",
+        "label": "Azure DNS",
+        "sublabel": "168.63.129.16",
+        "icon": "globe",
+        "x": 400,
+        "y": 110,
+        "w": 200,
+        "color": "blue",
+        "detail": "Azure's resolver answers from private zones linked to the VNet first, then Azure-internal names, then public DNS."
+      },
+      {
+        "id": "pz",
+        "label": "Private DNS zone",
+        "sublabel": "privatelink.blob.core…",
+        "icon": "lock",
+        "x": 720,
+        "y": 110,
+        "w": 220,
+        "color": "purple",
+        "detail": "Linked to the VNet. Holds an A record for mystore → 10.0.2.5 (the private endpoint)."
+      },
+      {
+        "id": "pe",
+        "label": "Answer: 10.0.2.5",
+        "sublabel": "private endpoint IP",
+        "icon": "plug-zap",
+        "x": 720,
+        "y": 250,
+        "w": 210,
+        "color": "green",
+        "detail": "The VM connects to the private IP — traffic never uses the public endpoint."
+      },
+      {
+        "id": "pub",
+        "label": "Public DNS",
+        "sublabel": "internet names",
+        "icon": "globe",
+        "x": 400,
+        "y": 250,
+        "w": 190,
+        "color": "gray",
+        "detail": "Names not found in linked private zones are resolved recursively from public DNS (e.g., Azure DNS public zones)."
+      },
+      {
+        "id": "op",
+        "label": "On-prem client",
+        "sublabel": "corp DNS server",
+        "icon": "building",
+        "x": 115,
+        "y": 390,
+        "w": 200,
+        "color": "gray",
+        "detail": "On-premises can't query 168.63.129.16 directly. Configure a conditional forwarder for the privatelink zone."
+      },
+      {
+        "id": "res",
+        "label": "DNS Private Resolver",
+        "sublabel": "inbound endpoint",
+        "icon": "router",
+        "x": 400,
+        "y": 390,
+        "w": 220,
+        "color": "teal",
+        "detail": "Gives on-premises DNS a private IP in the VNet to forward to; it resolves using Azure DNS and linked private zones."
+      }
+    ],
+    "edges": [
+      {
+        "from": "vm",
+        "to": "az",
+        "label": "1 · query",
+        "color": "blue"
+      },
+      {
+        "from": "az",
+        "to": "pz",
+        "label": "2 · linked zone?",
+        "color": "purple"
+      },
+      {
+        "from": "pz",
+        "to": "pe",
+        "label": "3 · A record",
+        "color": "green"
+      },
+      {
+        "from": "az",
+        "to": "pub",
+        "label": "not found → recurse",
+        "style": "dashed",
+        "color": "gray"
+      },
+      {
+        "from": "op",
+        "to": "res",
+        "label": "conditional forwarder",
+        "color": "teal"
+      },
+      {
+        "from": "res",
+        "to": "az",
+        "label": "resolve",
+        "color": "teal"
+      }
+    ],
+    "legend": [
+      {
+        "color": "blue",
+        "label": "Azure-provided DNS"
+      },
+      {
+        "color": "purple",
+        "label": "Private zone"
+      },
+      {
+        "color": "teal",
+        "label": "Hybrid resolution"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Query",
+        "text": "The VM asks Azure-provided DNS at 168.63.129.16.",
+        "highlight": [
+          "vm",
+          "az"
+        ]
+      },
+      {
+        "title": "Private zone lookup",
+        "text": "Because the privatelink zone is linked to the VNet, Azure DNS answers from it.",
+        "highlight": [
+          "az",
+          "pz",
+          "pe"
+        ]
+      },
+      {
+        "title": "Fallback",
+        "text": "Names not in linked zones resolve via public DNS.",
+        "highlight": [
+          "az",
+          "pub"
+        ]
+      },
+      {
+        "title": "On-premises",
+        "text": "On-premises DNS forwards Azure zones to the Private Resolver's inbound endpoint.",
+        "highlight": [
+          "op",
+          "res",
+          "az"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Private DNS zones resolve only for linked VNets; auto-registration creates VM records automatically.",
+      "Private endpoints depend on privatelink zones resolving to the private IP.",
+      "Custom DNS servers must forward to 168.63.129.16 to use Azure private zones.",
+      "Public zones need NS delegation at the registrar."
+    ],
+    "docLinks": [
+      {
+        "title": "Private endpoint DNS configuration",
+        "url": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns"
+      },
+      {
+        "title": "Azure DNS Private Resolver",
+        "url": "https://learn.microsoft.com/azure/dns/dns-private-resolver-overview"
+      }
+    ]
+  }
+]

@@ -1,0 +1,1862 @@
+[
+  {
+    "id": "ig-001",
+    "domain": "identity-governance",
+    "objectiveId": "entra-users-groups",
+    "topic": "entra-users-groups",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Your company has 2,000 users in Microsoft Entra ID. The HR system populates each user's department attribute. You must ensure that all users in the Marketing department are automatically members of a group named Marketing-All, and are removed when they change departments.",
+    "question": "What should you configure for Marketing-All?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A Microsoft 365 group with Assigned membership and an access review"
+      },
+      {
+        "id": "b",
+        "text": "A security group with Dynamic Device membership"
+      },
+      {
+        "id": "c",
+        "text": "A security group with Dynamic User membership and the rule user.department -eq \"Marketing\""
+      },
+      {
+        "id": "d",
+        "text": "An administrative unit containing users whose department is Marketing"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Dynamic membership groups evaluate a rule against user (or device) attributes and automatically add or remove members as attributes change. A Dynamic User rule on user.department keeps Marketing-All in sync with HR data with no manual effort. Dynamic membership requires Microsoft Entra ID P1 (or higher) licensing.",
+    "incorrectAnswerExplanations": {
+      "a": "Assigned membership is manual. An access review periodically asks someone to confirm membership, but it doesn't add new Marketing users automatically.",
+      "b": "Dynamic Device rules evaluate device attributes, not user attributes such as department. A group can't mix user and device rules.",
+      "d": "An administrative unit scopes delegated Entra administration; it isn't a group you use to grant access, and (unless configured with dynamic AU membership for administration purposes) it doesn't replace a group."
+    },
+    "examTakeaway": "Attribute-driven, automatic membership = dynamic group (user or device rule, P1+).",
+    "relatedTopics": [
+      "entra-users-groups"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Dynamic membership rules for groups",
+        "url": "https://learn.microsoft.com/entra/identity/users/groups-dynamic-membership"
+      }
+    ]
+  },
+  {
+    "id": "ig-002",
+    "domain": "identity-governance",
+    "objectiveId": "entra-users-groups",
+    "topic": "entra-external-sspr",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "You try to assign a Microsoft 365 E3 license to a newly created cloud user, but the assignment fails. Which user property must you set first?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Employee ID"
+      },
+      {
+        "id": "b",
+        "text": "Manager"
+      },
+      {
+        "id": "c",
+        "text": "Job title"
+      },
+      {
+        "id": "d",
+        "text": "Usage location"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Licenses can only be assigned to users who have a usage location, because Microsoft services aren't available in every country/region. Setting the usage location (directly or through group-based licensing inheritance where configured) allows the license assignment to succeed.",
+    "incorrectAnswerExplanations": {
+      "a": "Employee ID is optional HR metadata and has no effect on license assignment.",
+      "b": "Manager is used for org charts and approvals, not licensing.",
+      "c": "Job title is informational and often used in dynamic group rules, but it's not required for licensing."
+    },
+    "examTakeaway": "License assignment requires a usage location.",
+    "relatedTopics": [
+      "entra-external-sspr"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Assign or remove licenses",
+        "url": "https://learn.microsoft.com/entra/fundamentals/license-users-groups"
+      }
+    ]
+  },
+  {
+    "id": "ig-003",
+    "domain": "identity-governance",
+    "objectiveId": "entra-users-groups",
+    "topic": "entra-external-sspr",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Contoso works with an external design agency. Agency staff need to access a Contoso web app that uses Microsoft Entra ID for authentication. Contoso doesn't want to manage passwords for the agency staff.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Invite the agency staff as guest users by using B2B collaboration"
+      },
+      {
+        "id": "b",
+        "text": "Create an administrative unit for the agency"
+      },
+      {
+        "id": "c",
+        "text": "Synchronize the agency's Active Directory with Microsoft Entra Connect"
+      },
+      {
+        "id": "d",
+        "text": "Create cloud-only member accounts for the agency staff and email them temporary passwords"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "B2B collaboration invites external users as guests. They authenticate with their own organization's identity (or another supported identity provider), so Contoso doesn't manage their credentials, yet Contoso can assign them access to apps and resources and remove it at any time.",
+    "incorrectAnswerExplanations": {
+      "b": "Administrative units delegate admin rights over existing users; they don't create identities or grant app access.",
+      "c": "Entra Connect synchronizes your own on-premises AD into your tenant; it isn't used to bring in another organization's directory.",
+      "d": "Member accounts would require Contoso to manage the agency staff's credentials and lifecycle — exactly what it wants to avoid."
+    },
+    "examTakeaway": "External partners with their own identities → B2B guest users.",
+    "relatedTopics": [
+      "entra-external-sspr",
+      "entra-users-groups"
+    ],
+    "documentationLinks": [
+      {
+        "title": "B2B collaboration overview",
+        "url": "https://learn.microsoft.com/entra/external-id/what-is-b2b"
+      }
+    ]
+  },
+  {
+    "id": "ig-004",
+    "domain": "identity-governance",
+    "objectiveId": "entra-users-groups",
+    "topic": "entra-external-sspr",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "You plan to enable self-service password reset (SSPR) for users in three groups: Sales, Support and Finance. Other users must not be able to use SSPR yet.",
+    "question": "What is the simplest way to configure SSPR to meet the requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Set SSPR to Selected and add the Sales, Support and Finance groups"
+      },
+      {
+        "id": "b",
+        "text": "Create a group that contains the three groups (or their members), then set SSPR to Selected for that group"
+      },
+      {
+        "id": "c",
+        "text": "Set SSPR to All and use Conditional Access to block other users"
+      },
+      {
+        "id": "d",
+        "text": "Assign the Password Administrator role to each group"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "When SSPR is set to Selected, you can choose only one group. To include several teams, create a single group that contains them (nested groups are supported for SSPR targeting) or their users, and select that group.",
+    "incorrectAnswerExplanations": {
+      "a": "The Selected option accepts a single group, so you can't select three separate groups.",
+      "c": "Setting SSPR to All enables it for everyone. Conditional Access isn't the mechanism for scoping SSPR enablement, and this adds complexity.",
+      "d": "Password Administrator lets admins reset other users' passwords; it doesn't enable users to reset their own."
+    },
+    "examTakeaway": "SSPR 'Selected' scope = exactly one group.",
+    "relatedTopics": [
+      "entra-external-sspr"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Enable Microsoft Entra self-service password reset",
+        "url": "https://learn.microsoft.com/entra/identity/authentication/tutorial-enable-sspr"
+      }
+    ]
+  },
+  {
+    "id": "ig-005",
+    "domain": "identity-governance",
+    "objectiveId": "entra-users-groups",
+    "topic": "entra-users-groups",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Contoso has offices in London and Paris. The London help desk team must be able to reset passwords and manage user properties for London users only. They must not be able to manage Paris users.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assign the User Administrator role at the tenant scope to the London help desk group"
+      },
+      {
+        "id": "b",
+        "text": "Create a dynamic group of London users and make the help desk group owners of it"
+      },
+      {
+        "id": "c",
+        "text": "Create a London administrative unit containing London users, and assign the help desk the User Administrator (or Helpdesk Administrator) role scoped to that administrative unit"
+      },
+      {
+        "id": "d",
+        "text": "Create a London management group and assign the Contributor role to the help desk"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Administrative units restrict the scope of Entra directory roles. Placing London users in an AU and assigning the help desk a role scoped to that AU gives them rights over London users only.",
+    "incorrectAnswerExplanations": {
+      "a": "A tenant-scoped role would let the help desk manage every user, including Paris users.",
+      "b": "Group owners manage group membership, not users' passwords or properties.",
+      "d": "Management groups and Contributor are Azure RBAC concepts for Azure resources, not for managing directory users."
+    },
+    "examTakeaway": "Delegate directory admin for a subset of users → administrative unit + scoped Entra role.",
+    "relatedTopics": [
+      "entra-users-groups",
+      "entra-roles-vs-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Administrative units in Microsoft Entra ID",
+        "url": "https://learn.microsoft.com/entra/identity/role-based-access-control/administrative-units"
+      }
+    ]
+  },
+  {
+    "id": "ig-006",
+    "domain": "identity-governance",
+    "objectiveId": "entra-users-groups",
+    "topic": "entra-users-groups",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "Which type of group can contain devices as members?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Microsoft 365 group"
+      },
+      {
+        "id": "b",
+        "text": "Distribution list"
+      },
+      {
+        "id": "c",
+        "text": "Security group"
+      },
+      {
+        "id": "d",
+        "text": "Administrative unit"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Security groups can contain users, devices, service principals and other groups, and can use dynamic device membership rules. They're used to grant access and apply settings to devices.",
+    "incorrectAnswerExplanations": {
+      "a": "Microsoft 365 groups are collaboration groups and support only user members.",
+      "b": "Distribution lists are Exchange mail-enabled groups for email delivery, not for device membership in Entra ID.",
+      "d": "Administrative units can contain devices, but they're delegation containers, not groups — the question asks about group types."
+    },
+    "examTakeaway": "Devices go in security groups, never Microsoft 365 groups.",
+    "relatedTopics": [
+      "entra-users-groups"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Learn about groups and access rights",
+        "url": "https://learn.microsoft.com/entra/fundamentals/concept-learn-about-groups"
+      }
+    ]
+  },
+  {
+    "id": "ig-007",
+    "domain": "identity-governance",
+    "objectiveId": "entra-users-groups",
+    "topic": "entra-users-groups",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "multi",
+    "question": "You need to create 500 new cloud users in Microsoft Entra ID with minimal administrative effort. Which TWO methods can you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use Bulk create in the Microsoft Entra admin center with the CSV template"
+      },
+      {
+        "id": "b",
+        "text": "Use an ARM template to deploy Microsoft.Entra/users resources"
+      },
+      {
+        "id": "c",
+        "text": "Use Microsoft Graph PowerShell (New-MgUser) in a script"
+      },
+      {
+        "id": "d",
+        "text": "Create an Azure Policy assignment that deploys users"
+      }
+    ],
+    "correctAnswer": [
+      "a",
+      "c"
+    ],
+    "explanation": "Both the Bulk create feature (upload a filled CSV template) and scripting with Microsoft Graph PowerShell are supported ways to create many users efficiently.",
+    "incorrectAnswerExplanations": {
+      "b": "Entra users aren't Azure Resource Manager resources, so ARM templates can't create them.",
+      "d": "Azure Policy governs Azure resource configuration; it can't create directory users."
+    },
+    "examTakeaway": "Bulk user operations: CSV bulk create/invite/delete in the portal, or Graph PowerShell/CLI scripts.",
+    "relatedTopics": [
+      "entra-users-groups"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Bulk create users",
+        "url": "https://learn.microsoft.com/entra/identity/users/users-bulk-add"
+      }
+    ]
+  },
+  {
+    "id": "ig-008",
+    "domain": "identity-governance",
+    "objectiveId": "entra-users-groups",
+    "topic": "entra-external-sspr",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Your organization uses Microsoft Entra Connect to synchronize users from on-premises Active Directory. You enable SSPR for all users. Synchronized users report that after resetting their password in the cloud, they still can't sign in to on-premises resources with the new password.",
+    "question": "What should you enable?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Multi-factor authentication registration policy"
+      },
+      {
+        "id": "b",
+        "text": "Seamless single sign-on"
+      },
+      {
+        "id": "c",
+        "text": "Password writeback"
+      },
+      {
+        "id": "d",
+        "text": "Password hash synchronization"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Password writeback writes passwords changed or reset in Entra ID back to on-premises Active Directory, so synchronized users can use the new password everywhere. It's configured in Entra Connect (or Cloud Sync) and requires P1 or higher.",
+    "incorrectAnswerExplanations": {
+      "a": "MFA registration ensures users register methods but doesn't sync passwords on-premises.",
+      "b": "Seamless SSO lets domain-joined devices sign in to cloud apps without re-entering passwords; it doesn't update on-premises passwords.",
+      "d": "Password hash sync copies password hashes from on-premises to the cloud — the opposite direction."
+    },
+    "examTakeaway": "Cloud password reset for synced users needs password writeback.",
+    "relatedTopics": [
+      "entra-external-sspr"
+    ],
+    "documentationLinks": [
+      {
+        "title": "How password writeback works",
+        "url": "https://learn.microsoft.com/entra/identity/authentication/concept-sspr-writeback"
+      }
+    ]
+  },
+  {
+    "id": "ig-009",
+    "domain": "identity-governance",
+    "objectiveId": "access-to-resources",
+    "topic": "azure-rbac",
+    "services": [],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "A developer must be able to create and manage all resources in resource group RG-Dev but must NOT be able to grant access to other users. Which built-in role should you assign at RG-Dev?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reader"
+      },
+      {
+        "id": "b",
+        "text": "Owner"
+      },
+      {
+        "id": "c",
+        "text": "User Access Administrator"
+      },
+      {
+        "id": "d",
+        "text": "Contributor"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Contributor grants full management of resources but excludes Microsoft.Authorization write actions, so it can't create role assignments. Assigning it at RG-Dev scope limits the developer to that resource group.",
+    "incorrectAnswerExplanations": {
+      "a": "Reader can only view resources.",
+      "b": "Owner can manage resources and also assign roles, which violates the requirement.",
+      "c": "User Access Administrator manages access but can't create or manage the resources themselves."
+    },
+    "examTakeaway": "Manage everything but not access → Contributor.",
+    "relatedTopics": [
+      "azure-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure built-in roles",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/built-in-roles"
+      }
+    ]
+  },
+  {
+    "id": "ig-010",
+    "domain": "identity-governance",
+    "objectiveId": "access-to-resources",
+    "topic": "azure-rbac",
+    "services": [],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "User1 is a member of Group1 and Group2. Role assignments: Group1 has Reader on Subscription1. Group2 has Virtual Machine Contributor on RG1 (in Subscription1). User1 has no direct assignments.",
+    "question": "Which actions can User1 perform?",
+    "options": [
+      {
+        "id": "a",
+        "text": "View all resources in Subscription1 and manage virtual machines in RG1"
+      },
+      {
+        "id": "b",
+        "text": "Only view resources in Subscription1, because Reader at the subscription overrides lower-scope roles"
+      },
+      {
+        "id": "c",
+        "text": "Manage virtual machines in every resource group in Subscription1"
+      },
+      {
+        "id": "d",
+        "text": "Manage VMs and virtual networks in RG1"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Azure RBAC is additive. User1 receives Reader across Subscription1 through Group1 and Virtual Machine Contributor on RG1 through Group2. The effective permissions are the union: read everything in the subscription and manage VMs in RG1.",
+    "incorrectAnswerExplanations": {
+      "b": "Higher-scope roles don't override lower-scope roles; there's no 'most restrictive wins' rule in RBAC (only deny assignments subtract).",
+      "c": "VM Contributor is assigned only at RG1, so it doesn't apply to other resource groups.",
+      "d": "Virtual Machine Contributor doesn't include managing virtual networks — only connecting a VM to an existing network."
+    },
+    "examTakeaway": "Effective RBAC access = union of all assignments from all groups and parent scopes.",
+    "relatedTopics": [
+      "azure-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "How Azure RBAC determines access",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/overview"
+      }
+    ]
+  },
+  {
+    "id": "ig-011",
+    "domain": "identity-governance",
+    "objectiveId": "access-to-resources",
+    "topic": "azure-rbac",
+    "services": [],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Operators must be able to start, stop and restart virtual machines in all subscriptions under the Production management group. They must not be able to create, resize or delete VMs. No built-in role matches exactly.",
+    "question": "What should you do to meet the requirement with least privilege?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assign Virtual Machine Contributor at the Production management group"
+      },
+      {
+        "id": "b",
+        "text": "Create a custom role with the Microsoft.Compute/virtualMachines/start/action, deallocate/action, powerOff/action, restart/action and read actions; set AssignableScopes to the Production management group; assign it to the operators group there"
+      },
+      {
+        "id": "c",
+        "text": "Assign Owner on each VM"
+      },
+      {
+        "id": "d",
+        "text": "Assign Reader at the Production management group and use resource locks to prevent deletion"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "A custom role lets you grant exactly the required actions. Making it assignable at the Production management group and assigning it there covers every current and future subscription under it with the least effort and least privilege.",
+    "incorrectAnswerExplanations": {
+      "a": "Virtual Machine Contributor allows creating, resizing and deleting VMs, which exceeds the requirement.",
+      "c": "Owner is far too permissive and per-VM assignments are administratively expensive.",
+      "d": "Reader can't start or stop VMs, and locks block actions for everyone rather than granting operations."
+    },
+    "examTakeaway": "When no built-in role fits, create a custom role and assign it at the highest scope that matches.",
+    "relatedTopics": [
+      "azure-rbac",
+      "management-hierarchy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure custom roles",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/custom-roles"
+      }
+    ]
+  },
+  {
+    "id": "ig-012",
+    "domain": "identity-governance",
+    "objectiveId": "access-to-resources",
+    "topic": "azure-rbac",
+    "services": [
+      "storage-accounts",
+      "blob-storage"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "An application running on an Azure VM uses a system-assigned managed identity. It must read blobs in a container named reports in storage account st1 using Microsoft Entra authentication. It must not be able to modify data or manage the storage account.",
+    "question": "Which role should you assign to the managed identity, and at which scope?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Storage Account Contributor on st1"
+      },
+      {
+        "id": "b",
+        "text": "Reader on st1"
+      },
+      {
+        "id": "c",
+        "text": "Storage Blob Data Reader on the reports container"
+      },
+      {
+        "id": "d",
+        "text": "Storage Blob Data Contributor on the resource group"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Data access with Entra ID requires a data-plane role. Storage Blob Data Reader grants read access to blob data, and assigning it at the container scope limits access to the reports container only — least privilege.",
+    "incorrectAnswerExplanations": {
+      "a": "Storage Account Contributor manages the account (and can list keys, effectively granting full data access), violating least privilege.",
+      "b": "Reader is a control-plane role; it lets you see the storage account's configuration but not read blob data through Entra authorization.",
+      "d": "Data Contributor allows writes and deletes, and the resource group scope is broader than necessary."
+    },
+    "examTakeaway": "Entra-based blob access needs Storage Blob Data roles; scope them as narrowly as the container.",
+    "relatedTopics": [
+      "azure-rbac",
+      "storage-security"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Assign an Azure role for access to blob data",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/assign-azure-role-data-access"
+      }
+    ]
+  },
+  {
+    "id": "ig-013",
+    "domain": "identity-governance",
+    "objectiveId": "access-to-resources",
+    "topic": "entra-roles-vs-rbac",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Admin1 is a Global Administrator in your Microsoft Entra tenant. Admin1 signs in to the Azure portal but can't see any of the organization's subscriptions. The person who created the subscriptions has left the company.",
+    "question": "What should Admin1 do first to regain access to the subscriptions?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assign the Billing Administrator role to themselves"
+      },
+      {
+        "id": "b",
+        "text": "Create a new management group and move the subscriptions into it"
+      },
+      {
+        "id": "c",
+        "text": "Assign themselves the Owner role from the subscription's Access control (IAM) blade"
+      },
+      {
+        "id": "d",
+        "text": "Enable 'Access management for Azure resources' in the Entra ID properties to elevate access"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "By default, Global Administrators don't have Azure resource permissions. Turning on 'Access management for Azure resources' grants the User Access Administrator role at root scope, after which Admin1 can assign the needed roles on subscriptions. The elevation should be removed afterwards.",
+    "incorrectAnswerExplanations": {
+      "a": "Billing roles manage invoices and billing accounts; they don't grant access to resources in subscriptions.",
+      "b": "Moving subscriptions between management groups requires permissions Admin1 doesn't currently have.",
+      "c": "Admin1 can't see the subscription and has no permission to create role assignments on it yet."
+    },
+    "examTakeaway": "Global Administrator → elevate access to get User Access Administrator at root scope.",
+    "relatedTopics": [
+      "entra-roles-vs-rbac",
+      "azure-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Elevate access to manage all Azure subscriptions",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/elevate-access-global-admin"
+      }
+    ]
+  },
+  {
+    "id": "ig-014",
+    "domain": "identity-governance",
+    "objectiveId": "access-to-resources",
+    "topic": "entra-roles-vs-rbac",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "matching",
+    "question": "Match each task to the role system that authorizes it.",
+    "options": [
+      {
+        "id": "o1",
+        "text": "Reset a user's password"
+      },
+      {
+        "id": "o2",
+        "text": "Create a virtual network in a resource group"
+      },
+      {
+        "id": "o3",
+        "text": "Register an application in the tenant"
+      },
+      {
+        "id": "o4",
+        "text": "Delete a storage account"
+      }
+    ],
+    "matchTargets": [
+      {
+        "id": "entra",
+        "text": "Microsoft Entra role"
+      },
+      {
+        "id": "rbac",
+        "text": "Azure RBAC role"
+      }
+    ],
+    "correctAnswer": {
+      "o1": "entra",
+      "o2": "rbac",
+      "o3": "entra",
+      "o4": "rbac"
+    },
+    "explanation": "Entra roles govern directory objects such as users and app registrations. Azure RBAC governs Azure resources such as virtual networks and storage accounts.",
+    "incorrectAnswerExplanations": {
+      "o1": "Passwords belong to user objects in the directory → Entra role (e.g., Helpdesk or User Administrator).",
+      "o2": "VNets are Azure resources → Azure RBAC (e.g., Network Contributor).",
+      "o3": "App registrations are directory objects → Entra role (e.g., Application Developer/Administrator).",
+      "o4": "Storage accounts are Azure resources → Azure RBAC (e.g., Storage Account Contributor)."
+    },
+    "examTakeaway": "Directory objects → Entra roles; Azure resources → RBAC roles.",
+    "relatedTopics": [
+      "entra-roles-vs-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure roles vs Microsoft Entra roles",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/rbac-and-directory-admin-roles"
+      }
+    ]
+  },
+  {
+    "id": "ig-015",
+    "domain": "identity-governance",
+    "objectiveId": "access-to-resources",
+    "topic": "azure-rbac",
+    "services": [],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "A custom role has Actions: Microsoft.Compute/* and NotActions: Microsoft.Compute/virtualMachines/delete. A user also has the built-in Virtual Machine Contributor role at the same scope. Can the user delete VMs?",
+    "options": [
+      {
+        "id": "a",
+        "text": "No, because NotActions acts as a deny across all roles"
+      },
+      {
+        "id": "b",
+        "text": "Yes, because Virtual Machine Contributor grants the delete action and NotActions only subtracts within its own role"
+      },
+      {
+        "id": "c",
+        "text": "No, because custom roles take precedence over built-in roles"
+      },
+      {
+        "id": "d",
+        "text": "Only if the user is also an Owner of the subscription"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "NotActions removes permissions from the Actions of the same role definition; it isn't a deny. Because Virtual Machine Contributor grants virtualMachines/delete, the user's effective permissions include it. Only a deny assignment would block it.",
+    "incorrectAnswerExplanations": {
+      "a": "NotActions isn't a deny and doesn't affect other role assignments.",
+      "c": "There's no precedence between custom and built-in roles; permissions are additive.",
+      "d": "Owner isn't needed — VM Contributor already includes delete."
+    },
+    "examTakeaway": "NotActions ≠ deny. Only deny assignments override grants.",
+    "relatedTopics": [
+      "azure-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Understand Azure role definitions",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/role-definitions"
+      }
+    ]
+  },
+  {
+    "id": "ig-016",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "azure-policy",
+    "services": [
+      "azure-policy"
+    ],
+    "difficulty": "beginner",
+    "questionType": "scenario",
+    "scenario": "Your organization must ensure that no resources are deployed outside the West Europe and North Europe regions in any subscription, including subscriptions created in the future.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assign the Reader role in all other regions"
+      },
+      {
+        "id": "b",
+        "text": "Create a resource group in West Europe in each subscription"
+      },
+      {
+        "id": "c",
+        "text": "Create a budget for each region"
+      },
+      {
+        "id": "d",
+        "text": "Assign the 'Allowed locations' policy at the tenant root management group with West Europe and North Europe as allowed values"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "The built-in 'Allowed locations' policy uses the Deny effect to block deployments to other regions. Assigning it at the tenant root management group applies it to all existing and future subscriptions.",
+    "incorrectAnswerExplanations": {
+      "a": "RBAC roles can't be scoped to regions and can't restrict deployment locations.",
+      "b": "A resource group's location doesn't restrict where its resources are deployed.",
+      "c": "Budgets alert on cost; they don't restrict deployments."
+    },
+    "examTakeaway": "Restrict regions with Azure Policy; assign at a management group to cover future subscriptions.",
+    "relatedTopics": [
+      "azure-policy",
+      "management-hierarchy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Policy built-in definitions",
+        "url": "https://learn.microsoft.com/azure/governance/policy/samples/built-in-policies"
+      }
+    ]
+  },
+  {
+    "id": "ig-017",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "azure-policy",
+    "services": [
+      "azure-policy"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "You assign a policy that uses the Modify effect to add a CostCenter tag (inherited from the resource group) to resources in Subscription1. New resources get the tag, but 300 existing resources remain non-compliant.",
+    "question": "What should you do to tag the existing resources?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Wait 24 hours for the next compliance scan to apply the tags"
+      },
+      {
+        "id": "b",
+        "text": "Apply a CanNotDelete lock on Subscription1"
+      },
+      {
+        "id": "c",
+        "text": "Create a remediation task for the policy assignment"
+      },
+      {
+        "id": "d",
+        "text": "Change the policy effect to Deny"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Modify and DeployIfNotExists act automatically on create/update requests. Resources that already existed are only evaluated and marked non-compliant; a remediation task applies the change to them using the assignment's managed identity.",
+    "incorrectAnswerExplanations": {
+      "a": "Compliance scans re-evaluate and report but don't remediate existing resources.",
+      "b": "Locks prevent deletion; they have nothing to do with tags.",
+      "d": "Deny blocks future non-compliant requests and never changes existing resources."
+    },
+    "examTakeaway": "Existing non-compliant resources + Modify/DINE policy → remediation task.",
+    "relatedTopics": [
+      "azure-policy",
+      "locks-tags"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Remediate non-compliant resources",
+        "url": "https://learn.microsoft.com/azure/governance/policy/how-to/remediate-resources"
+      }
+    ]
+  },
+  {
+    "id": "ig-018",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "azure-policy",
+    "services": [
+      "azure-policy"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "matching",
+    "question": "Match each requirement to the Azure Policy effect that best meets it.",
+    "options": [
+      {
+        "id": "o1",
+        "text": "Prevent creation of public IP addresses"
+      },
+      {
+        "id": "o2",
+        "text": "Report storage accounts that allow HTTP, without blocking them"
+      },
+      {
+        "id": "o3",
+        "text": "Automatically deploy diagnostic settings to Key Vaults that lack them"
+      },
+      {
+        "id": "o4",
+        "text": "Automatically add a missing Environment tag during resource creation"
+      }
+    ],
+    "matchTargets": [
+      {
+        "id": "deny",
+        "text": "Deny"
+      },
+      {
+        "id": "audit",
+        "text": "Audit"
+      },
+      {
+        "id": "dine",
+        "text": "DeployIfNotExists"
+      },
+      {
+        "id": "modify",
+        "text": "Modify"
+      }
+    ],
+    "correctAnswer": {
+      "o1": "deny",
+      "o2": "audit",
+      "o3": "dine",
+      "o4": "modify"
+    },
+    "explanation": "Deny blocks requests; Audit reports without blocking; DeployIfNotExists deploys a related resource or setting when missing; Modify adds or changes properties such as tags.",
+    "incorrectAnswerExplanations": {
+      "o1": "Prevention means blocking the request → Deny.",
+      "o2": "Report without blocking → Audit.",
+      "o3": "Diagnostic settings are a related (child/extension) resource deployed when missing → DeployIfNotExists.",
+      "o4": "Adding/changing tags on the resource → Modify (Append is the older alternative)."
+    },
+    "examTakeaway": "Prevent = Deny; report = Audit; fix properties = Modify; deploy missing config = DeployIfNotExists.",
+    "relatedTopics": [
+      "azure-policy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Policy effects",
+        "url": "https://learn.microsoft.com/azure/governance/policy/concepts/effects"
+      }
+    ]
+  },
+  {
+    "id": "ig-019",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "azure-policy",
+    "services": [
+      "azure-policy"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "A policy that restricts VM sizes is assigned at Subscription1. The data science team's resource group RG-ML must be allowed to deploy GPU VMs. All other resource groups must remain restricted.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add RG-ML as an excluded scope on the policy assignment (or create an exemption for RG-ML)"
+      },
+      {
+        "id": "b",
+        "text": "Assign the Owner role to the data science team on RG-ML"
+      },
+      {
+        "id": "c",
+        "text": "Apply a ReadOnly lock to RG-ML"
+      },
+      {
+        "id": "d",
+        "text": "Move RG-ML to a different region"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Policy assignments support excluded scopes (notScopes), and policy exemptions can waive evaluation for a scope with a documented reason and optional expiry. Either removes RG-ML from the restriction while keeping it everywhere else.",
+    "incorrectAnswerExplanations": {
+      "b": "Policy applies regardless of RBAC role — even Owners are blocked by Deny.",
+      "c": "A ReadOnly lock would prevent the team from deploying anything at all.",
+      "d": "Region doesn't change policy scope; the assignment covers the whole subscription in every region."
+    },
+    "examTakeaway": "Carve out a scope from a policy with exclusions or exemptions — not with RBAC.",
+    "relatedTopics": [
+      "azure-policy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Policy exemption structure",
+        "url": "https://learn.microsoft.com/azure/governance/policy/concepts/exemption-structure"
+      }
+    ]
+  },
+  {
+    "id": "ig-020",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "locks-tags",
+    "services": [],
+    "difficulty": "beginner",
+    "questionType": "scenario",
+    "scenario": "You must prevent accidental deletion of a production resource group named RG-Prod and all its resources, while still allowing administrators to modify resource settings.",
+    "question": "What should you configure on RG-Prod?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The Reader role for all administrators"
+      },
+      {
+        "id": "b",
+        "text": "A CanNotDelete (Delete) lock"
+      },
+      {
+        "id": "c",
+        "text": "A ReadOnly lock"
+      },
+      {
+        "id": "d",
+        "text": "An Azure Policy with the Audit effect"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "A CanNotDelete lock allows reading and modifying resources but blocks deletion. Applied at the resource group, it's inherited by every resource in it, including resources added later.",
+    "incorrectAnswerExplanations": {
+      "a": "Reader would prevent administrators from making any changes.",
+      "c": "ReadOnly blocks modifications as well as deletion, which prevents administrators from changing settings.",
+      "d": "Audit only reports; it doesn't prevent deletion."
+    },
+    "examTakeaway": "Block delete, allow change → CanNotDelete lock.",
+    "relatedTopics": [
+      "locks-tags"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Lock your resources",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources"
+      }
+    ]
+  },
+  {
+    "id": "ig-021",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "locks-tags",
+    "services": [
+      "storage-accounts"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "You apply a ReadOnly lock to storage account st1 to prevent configuration changes. Shortly after, an operations team reports that a tool that authenticates by listing the account's access keys can no longer connect.",
+    "question": "Why does the tool fail?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Listing account keys is a POST operation, which the ReadOnly lock blocks"
+      },
+      {
+        "id": "b",
+        "text": "ReadOnly locks block all data-plane access to the storage account"
+      },
+      {
+        "id": "c",
+        "text": "The lock removed the team's RBAC role assignments"
+      },
+      {
+        "id": "d",
+        "text": "ReadOnly locks automatically rotate the access keys"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "The listKeys operation is a management-plane POST action. A ReadOnly lock blocks write and action operations (other than reads), so tools that need to list keys fail. Data-plane access using already-known credentials or Entra data roles isn't blocked by the lock.",
+    "incorrectAnswerExplanations": {
+      "b": "Locks protect the management plane; they don't block data-plane reads/writes by authorized clients.",
+      "c": "Locks don't change role assignments; they override permissions for specific operation types.",
+      "d": "Locks never rotate keys."
+    },
+    "examTakeaway": "ReadOnly locks can break operations that use POST, such as listing storage keys.",
+    "relatedTopics": [
+      "locks-tags",
+      "storage-security"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Lock considerations",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources#considerations-before-applying-your-locks"
+      }
+    ]
+  },
+  {
+    "id": "ig-022",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "locks-tags",
+    "services": [],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "A user with the Contributor role at a subscription tries to delete a CanNotDelete lock on a resource group in that subscription. What happens?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The operation succeeds but the lock is re-created by Azure Policy automatically"
+      },
+      {
+        "id": "b",
+        "text": "The operation fails because Contributor doesn't include Microsoft.Authorization/locks/delete"
+      },
+      {
+        "id": "c",
+        "text": "The lock is deleted only if the user also owns the resource group"
+      },
+      {
+        "id": "d",
+        "text": "The lock is deleted because Contributor has full management access"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Managing locks requires Microsoft.Authorization/locks/* permissions. Among built-in roles, Owner and User Access Administrator include them; Contributor excludes Microsoft.Authorization write/delete actions.",
+    "incorrectAnswerExplanations": {
+      "a": "Policy doesn't recreate locks by default, and the deletion wouldn't succeed in the first place.",
+      "c": "There's no concept of 'owning' a resource group outside RBAC roles; the user would need a role with lock permissions.",
+      "d": "Contributor excludes authorization operations, including lock management."
+    },
+    "examTakeaway": "Only roles with Microsoft.Authorization/locks/* (Owner, User Access Administrator) manage locks.",
+    "relatedTopics": [
+      "locks-tags",
+      "azure-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Who can create or delete locks",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources#who-can-create-or-delete-locks"
+      }
+    ]
+  },
+  {
+    "id": "ig-023",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "locks-tags",
+    "services": [
+      "cost-management"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Finance wants monthly cost reports grouped by department. Each resource group has a Department tag, but the tags don't appear on individual resources, so cost analysis by tag is incomplete.",
+    "question": "What should you do with the least administrative effort?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Move all resources into one resource group per department"
+      },
+      {
+        "id": "b",
+        "text": "Manually add the Department tag to each resource"
+      },
+      {
+        "id": "c",
+        "text": "Apply a CanNotDelete lock to each resource group"
+      },
+      {
+        "id": "d",
+        "text": "Assign the built-in policy 'Inherit a tag from the resource group if missing' and run a remediation task"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Tags aren't inherited by default. The built-in Modify policy copies the resource group's tag to resources that lack it on create/update, and a remediation task applies it to existing resources — fully automated and ongoing.",
+    "incorrectAnswerExplanations": {
+      "a": "Reorganizing resources is disruptive and still doesn't put tags on resources.",
+      "b": "Manual tagging is error-prone, doesn't scale and won't cover future resources.",
+      "c": "Locks don't affect tags or cost reporting."
+    },
+    "examTakeaway": "Tags don't inherit — use Policy (Modify) + remediation to propagate them.",
+    "relatedTopics": [
+      "locks-tags",
+      "cost-management",
+      "azure-policy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Assign policy definitions for tag compliance",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-policies"
+      }
+    ]
+  },
+  {
+    "id": "ig-024",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "management-hierarchy",
+    "services": [
+      "management-groups"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "Which statement about Azure resource groups is true?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Resources in a resource group must be in the same region as the resource group"
+      },
+      {
+        "id": "b",
+        "text": "Deleting a resource group deletes all resources in it"
+      },
+      {
+        "id": "c",
+        "text": "A resource can belong to multiple resource groups"
+      },
+      {
+        "id": "d",
+        "text": "Resource groups can be nested inside other resource groups"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "A resource group is a lifecycle container: deleting it deletes everything inside. That's why resources that share a lifecycle should be grouped together, and why Delete locks are often placed on production RGs.",
+    "incorrectAnswerExplanations": {
+      "a": "The RG location only stores metadata. Resources in the group can be in any region.",
+      "c": "Each resource belongs to exactly one resource group.",
+      "d": "Resource groups can't be nested."
+    },
+    "examTakeaway": "Resource group = lifecycle boundary; one RG per resource; RG location ≠ resource location.",
+    "relatedTopics": [
+      "management-hierarchy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Manage resource groups",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/manage-resource-groups-portal"
+      }
+    ]
+  },
+  {
+    "id": "ig-025",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "management-hierarchy",
+    "services": [
+      "management-groups"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Your company has 40 subscriptions. Security auditors need read access to all resources in all subscriptions, including subscriptions added next year.",
+    "question": "Where should you assign the Reader role to the auditors group?",
+    "options": [
+      {
+        "id": "a",
+        "text": "On every resource group"
+      },
+      {
+        "id": "b",
+        "text": "On each subscription individually"
+      },
+      {
+        "id": "c",
+        "text": "On the tenant root management group"
+      },
+      {
+        "id": "d",
+        "text": "On a Microsoft Entra administrative unit"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "A role assignment at the tenant root management group is inherited by every management group and subscription in the tenant, including subscriptions added later. One assignment satisfies the requirement.",
+    "incorrectAnswerExplanations": {
+      "a": "Even more administrative effort, and new resource groups would be missed.",
+      "b": "Per-subscription assignments work today but must be repeated for every new subscription.",
+      "d": "Administrative units scope Entra directory roles, not Azure resource access."
+    },
+    "examTakeaway": "'All current and future subscriptions' → assign at the (root) management group.",
+    "relatedTopics": [
+      "management-hierarchy",
+      "azure-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Management groups overview",
+        "url": "https://learn.microsoft.com/azure/governance/management-groups/overview"
+      }
+    ]
+  },
+  {
+    "id": "ig-026",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "management-hierarchy",
+    "services": [
+      "virtual-machines"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "You need to move VM1 from RG-Old to RG-New in the same subscription. VM1 has a NIC, an OS disk, a data disk and a Standard public IP, all in RG-Old.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Use Azure Site Recovery to replicate VM1 to RG-New"
+      },
+      {
+        "id": "b",
+        "text": "Select VM1, its NIC, both disks and the public IP and move them together, after validating the move"
+      },
+      {
+        "id": "c",
+        "text": "Move only VM1; Azure automatically moves dependent resources later"
+      },
+      {
+        "id": "d",
+        "text": "Delete VM1 and redeploy it in RG-New from the portal"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "When moving a VM, its dependent resources must be moved with it. Select them together in the Move dialog, which validates the move first. The VM's region doesn't change and its resource IDs are updated.",
+    "incorrectAnswerExplanations": {
+      "a": "Site Recovery is for disaster recovery and region moves, not moving between resource groups.",
+      "c": "Azure doesn't move dependencies automatically; moving the VM alone fails validation.",
+      "d": "Redeploying causes downtime and configuration loss and isn't required."
+    },
+    "examTakeaway": "Move VMs with all dependent resources together; moves don't change region.",
+    "relatedTopics": [
+      "management-hierarchy",
+      "virtual-machines"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Move guidance for virtual machines",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/move-limitations/virtual-machines-move-limitations"
+      }
+    ]
+  },
+  {
+    "id": "ig-027",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "cost-management",
+    "services": [
+      "cost-management"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "A development subscription must not exceed $2,000 per month. You must notify the team lead when forecasted spend reaches 90% of that amount and automatically run a runbook that stops dev VMs when actual spend reaches 100%.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An Azure Monitor metric alert on the subscription's CPU usage"
+      },
+      {
+        "id": "b",
+        "text": "A spending limit on the subscription"
+      },
+      {
+        "id": "c",
+        "text": "A Cost Management budget with a forecasted 90% email alert and an actual 100% alert that triggers an action group running an Automation runbook"
+      },
+      {
+        "id": "d",
+        "text": "An Azure Policy that denies VM creation"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Budgets support alert conditions on both forecasted and actual cost. Alerts can email recipients and invoke action groups, which can run an Automation runbook to stop VMs.",
+    "incorrectAnswerExplanations": {
+      "a": "Metric alerts track resource telemetry, not cost.",
+      "b": "Spending limits apply only to certain offer types, can't trigger runbooks or partial actions, and aren't configurable thresholds.",
+      "d": "Denying VM creation doesn't monitor spend or stop existing VMs."
+    },
+    "examTakeaway": "Cost thresholds → budgets; automated response → action group on the budget alert.",
+    "relatedTopics": [
+      "cost-management",
+      "alerts-action-groups"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Manage costs with budgets",
+        "url": "https://learn.microsoft.com/azure/cost-management-billing/manage/cost-management-budget-scenario"
+      }
+    ]
+  },
+  {
+    "id": "ig-028",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "cost-management",
+    "services": [
+      "azure-advisor"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "You want recommendations to identify underutilized virtual machines that could be resized or shut down to reduce costs. Which service should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Advisor"
+      },
+      {
+        "id": "b",
+        "text": "Azure Policy"
+      },
+      {
+        "id": "c",
+        "text": "Microsoft Entra ID Protection"
+      },
+      {
+        "id": "d",
+        "text": "Azure Resource Graph Explorer"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Azure Advisor analyzes usage telemetry and produces cost recommendations such as right-sizing or shutting down underutilized VMs and purchasing reservations.",
+    "incorrectAnswerExplanations": {
+      "b": "Azure Policy enforces configuration rules; it doesn't analyze utilization.",
+      "c": "ID Protection detects identity risks such as risky sign-ins.",
+      "d": "Resource Graph queries resource inventory but doesn't produce utilization-based recommendations."
+    },
+    "examTakeaway": "Cost/reliability/performance recommendations → Azure Advisor.",
+    "relatedTopics": [
+      "cost-management"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Reduce service costs with Advisor",
+        "url": "https://learn.microsoft.com/azure/advisor/advisor-reference-cost-recommendations"
+      }
+    ]
+  },
+  {
+    "id": "ig-029",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "management-hierarchy",
+    "services": [
+      "management-groups",
+      "azure-policy"
+    ],
+    "difficulty": "exam",
+    "questionType": "ordering",
+    "question": "You need to apply a set of five security policies to all production subscriptions and track their compliance as one score. Put the steps in the correct order.",
+    "options": [
+      {
+        "id": "s1",
+        "text": "Create a management group for production and move the production subscriptions into it"
+      },
+      {
+        "id": "s2",
+        "text": "Create an initiative definition containing the five policy definitions"
+      },
+      {
+        "id": "s3",
+        "text": "Assign the initiative to the production management group"
+      },
+      {
+        "id": "s4",
+        "text": "Review the initiative's compliance results and create remediation tasks where supported"
+      }
+    ],
+    "correctAnswer": [
+      "s1",
+      "s2",
+      "s3",
+      "s4"
+    ],
+    "explanation": "Organize subscriptions under a management group, group the policies into an initiative so they're managed and reported as a unit, assign the initiative at the management group so all subscriptions inherit it, then review compliance and remediate.",
+    "incorrectAnswerExplanations": {
+      "s1": "First: the scope must exist and contain the subscriptions so one assignment covers them.",
+      "s2": "Second: the initiative bundles the policies; it must be defined before it can be assigned.",
+      "s3": "Third: assigning at the management group applies to every subscription under it, including future ones.",
+      "s4": "Last: compliance data exists only after assignment and evaluation; remediation follows."
+    },
+    "examTakeaway": "Scope → initiative → assignment → compliance/remediation.",
+    "relatedTopics": [
+      "management-hierarchy",
+      "azure-policy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Policy initiative definition structure",
+        "url": "https://learn.microsoft.com/azure/governance/policy/concepts/initiative-definition-structure"
+      }
+    ]
+  },
+  {
+    "id": "ig-030",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "azure-policy",
+    "services": [
+      "azure-policy"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "You assign the built-in policy 'Allowed locations' (Deny) at Subscription1, allowing only East US. Two weeks earlier, a team created VM2 in Central US in Subscription1.",
+    "question": "What is the effect on VM2?",
+    "options": [
+      {
+        "id": "a",
+        "text": "VM2 is automatically moved to East US"
+      },
+      {
+        "id": "b",
+        "text": "VM2 is automatically deleted"
+      },
+      {
+        "id": "c",
+        "text": "VM2 is unaffected and reported as compliant because it existed before the assignment"
+      },
+      {
+        "id": "d",
+        "text": "VM2 keeps running and is reported as non-compliant; future updates to it that the policy evaluates may be denied"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Deny evaluates create and update requests. Existing resources aren't changed or deleted; compliance scans report them as non-compliant. Subsequent update requests to a non-compliant resource can be denied if they're evaluated against the rule.",
+    "incorrectAnswerExplanations": {
+      "a": "Policy can't move resources between regions.",
+      "b": "Azure Policy never deletes resources.",
+      "c": "Existing resources are evaluated and reported; they don't get a pass for predating the assignment."
+    },
+    "examTakeaway": "Deny doesn't touch existing resources — it reports them non-compliant.",
+    "relatedTopics": [
+      "azure-policy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Get compliance data of Azure resources",
+        "url": "https://learn.microsoft.com/azure/governance/policy/how-to/get-compliance-data"
+      }
+    ]
+  },
+  {
+    "id": "ig-031",
+    "domain": "identity-governance",
+    "objectiveId": "access-to-resources",
+    "topic": "azure-rbac",
+    "services": [],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Team leads must be able to add and remove role assignments for their team members in RG-App, but only for the Reader and Virtual Machine Contributor roles. They must not be able to assign Owner.",
+    "question": "Which role assignment best meets the requirement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Role Based Access Control Administrator on RG-App with a condition that constrains assignable roles to Reader and Virtual Machine Contributor"
+      },
+      {
+        "id": "b",
+        "text": "User Access Administrator on RG-App"
+      },
+      {
+        "id": "c",
+        "text": "Contributor on RG-App"
+      },
+      {
+        "id": "d",
+        "text": "Owner on RG-App"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "The Role Based Access Control Administrator role can manage role assignments, and it supports conditions that limit which roles (and which principal types) can be assigned. This delegates access management safely.",
+    "incorrectAnswerExplanations": {
+      "b": "User Access Administrator can assign any role without constraints.",
+      "c": "Contributor can't manage role assignments at all.",
+      "d": "Owner can assign any role, including Owner, and also manage all resources."
+    },
+    "examTakeaway": "Constrained delegation of role assignment → RBAC Administrator with conditions.",
+    "relatedTopics": [
+      "azure-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Delegate Azure role assignment management using conditions",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/delegate-role-assignments-overview"
+      }
+    ],
+    "versionNote": "Role assignment conditions for delegation are a relatively recent capability; confirm availability in your tenant."
+  },
+  {
+    "id": "ig-032",
+    "domain": "identity-governance",
+    "objectiveId": "entra-users-groups",
+    "topic": "entra-external-sspr",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Your security team wants only users in the Partner-Managers group to be able to invite guest users. Today any member user can invite guests.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An administrative unit containing all guest users"
+      },
+      {
+        "id": "b",
+        "text": "Conditional Access policy requiring MFA for guests"
+      },
+      {
+        "id": "c",
+        "text": "External collaboration settings: restrict guest invitations to admins and users assigned the Guest Inviter role, then assign that role to Partner-Managers"
+      },
+      {
+        "id": "d",
+        "text": "An Azure Policy that denies guest creation"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "External collaboration settings control who can invite guests. Limiting invitations to admins and users with the Guest Inviter role, then assigning that role to the Partner-Managers group (role-assignable), meets the requirement.",
+    "incorrectAnswerExplanations": {
+      "a": "An AU scopes administration over existing users; it doesn't restrict invitation rights for other users.",
+      "b": "MFA for guests strengthens authentication but doesn't control who can invite them.",
+      "d": "Azure Policy governs Azure resources, not directory invitations."
+    },
+    "examTakeaway": "Who can invite guests → external collaboration settings + Guest Inviter role.",
+    "relatedTopics": [
+      "entra-external-sspr"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Configure external collaboration settings",
+        "url": "https://learn.microsoft.com/entra/external-id/external-collaboration-settings-configure"
+      }
+    ]
+  },
+  {
+    "id": "ig-033",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "management-hierarchy",
+    "services": [
+      "management-groups"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "What is the top-level scope in the Azure management group hierarchy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The tenant root group"
+      },
+      {
+        "id": "b",
+        "text": "The default resource group"
+      },
+      {
+        "id": "c",
+        "text": "The first subscription created in the tenant"
+      },
+      {
+        "id": "d",
+        "text": "The billing account"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Each Microsoft Entra tenant has a single top-level management group called the tenant root group. All management groups and subscriptions fold up to it.",
+    "incorrectAnswerExplanations": {
+      "b": "Resource groups are inside subscriptions.",
+      "c": "Subscriptions sit below management groups; no subscription is the top of the hierarchy.",
+      "d": "Billing accounts belong to the separate billing hierarchy, not the management group hierarchy."
+    },
+    "examTakeaway": "Tenant root group → management groups → subscriptions → resource groups → resources.",
+    "relatedTopics": [
+      "management-hierarchy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Root management group",
+        "url": "https://learn.microsoft.com/azure/governance/management-groups/overview#root-management-group-for-each-directory"
+      }
+    ]
+  },
+  {
+    "id": "ig-034",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "locks-tags",
+    "services": [],
+    "difficulty": "exam",
+    "questionType": "multi",
+    "question": "A ReadOnly lock is applied to resource group RG1, which contains VM1 and an App Service plan. Which TWO operations will fail?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Viewing VM1's properties in the portal"
+      },
+      {
+        "id": "b",
+        "text": "Restarting VM1 from the Azure portal"
+      },
+      {
+        "id": "c",
+        "text": "Scaling out the App Service plan"
+      },
+      {
+        "id": "d",
+        "text": "Reading the Activity log for RG1"
+      }
+    ],
+    "correctAnswer": [
+      "b",
+      "c"
+    ],
+    "explanation": "A ReadOnly lock blocks operations other than reads (GET). Restarting a VM and scaling an App Service plan are write/action operations at the management plane, so both fail. Viewing properties and logs are reads.",
+    "incorrectAnswerExplanations": {
+      "a": "Viewing properties is a read operation, which ReadOnly allows.",
+      "d": "Reading the Activity log is a read operation and is allowed."
+    },
+    "examTakeaway": "ReadOnly locks block restarts, scaling and other actions — not reads.",
+    "relatedTopics": [
+      "locks-tags"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Lock your resources",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources"
+      }
+    ]
+  },
+  {
+    "id": "ig-035",
+    "domain": "identity-governance",
+    "objectiveId": "access-to-resources",
+    "topic": "azure-rbac",
+    "services": [],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "You need to determine which roles a specific user has on a resource group, including roles inherited from groups and parent scopes. What should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The Activity log of the resource group"
+      },
+      {
+        "id": "b",
+        "text": "The user's Sign-in logs in Microsoft Entra ID"
+      },
+      {
+        "id": "c",
+        "text": "Azure Policy compliance view"
+      },
+      {
+        "id": "d",
+        "text": "Access control (IAM) > Check access for the user on the resource group"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Check access in Access control (IAM) shows a principal's role assignments at that scope, including inherited assignments and those received through group membership.",
+    "incorrectAnswerExplanations": {
+      "a": "The Activity log shows operations performed, not current permissions.",
+      "b": "Sign-in logs show authentication events, not Azure role assignments.",
+      "c": "Policy compliance shows resource configuration compliance, not user permissions."
+    },
+    "examTakeaway": "Interpret access with IAM > Check access (or role assignments list) at the scope.",
+    "relatedTopics": [
+      "azure-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Check access for a user to a single Azure resource",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/check-access"
+      }
+    ]
+  },
+  {
+    "id": "ig-036",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "management-hierarchy",
+    "services": [
+      "management-groups"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "Subscription S1 is in management group MG-Prod. You assign a policy at MG-Dev and want S1 to be affected. What must you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Nothing — policies assigned at any management group apply to all subscriptions"
+      },
+      {
+        "id": "b",
+        "text": "Create a resource lock on S1"
+      },
+      {
+        "id": "c",
+        "text": "Add S1 to MG-Dev while keeping it in MG-Prod"
+      },
+      {
+        "id": "d",
+        "text": "Move S1 from MG-Prod to MG-Dev (or assign the policy at a common parent)"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "A subscription has exactly one parent management group and inherits assignments only from its ancestors. Move S1 under MG-Dev, or assign the policy at a management group that's an ancestor of both.",
+    "incorrectAnswerExplanations": {
+      "a": "Assignments only flow down their own branch of the hierarchy.",
+      "b": "Locks don't change policy scope.",
+      "c": "A subscription can't be in two management groups."
+    },
+    "examTakeaway": "One parent per subscription; inheritance follows the branch.",
+    "relatedTopics": [
+      "management-hierarchy",
+      "azure-policy"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Manage your Azure subscriptions at scale with management groups",
+        "url": "https://learn.microsoft.com/azure/governance/management-groups/manage"
+      }
+    ]
+  },
+  {
+    "id": "ig-037",
+    "domain": "identity-governance",
+    "objectiveId": "entra-users-groups",
+    "topic": "entra-users-groups",
+    "services": [
+      "entra-id"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "You create a group named Admins-Helpdesk and later try to assign it the Helpdesk Administrator Microsoft Entra role, but the group doesn't appear in the role assignment picker.",
+    "question": "What is the most likely cause?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The group wasn't created with 'Microsoft Entra roles can be assigned to the group' enabled, and that setting can't be added after creation"
+      },
+      {
+        "id": "b",
+        "text": "The group has dynamic membership, which is required for role assignment"
+      },
+      {
+        "id": "c",
+        "text": "The group is a security group, which can never receive Entra roles"
+      },
+      {
+        "id": "d",
+        "text": "Helpdesk Administrator can only be assigned at an administrative unit scope"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "To assign Entra roles to a group, it must be created as role-assignable (the 'Microsoft Entra roles can be assigned to the group' option). This setting must be chosen at creation; role-assignable groups also can't use dynamic membership.",
+    "incorrectAnswerExplanations": {
+      "b": "The opposite is true — role-assignable groups can't have dynamic membership.",
+      "c": "Security groups (and Microsoft 365 groups) can receive Entra roles if they're role-assignable.",
+      "d": "Helpdesk Administrator can be assigned at tenant scope or AU scope."
+    },
+    "examTakeaway": "Entra roles to a group → the group must be role-assignable (set at creation, assigned membership).",
+    "relatedTopics": [
+      "entra-users-groups",
+      "entra-roles-vs-rbac"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Use Microsoft Entra groups to manage role assignments",
+        "url": "https://learn.microsoft.com/entra/identity/role-based-access-control/groups-concept"
+      }
+    ]
+  },
+  {
+    "id": "ig-038",
+    "domain": "identity-governance",
+    "objectiveId": "subscriptions-governance",
+    "topic": "cost-management",
+    "services": [
+      "cost-management"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "Which statement about Azure budgets is correct?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Budgets can only be created at the management group scope"
+      },
+      {
+        "id": "b",
+        "text": "When a budget is exceeded, Azure automatically deallocates all resources in its scope"
+      },
+      {
+        "id": "c",
+        "text": "Budgets evaluate costs in real time"
+      },
+      {
+        "id": "d",
+        "text": "Budgets send alerts when thresholds are reached and can trigger action groups, but don't stop resources by themselves"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Budgets monitor costs against thresholds and notify. Any automated response (e.g., stopping VMs) must be implemented through action groups. Cost data is refreshed periodically, not in real time.",
+    "incorrectAnswerExplanations": {
+      "a": "Budgets can be created at management group, subscription and resource group scopes (and billing scopes).",
+      "b": "Budgets never deallocate resources on their own.",
+      "c": "Cost data lags usage by hours; alerts aren't real time."
+    },
+    "examTakeaway": "Budgets alert; action groups act.",
+    "relatedTopics": [
+      "cost-management"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Create and manage budgets",
+        "url": "https://learn.microsoft.com/azure/cost-management-billing/costs/tutorial-acm-create-budgets"
+      }
+    ]
+  }
+]

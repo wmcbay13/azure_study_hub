@@ -1,0 +1,577 @@
+[
+  {
+    "id": "monitor-data-flow",
+    "title": "Azure Monitor Data Flow",
+    "summary": "From data sources through diagnostic settings and data collection rules into metrics and Log Analytics — and out to alerts, action groups and workbooks.",
+    "domain": "monitoring",
+    "topics": [
+      "azure-monitor",
+      "alerts-action-groups"
+    ],
+    "width": 1000,
+    "height": 520,
+    "groups": [
+      {
+        "id": "src",
+        "label": "Data sources",
+        "x": 15,
+        "y": 30,
+        "w": 210,
+        "h": 470,
+        "color": "gray"
+      },
+      {
+        "id": "store",
+        "label": "Data platform",
+        "x": 500,
+        "y": 30,
+        "w": 245,
+        "h": 470,
+        "color": "purple"
+      },
+      {
+        "id": "use",
+        "label": "Consume & act",
+        "x": 775,
+        "y": 30,
+        "w": 210,
+        "h": 470,
+        "color": "green"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "res",
+        "label": "Azure resources",
+        "sublabel": "metrics + resource logs",
+        "icon": "cloud",
+        "x": 120,
+        "y": 100,
+        "w": 190,
+        "color": "blue",
+        "detail": "Emit platform metrics automatically. Resource logs need a diagnostic setting."
+      },
+      {
+        "id": "vm",
+        "label": "VM guest OS",
+        "sublabel": "Azure Monitor Agent",
+        "icon": "server",
+        "x": 120,
+        "y": 210,
+        "w": 190,
+        "color": "blue",
+        "detail": "AMA collects performance counters, Windows events and syslog based on data collection rules."
+      },
+      {
+        "id": "act",
+        "label": "Activity log",
+        "sublabel": "control-plane events",
+        "icon": "scroll-text",
+        "x": 120,
+        "y": 320,
+        "w": 190,
+        "color": "blue",
+        "detail": "Who did what at the subscription level. 90 days in the portal; export with a diagnostic setting."
+      },
+      {
+        "id": "app",
+        "label": "Applications",
+        "sublabel": "Application Insights",
+        "icon": "app-window",
+        "x": 120,
+        "y": 430,
+        "w": 190,
+        "color": "blue",
+        "detail": "App telemetry (requests, dependencies, exceptions) via Application Insights, stored in a workspace."
+      },
+      {
+        "id": "ds",
+        "label": "Diagnostic settings",
+        "sublabel": "route logs",
+        "icon": "settings",
+        "x": 360,
+        "y": 160,
+        "w": 190,
+        "color": "amber",
+        "detail": "Send resource logs/metrics to Log Analytics, storage (archive) or Event Hubs (stream to SIEM)."
+      },
+      {
+        "id": "dcr",
+        "label": "Data collection rule",
+        "sublabel": "what AMA collects",
+        "icon": "filter",
+        "x": 360,
+        "y": 300,
+        "w": 190,
+        "color": "amber",
+        "detail": "Defines data sources, transformations and destinations for the agent."
+      },
+      {
+        "id": "met",
+        "label": "Metrics store",
+        "sublabel": "time series · 93 days",
+        "icon": "gauge",
+        "x": 622,
+        "y": 100,
+        "w": 210,
+        "color": "purple",
+        "detail": "Lightweight numeric time series for near-real-time charts and alerts."
+      },
+      {
+        "id": "law",
+        "label": "Log Analytics",
+        "sublabel": "workspace · KQL tables",
+        "icon": "database",
+        "x": 622,
+        "y": 320,
+        "w": 210,
+        "color": "purple",
+        "detail": "Stores logs in tables; query with KQL; set retention per table/workspace."
+      },
+      {
+        "id": "mx",
+        "label": "Metrics explorer",
+        "icon": "trending-up",
+        "x": 880,
+        "y": 100,
+        "w": 180,
+        "color": "green",
+        "detail": "Chart metrics with aggregation and splitting; pin to dashboards."
+      },
+      {
+        "id": "al",
+        "label": "Alert rules",
+        "sublabel": "metric · log · activity",
+        "icon": "bell",
+        "x": 880,
+        "y": 220,
+        "w": 190,
+        "color": "red",
+        "detail": "Evaluate conditions and fire alerts."
+      },
+      {
+        "id": "ag",
+        "label": "Action groups",
+        "sublabel": "notify / automate",
+        "icon": "zap",
+        "x": 880,
+        "y": 330,
+        "w": 190,
+        "color": "red",
+        "detail": "Email, SMS, push, voice, webhook, Logic App, Function, runbook, ITSM."
+      },
+      {
+        "id": "wb",
+        "label": "Workbooks",
+        "icon": "layers",
+        "x": 880,
+        "y": 440,
+        "w": 190,
+        "color": "green",
+        "detail": "Interactive reports and curated experiences such as VM insights.",
+        "sublabel": "& Insights"
+      }
+    ],
+    "edges": [
+      {
+        "from": "res",
+        "to": "met",
+        "label": "automatic",
+        "color": "purple"
+      },
+      {
+        "from": "res",
+        "to": "ds",
+        "color": "amber"
+      },
+      {
+        "from": "ds",
+        "to": "law",
+        "color": "amber"
+      },
+      {
+        "from": "vm",
+        "to": "dcr",
+        "color": "amber"
+      },
+      {
+        "from": "dcr",
+        "to": "law",
+        "color": "amber"
+      },
+      {
+        "from": "act",
+        "to": "ds",
+        "label": "export",
+        "style": "dashed",
+        "color": "gray"
+      },
+      {
+        "from": "app",
+        "to": "law",
+        "color": "gray"
+      },
+      {
+        "from": "met",
+        "to": "mx",
+        "color": "green"
+      },
+      {
+        "from": "met",
+        "to": "al",
+        "color": "red"
+      },
+      {
+        "from": "law",
+        "to": "al",
+        "color": "red"
+      },
+      {
+        "from": "al",
+        "to": "ag",
+        "label": "fires",
+        "color": "red"
+      },
+      {
+        "from": "law",
+        "to": "wb",
+        "color": "green"
+      }
+    ],
+    "legend": [
+      {
+        "color": "blue",
+        "label": "Sources"
+      },
+      {
+        "color": "amber",
+        "label": "Collection & routing"
+      },
+      {
+        "color": "purple",
+        "label": "Stores"
+      },
+      {
+        "color": "red",
+        "label": "Alerting"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Metrics flow automatically",
+        "text": "Platform metrics land in the metrics store without configuration.",
+        "highlight": [
+          "res",
+          "met",
+          "mx"
+        ]
+      },
+      {
+        "title": "Logs need routing",
+        "text": "Resource logs require a diagnostic setting; guest OS data requires AMA + a DCR.",
+        "highlight": [
+          "res",
+          "ds",
+          "vm",
+          "dcr",
+          "law"
+        ]
+      },
+      {
+        "title": "Query",
+        "text": "Everything in the workspace is queryable with KQL and visualized in workbooks.",
+        "highlight": [
+          "law",
+          "wb",
+          "act",
+          "app"
+        ]
+      },
+      {
+        "title": "Alert and act",
+        "text": "Alert rules evaluate metrics or logs and trigger action groups.",
+        "highlight": [
+          "met",
+          "law",
+          "al",
+          "ag"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Diagnostic settings are required to collect resource logs; pick the destination by purpose (analyze, archive, stream).",
+      "AMA + DCRs collect guest OS data; the legacy Log Analytics agent is retired.",
+      "Metrics vs logs: numeric/near-real-time vs rich/queryable.",
+      "Alert rules + action groups (+ processing rules) form the notification path."
+    ],
+    "docLinks": [
+      {
+        "title": "Azure Monitor overview",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/overview"
+      },
+      {
+        "title": "Diagnostic settings",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/essentials/diagnostic-settings"
+      }
+    ]
+  },
+  {
+    "id": "backup-architecture",
+    "title": "Azure Backup & Site Recovery Architecture",
+    "summary": "What each vault type protects, how policies drive recovery points, restore options — and how Site Recovery differs.",
+    "domain": "monitoring",
+    "topics": [
+      "azure-backup",
+      "site-recovery"
+    ],
+    "width": 1000,
+    "height": 540,
+    "groups": [
+      {
+        "id": "region",
+        "label": "Primary region",
+        "x": 15,
+        "y": 30,
+        "w": 600,
+        "h": 490,
+        "color": "blue"
+      },
+      {
+        "id": "dr",
+        "label": "Secondary region",
+        "x": 645,
+        "y": 190,
+        "w": 340,
+        "h": 330,
+        "color": "purple"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "vm",
+        "label": "Azure VMs",
+        "sublabel": "backup extension",
+        "icon": "server",
+        "x": 125,
+        "y": 100,
+        "w": 180,
+        "color": "blue",
+        "detail": "VM backups take snapshots (instant restore) then transfer to the vault."
+      },
+      {
+        "id": "files",
+        "label": "Azure Files",
+        "sublabel": "share snapshots",
+        "icon": "folder",
+        "x": 125,
+        "y": 210,
+        "w": 180,
+        "color": "blue",
+        "detail": "Azure Files backup is managed by a Recovery Services vault using share snapshots."
+      },
+      {
+        "id": "mars",
+        "label": "On-prem files",
+        "sublabel": "MARS agent",
+        "icon": "building",
+        "x": 125,
+        "y": 320,
+        "w": 180,
+        "color": "gray",
+        "detail": "The MARS agent backs up Windows files, folders and system state directly to a Recovery Services vault."
+      },
+      {
+        "id": "disks",
+        "label": "Disks & Blobs",
+        "sublabel": "operational / vaulted",
+        "icon": "hard-drive",
+        "x": 125,
+        "y": 440,
+        "w": 190,
+        "color": "blue",
+        "detail": "Managed disks, blobs, PostgreSQL and AKS are protected by a Backup vault."
+      },
+      {
+        "id": "pol",
+        "label": "Backup policy",
+        "sublabel": "schedule + retention",
+        "icon": "calendar-days",
+        "x": 450,
+        "y": 85,
+        "w": 200,
+        "color": "amber",
+        "detail": "Daily/weekly/monthly/yearly retention; enhanced VM policy supports multiple backups per day."
+      },
+      {
+        "id": "rsv",
+        "label": "Recovery Services vault",
+        "sublabel": "same region as VMs",
+        "icon": "database-backup",
+        "x": 450,
+        "y": 250,
+        "w": 250,
+        "color": "green",
+        "detail": "Set storage redundancy (LRS/ZRS/GRS) before protecting items. Soft delete keeps deleted backups recoverable."
+      },
+      {
+        "id": "bv",
+        "label": "Backup vault",
+        "sublabel": "newer workloads",
+        "icon": "database-backup",
+        "x": 450,
+        "y": 440,
+        "w": 200,
+        "color": "teal",
+        "detail": "Protects Azure Disks, Blobs, PostgreSQL, AKS and more."
+      },
+      {
+        "id": "restore",
+        "label": "Restore options",
+        "sublabel": "new VM · disks · files",
+        "icon": "refresh-cw",
+        "x": 815,
+        "y": 95,
+        "w": 220,
+        "color": "green",
+        "detail": "Create a new VM, restore disks, replace existing disks, or mount a recovery point for file-level recovery."
+      },
+      {
+        "id": "crr",
+        "label": "Cross Region Restore",
+        "sublabel": "GRS vault",
+        "icon": "globe",
+        "x": 815,
+        "y": 250,
+        "w": 220,
+        "color": "green",
+        "detail": "With a GRS vault and CRR enabled, restore in the paired region."
+      },
+      {
+        "id": "asr",
+        "label": "Site Recovery replica",
+        "sublabel": "continuous replication",
+        "icon": "life-buoy",
+        "x": 815,
+        "y": 420,
+        "w": 230,
+        "color": "purple",
+        "detail": "ASR replicates running VMs continuously for failover with low RPO/RTO — a different goal from point-in-time backup."
+      }
+    ],
+    "edges": [
+      {
+        "from": "vm",
+        "to": "rsv",
+        "color": "green"
+      },
+      {
+        "from": "files",
+        "to": "rsv",
+        "color": "green"
+      },
+      {
+        "from": "mars",
+        "to": "rsv",
+        "color": "green"
+      },
+      {
+        "from": "disks",
+        "to": "bv",
+        "color": "teal"
+      },
+      {
+        "from": "pol",
+        "to": "rsv",
+        "label": "applies",
+        "style": "dashed",
+        "color": "amber"
+      },
+      {
+        "from": "rsv",
+        "to": "restore",
+        "color": "green"
+      },
+      {
+        "from": "rsv",
+        "to": "crr",
+        "label": "GRS copy",
+        "color": "green"
+      },
+      {
+        "from": "bv",
+        "to": "asr",
+        "label": "not the same as",
+        "style": "dashed",
+        "color": "gray"
+      }
+    ],
+    "legend": [
+      {
+        "color": "green",
+        "label": "Recovery Services vault"
+      },
+      {
+        "color": "teal",
+        "label": "Backup vault"
+      },
+      {
+        "color": "purple",
+        "label": "Disaster recovery (ASR)"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Pick the right vault",
+        "text": "VMs, Azure Files and MARS go to a Recovery Services vault; disks and blobs to a Backup vault.",
+        "highlight": [
+          "vm",
+          "files",
+          "mars",
+          "rsv",
+          "disks",
+          "bv"
+        ]
+      },
+      {
+        "title": "Policy",
+        "text": "A backup policy schedules backups and retains recovery points.",
+        "highlight": [
+          "pol",
+          "rsv"
+        ]
+      },
+      {
+        "title": "Restore",
+        "text": "Restore whole VMs, disks or individual files; with GRS, restore in the secondary region.",
+        "highlight": [
+          "rsv",
+          "restore",
+          "crr"
+        ]
+      },
+      {
+        "title": "Site Recovery is different",
+        "text": "Backup restores data to a point in time; Site Recovery fails over running workloads.",
+        "highlight": [
+          "asr"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Know which vault protects which workload and that VM vaults must be in the VMs' region.",
+      "Vault redundancy is fixed once items are protected; GRS enables Cross Region Restore.",
+      "File-level restore doesn't require restoring the whole VM.",
+      "Backup ≠ disaster recovery: use Site Recovery for low-RTO failover."
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Backup?",
+        "url": "https://learn.microsoft.com/azure/backup/backup-overview"
+      },
+      {
+        "title": "About Site Recovery",
+        "url": "https://learn.microsoft.com/azure/site-recovery/site-recovery-overview"
+      }
+    ]
+  }
+]

@@ -1,0 +1,1222 @@
+[
+  {
+    "id": "rbac-vs-policy",
+    "title": "Azure RBAC vs Azure Policy",
+    "summary": "Who can do things versus what the end state must look like.",
+    "domain": "identity-governance",
+    "items": [
+      {
+        "name": "Azure RBAC",
+        "color": "blue"
+      },
+      {
+        "name": "Azure Policy",
+        "serviceId": "azure-policy",
+        "color": "purple"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Purpose",
+        "values": [
+          "Authorization: controls which actions a security principal can perform.",
+          "Governance: controls which resource configurations are allowed and reports compliance."
+        ]
+      },
+      {
+        "aspect": "Question it answers",
+        "values": [
+          "Can this user/identity do this operation here?",
+          "Is this resource configured according to our rules?"
+        ]
+      },
+      {
+        "aspect": "Scope",
+        "values": [
+          "Management group, subscription, resource group, resource.",
+          "Management group, subscription, resource group (with exclusions and exemptions)."
+        ]
+      },
+      {
+        "aspect": "Applies to",
+        "values": [
+          "Specific principals (users, groups, service principals, managed identities).",
+          "All requests and resources in scope, regardless of who makes them — including Owners."
+        ]
+      },
+      {
+        "aspect": "Default behavior",
+        "values": [
+          "Deny unless a role grants the action.",
+          "Allow unless a policy effect (e.g., Deny) blocks or modifies it."
+        ]
+      },
+      {
+        "aspect": "Common use cases",
+        "values": [
+          "Let developers manage VMs in one RG; give auditors read access.",
+          "Allowed regions, allowed VM SKUs, required tags, deploy diagnostics automatically."
+        ]
+      },
+      {
+        "aspect": "Key limitations",
+        "values": [
+          "Can't restrict property values (e.g., which region) for an allowed action.",
+          "Doesn't grant permissions; Deny doesn't remove existing non-compliant resources."
+        ]
+      },
+      {
+        "aspect": "Security implications",
+        "values": [
+          "Over-broad roles = privilege escalation risk. Use least privilege and groups.",
+          "Enforces guardrails even for privileged users; remediation identities need RBAC roles."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "'Allow the help desk to restart VMs but not delete them.'",
+          "'Ensure no one can create resources outside West Europe.'"
+        ]
+      }
+    ],
+    "keyDifference": "RBAC decides WHO can act. Policy decides WHAT is allowed to exist — for everyone.",
+    "memoryAid": "RBAC = Role (who). Policy = Property (what). A Contributor can deploy a VM (RBAC), but Policy decides whether that VM may be in Japan East.",
+    "examScenarios": [
+      {
+        "scenario": "Users with Contributor keep deploying expensive VM sizes. You need to block sizes larger than D4s_v5.",
+        "answer": "Azure Policy with the 'Allowed virtual machine size SKUs' definition (Deny effect). RBAC can't restrict SKU choice."
+      },
+      {
+        "scenario": "A contractor must be able to view all resources in one resource group and nothing else.",
+        "answer": "Azure RBAC: assign Reader to the contractor at that resource group scope."
+      },
+      {
+        "scenario": "Every resource must have a CostCenter tag copied from its resource group, including existing resources.",
+        "answer": "Azure Policy with a Modify effect ('Inherit a tag from the resource group'), plus a remediation task for existing resources."
+      }
+    ],
+    "topics": [
+      "azure-rbac",
+      "azure-policy"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure RBAC?",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/overview"
+      },
+      {
+        "title": "What is Azure Policy?",
+        "url": "https://learn.microsoft.com/azure/governance/policy/overview"
+      }
+    ]
+  },
+  {
+    "id": "entra-roles-vs-rbac-roles",
+    "title": "Microsoft Entra Roles vs Azure RBAC Roles",
+    "summary": "Directory administration versus Azure resource administration.",
+    "domain": "identity-governance",
+    "items": [
+      {
+        "name": "Microsoft Entra roles",
+        "serviceId": "entra-id",
+        "color": "purple"
+      },
+      {
+        "name": "Azure RBAC roles",
+        "color": "blue"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Purpose",
+        "values": [
+          "Manage directory objects and tenant settings: users, groups, apps, domains, licenses.",
+          "Manage Azure resources: VMs, storage, networks, subscriptions."
+        ]
+      },
+      {
+        "aspect": "Example roles",
+        "values": [
+          "Global Administrator, User Administrator, Helpdesk Administrator, Application Administrator.",
+          "Owner, Contributor, Reader, User Access Administrator, Virtual Machine Contributor."
+        ]
+      },
+      {
+        "aspect": "Scope",
+        "values": [
+          "Tenant, administrative unit, or specific app registration.",
+          "Management group, subscription, resource group, resource."
+        ]
+      },
+      {
+        "aspect": "Managed through",
+        "values": [
+          "Entra admin center / Microsoft Graph.",
+          "Azure portal Access control (IAM) / Azure Resource Manager."
+        ]
+      },
+      {
+        "aspect": "Custom roles",
+        "values": [
+          "Supported for some permission sets (requires Entra ID P1/P2).",
+          "Supported with JSON role definitions and assignable scopes."
+        ]
+      },
+      {
+        "aspect": "Key limitations",
+        "values": [
+          "No access to Azure resources by default — even Global Administrator.",
+          "No ability to manage users, groups or tenant settings."
+        ]
+      },
+      {
+        "aspect": "Security implications",
+        "values": [
+          "Global Administrator can elevate to User Access Administrator at root scope — monitor and minimize.",
+          "Owner and User Access Administrator can grant access — tightly control them; use PIM."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "'Allow a user to reset passwords for users in the Sales department only.'",
+          "'Allow a user to manage virtual networks in RG-Net.'"
+        ]
+      }
+    ],
+    "keyDifference": "Entra roles manage identities in the directory. RBAC roles manage resources in subscriptions. They meet only through 'elevate access'.",
+    "memoryAid": "Entra = Everyone's identity. RBAC = Resources. If the task touches a user object, think Entra; if it touches a VM, think RBAC.",
+    "examScenarios": [
+      {
+        "scenario": "A Global Administrator can't see any subscriptions in the portal.",
+        "answer": "Enable 'Access management for Azure resources' to elevate to User Access Administrator at root scope, then assign the needed RBAC role."
+      },
+      {
+        "scenario": "The London help desk must reset passwords only for London users.",
+        "answer": "Create an administrative unit for London users and assign the Helpdesk Administrator Entra role scoped to it."
+      }
+    ],
+    "topics": [
+      "entra-roles-vs-rbac",
+      "azure-rbac",
+      "entra-users-groups"
+    ],
+    "docLinks": [
+      {
+        "title": "Azure roles, Microsoft Entra roles, and classic administrator roles",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/rbac-and-directory-admin-roles"
+      }
+    ]
+  },
+  {
+    "id": "storage-redundancy-options",
+    "title": "LRS vs ZRS vs GRS vs GZRS",
+    "summary": "Choose storage redundancy by the failure you must survive.",
+    "domain": "storage",
+    "items": [
+      {
+        "name": "LRS",
+        "color": "gray"
+      },
+      {
+        "name": "ZRS",
+        "color": "teal"
+      },
+      {
+        "name": "GRS / RA-GRS",
+        "color": "blue"
+      },
+      {
+        "name": "GZRS / RA-GZRS",
+        "color": "purple"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Copies & placement",
+        "values": [
+          "3 copies in one datacenter.",
+          "3 copies across 3 availability zones.",
+          "3 in one primary datacenter + 3 (LRS) in the paired region.",
+          "3 across zones in primary + 3 (LRS) in the paired region."
+        ]
+      },
+      {
+        "aspect": "Survives",
+        "values": [
+          "Drive, server or rack failure.",
+          "Loss of a datacenter/zone.",
+          "Loss of the primary region (after failover).",
+          "Zone loss and loss of the primary region."
+        ]
+      },
+      {
+        "aspect": "Replication to secondary",
+        "values": [
+          "None.",
+          "None.",
+          "Asynchronous.",
+          "Asynchronous."
+        ]
+      },
+      {
+        "aspect": "Read from secondary",
+        "values": [
+          "N/A",
+          "N/A",
+          "Only with RA-GRS (or after failover).",
+          "Only with RA-GZRS (or after failover)."
+        ]
+      },
+      {
+        "aspect": "Relative cost",
+        "values": [
+          "Lowest.",
+          "Higher than LRS.",
+          "Higher than ZRS.",
+          "Highest."
+        ]
+      },
+      {
+        "aspect": "Key limitations",
+        "values": [
+          "No protection from datacenter or zone outage.",
+          "No regional disaster protection; not in every region.",
+          "Primary not zone-redundant; async = possible data loss (RPO).",
+          "Not available in every region; async geo replication."
+        ]
+      },
+      {
+        "aspect": "Premium accounts",
+        "values": [
+          "Supported.",
+          "Supported.",
+          "Not supported.",
+          "Not supported."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "Dev/test data or data that can be recreated, at minimum cost.",
+          "High availability if a zone fails; data must stay in region.",
+          "Recover from a regional disaster at lower cost.",
+          "Maximum durability; read access during regional outages with RA-GZRS."
+        ]
+      }
+    ],
+    "keyDifference": "L = one Location (datacenter), Z = Zones, G = Geo (second region). Add RA- to read the secondary.",
+    "memoryAid": "Think of the letters as layers: LRS ⊂ ZRS (spread across zones), then add G for a second region. GZRS = ZRS + GRS's geo copy. 'RA' = Read Access.",
+    "examScenarios": [
+      {
+        "scenario": "An app must keep reading blob data if the primary region is unavailable, without waiting for a failover.",
+        "answer": "RA-GRS or RA-GZRS — read from the secondary endpoint."
+      },
+      {
+        "scenario": "Data must remain available if a single datacenter fails, and must not leave the region.",
+        "answer": "ZRS."
+      },
+      {
+        "scenario": "Cheapest redundancy for scratch analytics data.",
+        "answer": "LRS."
+      }
+    ],
+    "topics": [
+      "storage-redundancy",
+      "storage-accounts"
+    ],
+    "docLinks": [
+      {
+        "title": "Azure Storage redundancy",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-redundancy"
+      }
+    ],
+    "versionNote": "Regional availability of ZRS/GZRS and supported conversions change over time."
+  },
+  {
+    "id": "files-vs-blob",
+    "title": "Azure Files vs Azure Blob Storage",
+    "summary": "Mountable file shares versus object storage.",
+    "domain": "storage",
+    "items": [
+      {
+        "name": "Azure Files",
+        "serviceId": "azure-files",
+        "color": "teal"
+      },
+      {
+        "name": "Azure Blob Storage",
+        "serviceId": "blob-storage",
+        "color": "blue"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Purpose",
+        "values": [
+          "Fully managed file shares (SMB, NFS).",
+          "Massively scalable object storage for unstructured data."
+        ]
+      },
+      {
+        "aspect": "Access method",
+        "values": [
+          "Mount as a drive / file system (SMB 3.x over TCP 445, NFS 4.1); also REST.",
+          "HTTPS REST API, SDKs, AzCopy, Storage Explorer; NFS 3.0 and SFTP optional; Data Lake Gen2 (hierarchical namespace)."
+        ]
+      },
+      {
+        "aspect": "Hierarchy",
+        "values": [
+          "True directories and files with file locks and ACLs.",
+          "Flat namespace of containers and blobs (virtual folders), unless hierarchical namespace is enabled."
+        ]
+      },
+      {
+        "aspect": "Identity & permissions",
+        "values": [
+          "Identity-based SMB auth (AD DS, Entra Domain Services, Entra Kerberos) + share RBAC + NTFS ACLs.",
+          "Entra ID with data roles, SAS, account keys; container-level anonymous access (optional)."
+        ]
+      },
+      {
+        "aspect": "Tiers",
+        "values": [
+          "Premium (SSD), transaction optimized, hot, cool.",
+          "Hot, cool, cold, archive per blob."
+        ]
+      },
+      {
+        "aspect": "Common use cases",
+        "values": [
+          "Lift-and-shift file servers, shared app config, Azure File Sync, container volumes.",
+          "Images and video, backups, data lakes, static website content, logs."
+        ]
+      },
+      {
+        "aspect": "Key limitations",
+        "values": [
+          "Port 445 often blocked over the internet; share size limits.",
+          "No SMB mounting; archive tier is offline."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "'Replace an on-premises file server and keep NTFS permissions.'",
+          "'Store millions of images at the lowest cost and move old ones to archive automatically.'"
+        ]
+      }
+    ],
+    "keyDifference": "Files is a network file share you mount; Blob is object storage you call over HTTP.",
+    "memoryAid": "Files = Folders you mount. Blob = Big Lots Of Bytes over HTTP.",
+    "examScenarios": [
+      {
+        "scenario": "Legacy app on several VMs needs a shared drive letter.",
+        "answer": "Azure Files (SMB share mounted on each VM)."
+      },
+      {
+        "scenario": "Keep log files for 7 years at minimal cost; rarely read.",
+        "answer": "Blob storage with a lifecycle policy moving blobs to archive."
+      },
+      {
+        "scenario": "Branch servers need local caching of a central share.",
+        "answer": "Azure Files + Azure File Sync with cloud tiering."
+      }
+    ],
+    "topics": [
+      "azure-files",
+      "blob-storage"
+    ],
+    "docLinks": [
+      {
+        "title": "Choose an Azure data storage approach",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-introduction"
+      },
+      {
+        "title": "What is Azure Files?",
+        "url": "https://learn.microsoft.com/azure/storage/files/storage-files-introduction"
+      }
+    ]
+  },
+  {
+    "id": "availability-set-vs-zone",
+    "title": "Availability Set vs Availability Zone",
+    "summary": "Rack-level resilience in one datacenter versus datacenter-level resilience across a region.",
+    "domain": "compute",
+    "items": [
+      {
+        "name": "Availability set",
+        "color": "blue"
+      },
+      {
+        "name": "Availability zones",
+        "color": "green"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Purpose",
+        "values": [
+          "Spread VMs across fault and update domains within a datacenter.",
+          "Spread VMs across physically separate datacenters (zones) in a region."
+        ]
+      },
+      {
+        "aspect": "Protects against",
+        "values": [
+          "Rack/hardware failure; planned maintenance reboots.",
+          "Entire datacenter failure (power, cooling, network), plus hardware failure."
+        ]
+      },
+      {
+        "aspect": "Scope",
+        "values": [
+          "One datacenter.",
+          "One region (3+ zones)."
+        ]
+      },
+      {
+        "aspect": "Latency between VMs",
+        "values": [
+          "Lowest (same datacenter).",
+          "Slightly higher (different buildings), still low."
+        ]
+      },
+      {
+        "aspect": "SLA",
+        "values": [
+          "High VM SLA for 2+ VMs in a set.",
+          "Highest VM SLA for 2+ VMs across zones."
+        ]
+      },
+      {
+        "aspect": "Key limitations",
+        "values": [
+          "No datacenter-level protection; VM must be placed at creation.",
+          "Not in every region; needs zone-redundant supporting services (Standard LB/IP)."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "'Ensure VMs aren't all rebooted together during maintenance in a region without zones.'",
+          "'Ensure the app survives a datacenter failure.'"
+        ]
+      }
+    ],
+    "keyDifference": "Sets separate racks; zones separate buildings.",
+    "memoryAid": "SET = Same building, Even Trays (racks). ZONE = Zero shared building.",
+    "examScenarios": [
+      {
+        "scenario": "You must achieve the highest SLA for a two-VM web tier.",
+        "answer": "Deploy the VMs in two different availability zones behind a Standard Load Balancer."
+      },
+      {
+        "scenario": "A region doesn't support zones; protect against a single rack failure.",
+        "answer": "Use an availability set."
+      }
+    ],
+    "topics": [
+      "vm-availability",
+      "virtual-machines"
+    ],
+    "docLinks": [
+      {
+        "title": "Availability options for VMs",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/availability"
+      }
+    ]
+  },
+  {
+    "id": "container-hosting-options",
+    "title": "Container Instances vs Container Apps vs App Service",
+    "summary": "Three ways to run containers without managing VMs.",
+    "domain": "compute",
+    "items": [
+      {
+        "name": "Container Instances",
+        "serviceId": "container-instances",
+        "color": "teal"
+      },
+      {
+        "name": "Container Apps",
+        "serviceId": "container-apps",
+        "color": "purple"
+      },
+      {
+        "name": "App Service",
+        "serviceId": "app-service",
+        "color": "blue"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Purpose",
+        "values": [
+          "Run a container or group quickly, no orchestration.",
+          "Serverless microservices and event-driven apps.",
+          "Managed web apps and APIs (code or containers)."
+        ]
+      },
+      {
+        "aspect": "Scaling",
+        "values": [
+          "Manual — set CPU/memory per group; create more groups to scale.",
+          "Automatic (HTTP, CPU, KEDA events) including scale to zero.",
+          "Manual or autoscale on the App Service plan (Standard+)."
+        ]
+      },
+      {
+        "aspect": "Billing model",
+        "values": [
+          "Per second of CPU/memory.",
+          "Consumption (per use) or dedicated workload profiles.",
+          "Per App Service plan instance."
+        ]
+      },
+      {
+        "aspect": "Networking",
+        "values": [
+          "Public IP/DNS label or VNet deployment.",
+          "Environment can be VNet-integrated; built-in ingress.",
+          "Access restrictions, VNet integration (outbound), private endpoints (inbound)."
+        ]
+      },
+      {
+        "aspect": "Common use cases",
+        "values": [
+          "Batch jobs, build agents, simple tasks.",
+          "APIs, background processors, microservices with revisions and traffic splitting.",
+          "Websites and APIs needing slots, custom domains, TLS."
+        ]
+      },
+      {
+        "aspect": "Key limitations",
+        "values": [
+          "No autoscaling; limited orchestration.",
+          "No direct Kubernetes API access.",
+          "Web-centric; not for arbitrary background workloads at scale."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "'Run a nightly container job with minimal cost and setup.'",
+          "'Scale a container API to zero when idle.'",
+          "'Swap staging and production with zero downtime.'"
+        ]
+      }
+    ],
+    "keyDifference": "ACI = single containers on demand; ACA = autoscaling microservices; App Service = web apps with slots.",
+    "memoryAid": "ACI is a taxi (one ride, on demand). ACA is a bus network (routes, scales with riders). App Service is a hotel for websites (rooms, staging areas).",
+    "examScenarios": [
+      {
+        "scenario": "A container job runs once a day for 10 minutes and must not incur cost otherwise.",
+        "answer": "Azure Container Instances with restart policy Never/OnFailure (or a Container Apps job)."
+      },
+      {
+        "scenario": "An event-driven processor should scale with queue length and scale to zero.",
+        "answer": "Azure Container Apps with a KEDA queue scale rule and min replicas 0."
+      }
+    ],
+    "topics": [
+      "containers",
+      "app-service"
+    ],
+    "docLinks": [
+      {
+        "title": "Comparing Container Apps with other options",
+        "url": "https://learn.microsoft.com/azure/container-apps/compare-options"
+      }
+    ]
+  },
+  {
+    "id": "nsg-vs-firewall",
+    "title": "Network Security Group vs Azure Firewall",
+    "summary": "Distributed L3/L4 filtering versus a centralized, stateful firewall service.",
+    "domain": "networking",
+    "items": [
+      {
+        "name": "Network security group",
+        "serviceId": "network-security-groups",
+        "color": "blue"
+      },
+      {
+        "name": "Azure Firewall",
+        "serviceId": "azure-firewall",
+        "color": "red"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Purpose",
+        "values": [
+          "Allow/deny traffic to subnets and NICs by 5-tuple.",
+          "Central network security service with stateful inspection and threat intelligence."
+        ]
+      },
+      {
+        "aspect": "OSI layer",
+        "values": [
+          "Layers 3–4 (IP, port, protocol).",
+          "Layers 3–7: network rules, application rules (FQDN/HTTP(S)), DNAT."
+        ]
+      },
+      {
+        "aspect": "Scope",
+        "values": [
+          "Per subnet or NIC, within one region.",
+          "Deployed in a hub VNet (AzureFirewallSubnet); traffic steered via UDRs; can protect many VNets."
+        ]
+      },
+      {
+        "aspect": "Filtering capabilities",
+        "values": [
+          "IPs, ranges, service tags, ASGs, ports.",
+          "FQDNs and FQDN tags, web categories (Premium), TLS inspection and IDPS (Premium), threat-intel-based filtering."
+        ]
+      },
+      {
+        "aspect": "Cost",
+        "values": [
+          "No charge.",
+          "Hourly deployment charge + data processed."
+        ]
+      },
+      {
+        "aspect": "Key limitations",
+        "values": [
+          "No FQDN filtering, no centralized logging of decisions beyond flow logs.",
+          "Requires routing (UDRs) and a dedicated subnet; cost."
+        ]
+      },
+      {
+        "aspect": "Security implications",
+        "values": [
+          "Good micro-segmentation; rules sprawl across many NSGs.",
+          "Central policy, logging and egress control; single choke point to secure outbound."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "'Only allow the web subnet to reach the DB subnet on 1433.'",
+          "'Allow VMs to reach only *.windowsupdate.com on the internet.'"
+        ]
+      }
+    ],
+    "keyDifference": "NSGs filter by IP/port where traffic lands; Azure Firewall inspects and filters centrally, including by FQDN.",
+    "memoryAid": "NSG = door lock on each room. Firewall = security checkpoint at the building entrance that also reads names (FQDNs).",
+    "examScenarios": [
+      {
+        "scenario": "Restrict outbound internet access from all spokes to a list of approved domains.",
+        "answer": "Azure Firewall application rules in the hub, with UDR 0.0.0.0/0 → firewall private IP on spoke subnets."
+      },
+      {
+        "scenario": "Block RDP into a subnet from everywhere except the management subnet.",
+        "answer": "NSG inbound rules on the subnet."
+      }
+    ],
+    "topics": [
+      "nsg-asg",
+      "routing-udr"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Firewall?",
+        "url": "https://learn.microsoft.com/azure/firewall/overview"
+      },
+      {
+        "title": "Network security groups",
+        "url": "https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview"
+      }
+    ]
+  },
+  {
+    "id": "service-vs-private-endpoint",
+    "title": "Service Endpoint vs Private Endpoint",
+    "summary": "Secure the public endpoint to your subnet, or bring the service onto a private IP.",
+    "domain": "networking",
+    "items": [
+      {
+        "name": "Service endpoint",
+        "color": "amber"
+      },
+      {
+        "name": "Private endpoint",
+        "serviceId": "private-link",
+        "color": "green"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Purpose",
+        "values": [
+          "Extend subnet identity to an Azure service over the backbone.",
+          "Give a specific resource a private IP in your VNet via Private Link."
+        ]
+      },
+      {
+        "aspect": "How the service is reached",
+        "values": [
+          "Service's public endpoint/public IP.",
+          "Private IP of a NIC in your subnet."
+        ]
+      },
+      {
+        "aspect": "Granularity",
+        "values": [
+          "Whole service type per subnet (e.g., all storage accounts), unless service endpoint policies are used.",
+          "One specific resource and sub-resource."
+        ]
+      },
+      {
+        "aspect": "On-premises / peered access",
+        "values": [
+          "Not for on-premises traffic.",
+          "Yes — from peered VNets and on-premises over VPN/ExpressRoute."
+        ]
+      },
+      {
+        "aspect": "DNS changes",
+        "values": [
+          "None.",
+          "Required — privatelink private DNS zone or custom DNS."
+        ]
+      },
+      {
+        "aspect": "Cost",
+        "values": [
+          "Free.",
+          "Per endpoint-hour and per GB processed."
+        ]
+      },
+      {
+        "aspect": "Security implications",
+        "values": [
+          "Public endpoint remains; exfiltration to other accounts possible without endpoint policies.",
+          "Public access can be disabled; access limited to the mapped resource."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "'Allow only VMs in Subnet1 to access the storage account, at no extra cost.'",
+          "'On-premises servers must access the storage account over ExpressRoute using a private IP.'"
+        ]
+      }
+    ],
+    "keyDifference": "Service endpoint: your subnet goes to the service. Private endpoint: the service comes to your subnet.",
+    "memoryAid": "Private endpoint = a Private door with its own address. Service endpoint = a VIP lane to the Service's public front door.",
+    "examScenarios": [
+      {
+        "scenario": "Disable all public network access to an Azure SQL server but keep access from a VNet.",
+        "answer": "Private endpoint for the SQL server, then disable public network access."
+      },
+      {
+        "scenario": "A subnet needs access to storage accounts and you want the cheapest solution; on-premises access isn't needed.",
+        "answer": "Service endpoint (Microsoft.Storage) on the subnet plus a VNet rule on each storage firewall."
+      }
+    ],
+    "topics": [
+      "private-service-endpoints",
+      "storage-security"
+    ],
+    "docLinks": [
+      {
+        "title": "Compare Private Endpoints and Service Endpoints",
+        "url": "https://learn.microsoft.com/azure/virtual-network/vnet-integration-for-azure-services#compare-private-endpoints-and-service-endpoints"
+      }
+    ]
+  },
+  {
+    "id": "lb-vs-appgw",
+    "title": "Azure Load Balancer vs Application Gateway",
+    "summary": "Layer 4 flow distribution versus Layer 7 HTTP(S) routing.",
+    "domain": "networking",
+    "items": [
+      {
+        "name": "Load Balancer",
+        "serviceId": "load-balancer",
+        "color": "orange"
+      },
+      {
+        "name": "Application Gateway",
+        "serviceId": "application-gateway",
+        "color": "blue"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Purpose",
+        "values": [
+          "Distribute TCP/UDP flows across healthy backends.",
+          "Route and protect HTTP(S) web traffic."
+        ]
+      },
+      {
+        "aspect": "OSI layer",
+        "values": [
+          "Layer 4 (transport).",
+          "Layer 7 (application)."
+        ]
+      },
+      {
+        "aspect": "Routing decisions",
+        "values": [
+          "5-tuple hash (or client IP affinity).",
+          "Host name, URL path, headers; redirects and rewrites."
+        ]
+      },
+      {
+        "aspect": "TLS",
+        "values": [
+          "Passes encrypted traffic through; no termination.",
+          "TLS termination and end-to-end TLS."
+        ]
+      },
+      {
+        "aspect": "Security",
+        "values": [
+          "Relies on NSGs; no WAF.",
+          "Web Application Firewall (WAF_v2)."
+        ]
+      },
+      {
+        "aspect": "Scope / deployment",
+        "values": [
+          "Regional; public or internal; no dedicated subnet required.",
+          "Regional; requires a dedicated subnet."
+        ]
+      },
+      {
+        "aspect": "Common use cases",
+        "values": [
+          "Non-HTTP apps, internal tiers, NVA HA ports.",
+          "Websites, multi-site hosting, path-based routing, WAF protection."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "'Load-balance RDP/SQL/custom TCP traffic across VMs.'",
+          "'Send /images/* to one pool and /api/* to another.'"
+        ]
+      }
+    ],
+    "keyDifference": "Load Balancer looks at IPs and ports; Application Gateway reads the HTTP request.",
+    "memoryAid": "Load Balancer reads the envelope (IP and port, Layer 4). Application Gateway opens the letter (URL, host header, cookies, Layer 7).",
+    "examScenarios": [
+      {
+        "scenario": "Protect a web app from SQL injection and route by URL path.",
+        "answer": "Application Gateway with WAF_v2 and a path-based rule."
+      },
+      {
+        "scenario": "Provide a private VIP for a SQL Server Always On listener.",
+        "answer": "Internal Standard Load Balancer."
+      }
+    ],
+    "topics": [
+      "load-balancer",
+      "application-gateway"
+    ],
+    "docLinks": [
+      {
+        "title": "Load-balancing options",
+        "url": "https://learn.microsoft.com/azure/architecture/guide/technology-choices/load-balancing-overview"
+      }
+    ]
+  },
+  {
+    "id": "vpn-vs-expressroute",
+    "title": "VPN Gateway vs ExpressRoute",
+    "summary": "Encrypted tunnels over the internet versus a private provider circuit.",
+    "domain": "networking",
+    "items": [
+      {
+        "name": "VPN Gateway",
+        "serviceId": "vpn-gateway",
+        "color": "amber"
+      },
+      {
+        "name": "ExpressRoute",
+        "serviceId": "expressroute",
+        "color": "teal"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Path",
+        "values": [
+          "Public internet (encrypted IPsec/IKE or SSL tunnels).",
+          "Private connection through a connectivity provider."
+        ]
+      },
+      {
+        "aspect": "Encryption",
+        "values": [
+          "Encrypted by default.",
+          "Not encrypted by default (MACsec on ExpressRoute Direct or IPsec over ER can be added)."
+        ]
+      },
+      {
+        "aspect": "Bandwidth & latency",
+        "values": [
+          "Limited by gateway SKU and internet conditions; variable latency.",
+          "Higher bandwidth options with predictable latency."
+        ]
+      },
+      {
+        "aspect": "Setup time",
+        "values": [
+          "Hours (gateway deployment can take 45+ minutes).",
+          "Days to weeks (provider provisioning)."
+        ]
+      },
+      {
+        "aspect": "Client types",
+        "values": [
+          "Site-to-site, point-to-site, VNet-to-VNet.",
+          "Site/datacenter connectivity only (no individual clients)."
+        ]
+      },
+      {
+        "aspect": "Cost",
+        "values": [
+          "Lower: gateway hours + egress.",
+          "Higher: circuit + provider + gateway."
+        ]
+      },
+      {
+        "aspect": "Key limitations",
+        "values": [
+          "Internet-dependent performance.",
+          "Not encrypted by default; requires provider; longer lead time."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "'Connect a branch office quickly and cheaply.' / 'Remote admins from home.'",
+          "'Traffic must not traverse the internet and needs consistent latency.'"
+        ]
+      }
+    ],
+    "keyDifference": "VPN = encrypted over the internet; ExpressRoute = private, not over the internet.",
+    "memoryAid": "VPN is a Very Private tunnel on a Public Network. ExpressRoute is your own Express lane that never touches the public road.",
+    "examScenarios": [
+      {
+        "scenario": "Provide failover if the ExpressRoute circuit goes down.",
+        "answer": "Configure a site-to-site VPN as a backup path (both gateways coexist in GatewaySubnet; VPN must be route-based)."
+      },
+      {
+        "scenario": "Ten developers need access to Azure VNets from home.",
+        "answer": "Point-to-site VPN."
+      }
+    ],
+    "topics": [
+      "vpn-expressroute"
+    ],
+    "docLinks": [
+      {
+        "title": "VPN Gateway overview",
+        "url": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpngateways"
+      },
+      {
+        "title": "ExpressRoute overview",
+        "url": "https://learn.microsoft.com/azure/expressroute/expressroute-introduction"
+      }
+    ]
+  },
+  {
+    "id": "metrics-vs-logs",
+    "title": "Azure Monitor Metrics vs Logs",
+    "summary": "Lightweight numeric time series versus rich, queryable records.",
+    "domain": "monitoring",
+    "items": [
+      {
+        "name": "Metrics",
+        "color": "blue"
+      },
+      {
+        "name": "Logs",
+        "serviceId": "log-analytics",
+        "color": "purple"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Data type",
+        "values": [
+          "Numeric values at regular intervals with dimensions.",
+          "Records/events with many properties of different types."
+        ]
+      },
+      {
+        "aspect": "Collection",
+        "values": [
+          "Platform metrics collected automatically.",
+          "Need diagnostic settings, agents (AMA + DCR) or app SDKs."
+        ]
+      },
+      {
+        "aspect": "Latency",
+        "values": [
+          "Near real time — ideal for fast alerts.",
+          "Minutes of ingestion latency is typical."
+        ]
+      },
+      {
+        "aspect": "Analysis tool",
+        "values": [
+          "Metrics explorer (aggregate, split, filter).",
+          "Log Analytics with KQL (join, parse, summarize)."
+        ]
+      },
+      {
+        "aspect": "Retention",
+        "values": [
+          "Platform metrics: 93 days.",
+          "Configurable per workspace/table, plus long-term archive."
+        ]
+      },
+      {
+        "aspect": "Common use cases",
+        "values": [
+          "CPU, memory, request counts, latency charts and alerts.",
+          "Troubleshooting, auditing, correlation, security analysis."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "'Alert within a minute when CPU > 90%.'",
+          "'Find which user deleted a resource and correlate with failed sign-ins.'"
+        ]
+      }
+    ],
+    "keyDifference": "Metrics tell you THAT something changed (numbers). Logs tell you WHAT happened (details).",
+    "memoryAid": "Metrics = Measurements on a dashboard gauge. Logs = a detailed diary you search with KQL.",
+    "examScenarios": [
+      {
+        "scenario": "Query failed requests for the last 24 hours grouped by client IP.",
+        "answer": "Logs — a KQL query in Log Analytics."
+      },
+      {
+        "scenario": "Chart a storage account's transactions over the last week.",
+        "answer": "Metrics explorer."
+      }
+    ],
+    "topics": [
+      "azure-monitor",
+      "alerts-action-groups"
+    ],
+    "docLinks": [
+      {
+        "title": "Azure Monitor metrics",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/essentials/data-platform-metrics"
+      },
+      {
+        "title": "Azure Monitor Logs",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/logs/data-platform-logs"
+      }
+    ]
+  },
+  {
+    "id": "backup-vs-site-recovery",
+    "title": "Azure Backup vs Azure Site Recovery",
+    "summary": "Point-in-time data recovery versus workload failover.",
+    "domain": "monitoring",
+    "items": [
+      {
+        "name": "Azure Backup",
+        "serviceId": "azure-backup",
+        "color": "green"
+      },
+      {
+        "name": "Azure Site Recovery",
+        "serviceId": "site-recovery",
+        "color": "purple"
+      }
+    ],
+    "rows": [
+      {
+        "aspect": "Purpose",
+        "values": [
+          "Protect data: restore files, disks or VMs to a previous point in time.",
+          "Business continuity: keep apps running by failing over to another region/site."
+        ]
+      },
+      {
+        "aspect": "How it works",
+        "values": [
+          "Scheduled backups retained per policy (daily, weekly, monthly, yearly).",
+          "Continuous replication with frequent recovery points."
+        ]
+      },
+      {
+        "aspect": "RPO / RTO",
+        "values": [
+          "RPO = time since last backup (hours); RTO = restore time (minutes–hours).",
+          "RPO typically seconds–minutes; RTO minutes via orchestrated failover."
+        ]
+      },
+      {
+        "aspect": "Retention",
+        "values": [
+          "Long-term (years) for compliance.",
+          "Short (recovery point retention measured in hours/days)."
+        ]
+      },
+      {
+        "aspect": "Protects against",
+        "values": [
+          "Accidental deletion, corruption, ransomware.",
+          "Regional outages and site disasters."
+        ]
+      },
+      {
+        "aspect": "Key tooling",
+        "values": [
+          "Recovery Services vault / Backup vault, backup policies.",
+          "Recovery Services vault, replication policies, recovery plans, test failover."
+        ]
+      },
+      {
+        "aspect": "Typical exam scenario",
+        "values": [
+          "'Restore a deleted file from last week.'",
+          "'Bring the app online in another region within 30 minutes of an outage.'"
+        ]
+      }
+    ],
+    "keyDifference": "Backup brings back data; Site Recovery brings back the running service.",
+    "memoryAid": "Backup = Back in time. Site Recovery = Somewhere else, right now.",
+    "examScenarios": [
+      {
+        "scenario": "Validate the DR plan quarterly without affecting production.",
+        "answer": "Site Recovery test failover into an isolated VNet."
+      },
+      {
+        "scenario": "Keep monthly recovery points for seven years.",
+        "answer": "Azure Backup policy with monthly/yearly retention."
+      }
+    ],
+    "topics": [
+      "azure-backup",
+      "site-recovery"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Backup?",
+        "url": "https://learn.microsoft.com/azure/backup/backup-overview"
+      },
+      {
+        "title": "About Site Recovery",
+        "url": "https://learn.microsoft.com/azure/site-recovery/site-recovery-overview"
+      }
+    ]
+  }
+]

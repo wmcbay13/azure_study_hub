@@ -1,0 +1,196 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design tokens. Components use these via Tailwind utilities (bg-surface, text-muted, ...). */
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-2: #f0f3f9;
+  --surface-3: #e6ebf4;
+  --border: #dde3ee;
+  --border-strong: #c5cedd;
+  --text: #0f1b2d;
+  --muted: #55637a;
+  --subtle: #7b879b;
+  --accent: #0b5cd5;
+  --accent-hover: #0a4fb7;
+  --accent-soft: #e5efff;
+  --accent-fg: #ffffff;
+  --success: #0f7b4a;
+  --success-soft: #e3f5ec;
+  --danger: #c4291c;
+  --danger-soft: #fde8e6;
+  --warning: #9a5b00;
+  --warning-soft: #fdf1dc;
+  --ring: #3b82f6;
+  --shadow: 0 1px 2px rgb(15 27 45 / 0.06), 0 1px 3px rgb(15 27 45 / 0.08);
+  --shadow-lg: 0 10px 30px -10px rgb(15 27 45 / 0.25);
+
+  /* Categorical tokens: fg (text/stroke), bg (fill), bd (border). */
+  --c-blue-fg: #0b5cd5; --c-blue-bg: #e5efff; --c-blue-bd: #9cc0f7;
+  --c-teal-fg: #0b7a75; --c-teal-bg: #e0f5f3; --c-teal-bd: #8fd3cd;
+  --c-purple-fg: #6b3fc9; --c-purple-bg: #f0eaff; --c-purple-bd: #c5b2f2;
+  --c-orange-fg: #b54708; --c-orange-bg: #fff0e3; --c-orange-bd: #f5bf8f;
+  --c-green-fg: #0f7b4a; --c-green-bg: #e3f5ec; --c-green-bd: #96d4b4;
+  --c-red-fg: #c4291c; --c-red-bg: #fde8e6; --c-red-bd: #f2a8a1;
+  --c-gray-fg: #4a5568; --c-gray-bg: #f0f3f9; --c-gray-bd: #c5cedd;
+  --c-amber-fg: #946200; --c-amber-bg: #fdf3d8; --c-amber-bd: #ebc874;
+  --c-pink-fg: #b0336f; --c-pink-bg: #fde8f2; --c-pink-bd: #f0a9cb;
+  /* Chart mark colors (validated categorical set for domains). */
+  --c-blue-mk: #0b5cd5; --c-teal-mk: #008c7e; --c-purple-mk: #6b3fc9; --c-orange-mk: #b54708; --c-green-mk: #0f7b4a;
+  --c-red-mk: #c4291c; --c-gray-mk: #4a5568; --c-amber-mk: #946200; --c-pink-mk: #b0336f;
+}
+
+.dark {
+  --bg: #0b111c;
+  --surface: #121a28;
+  --surface-2: #182234;
+  --surface-3: #1f2b40;
+  --border: #253247;
+  --border-strong: #34445e;
+  --text: #e7edf7;
+  --muted: #a3b0c4;
+  --subtle: #7d8aa0;
+  --accent: #4c9bff;
+  --accent-hover: #6aaeff;
+  --accent-soft: #15284a;
+  --accent-fg: #06101f;
+  --success: #3ccf8e;
+  --success-soft: #0f2b20;
+  --danger: #ff7b6e;
+  --danger-soft: #3a1714;
+  --warning: #f2b54a;
+  --warning-soft: #33250c;
+  --ring: #60a5fa;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 30px -10px rgb(0 0 0 / 0.6);
+
+  --c-blue-fg: #7ab4ff; --c-blue-bg: #13284a; --c-blue-bd: #2c5694;
+  --c-teal-fg: #5fd4cb; --c-teal-bg: #0e2e2d; --c-teal-bd: #1f6560;
+  --c-purple-fg: #b9a0ff; --c-purple-bg: #221a40; --c-purple-bd: #4b3a85;
+  --c-orange-fg: #ffad6b; --c-orange-bg: #33200f; --c-orange-bd: #7a4a1f;
+  --c-green-fg: #5fd99d; --c-green-bg: #0f2b20; --c-green-bd: #22684a;
+  --c-red-fg: #ff8a7e; --c-red-bg: #3a1714; --c-red-bd: #7d322b;
+  --c-gray-fg: #a3b0c4; --c-gray-bg: #1a2436; --c-gray-bd: #34445e;
+  --c-amber-fg: #f5c45e; --c-amber-bg: #33270c; --c-amber-bd: #74581c;
+  --c-pink-fg: #ff8fc4; --c-pink-bg: #3a1528; --c-pink-bd: #7a2f55;
+  --c-blue-mk: #4f90ec; --c-teal-mk: #1fa194; --c-purple-mk: #9a7cf0; --c-orange-mk: #d27a33; --c-green-mk: #2fa867;
+  --c-red-mk: #e0645a; --c-gray-mk: #7d8aa0; --c-amber-mk: #c99a2e; --c-pink-mk: #d65f98;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-fg: var(--accent-fg);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --shadow-card: var(--shadow);
+  --shadow-pop: var(--shadow-lg);
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Long-form study text */
+.prose-study p + p {
+  margin-top: 0.75rem;
+}
+.prose-study {
+  line-height: 1.7;
+}
+
+/* Flashcard flip */
+.flip-scene {
+  perspective: 1400px;
+}
+.flip-card {
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+.flip-card.is-flipped {
+  transform: rotateY(180deg);
+}
+.flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-back {
+  transform: rotateY(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip-card {
+    transition: none;
+  }
+}
+
+/* Diagram edge flow (only when motion is allowed) */
+@media (prefers-reduced-motion: no-preference) {
+  .edge-active {
+    stroke-dasharray: 6 6;
+    animation: dash 1s linear infinite;
+  }
+}
+@keyframes dash {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+
+@media print {
+  aside,
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  body {
+    background: white;
+    color: black;
+  }
+  .print-break {
+    break-inside: avoid;
+  }
+}
+
+/* Grid children default to min-width:auto, which lets long content blow out
+   single-column mobile layouts. Allow them to shrink. */
+.grid > * {
+  min-width: 0;
+}

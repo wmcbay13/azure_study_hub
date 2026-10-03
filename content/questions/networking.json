@@ -1,0 +1,1789 @@
+[
+  {
+    "id": "nw-001",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "vnets-subnets",
+    "services": [
+      "virtual-network"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "You create a subnet with the prefix 10.1.5.0/27. How many IP addresses can you assign to resources in it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "30"
+      },
+      {
+        "id": "b",
+        "text": "27"
+      },
+      {
+        "id": "c",
+        "text": "32"
+      },
+      {
+        "id": "d",
+        "text": "25"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "A /27 contains 32 addresses. Azure reserves 5 in every subnet (network address, three addresses for the default gateway and Azure DNS mapping, and the broadcast address), leaving 27 usable.",
+    "incorrectAnswerExplanations": {
+      "a": "30 assumes only network and broadcast are reserved, as in traditional networking; Azure reserves 5.",
+      "c": "32 is the total, before Azure's reservations.",
+      "d": "25 over-counts the reserved addresses."
+    },
+    "examTakeaway": "Usable = 2^(32 − prefix) − 5.",
+    "relatedTopics": [
+      "vnets-subnets"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Are there any restrictions on using IP addresses within subnets?",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-faq#are-there-any-restrictions-on-using-ip-addresses-within-these-subnets"
+      }
+    ]
+  },
+  {
+    "id": "nw-002",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "vnet-peering",
+    "services": [
+      "virtual-network"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "VNet1 (10.0.0.0/16) is peered with VNet2 (10.1.0.0/16). VNet2 is peered with VNet3 (10.2.0.0/16). There are no NVAs or route tables. VMs in VNet1 can't reach VMs in VNet3.",
+    "question": "What should you do with the least configuration?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create a peering between VNet1 and VNet3"
+      },
+      {
+        "id": "b",
+        "text": "Add a service endpoint on VNet2"
+      },
+      {
+        "id": "c",
+        "text": "Change VNet3's address space to 10.0.0.0/16"
+      },
+      {
+        "id": "d",
+        "text": "Enable 'Allow forwarded traffic' on all peerings"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "VNet peering is non-transitive. VNet1 and VNet3 need a direct peering (or hub routing via an NVA/firewall with UDRs). Direct peering is the simplest solution.",
+    "incorrectAnswerExplanations": {
+      "b": "Service endpoints secure access to PaaS services; they don't route between VNets.",
+      "c": "Overlapping address spaces would break the existing VNet1 peering and is never a fix.",
+      "d": "Allow forwarded traffic only matters when an NVA forwards traffic; without one and without UDRs, nothing routes VNet1↔VNet3 through VNet2."
+    },
+    "examTakeaway": "Peering isn't transitive — peer directly or route through a hub NVA.",
+    "relatedTopics": [
+      "vnet-peering"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Virtual network peering",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-network-peering-overview"
+      }
+    ]
+  },
+  {
+    "id": "nw-003",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "vnet-peering",
+    "services": [
+      "virtual-network",
+      "vpn-gateway"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Hub VNet contains a VPN gateway connected to on-premises. Spoke1 and Spoke2 are peered with Hub. VMs in the spokes must reach on-premises through the hub's gateway. The spokes have no gateways.",
+    "question": "Which peering settings should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Allow forwarded traffic on all peerings only"
+      },
+      {
+        "id": "b",
+        "text": "On each spoke's peering: Allow gateway transit. On Hub's peerings: Use remote gateways"
+      },
+      {
+        "id": "c",
+        "text": "Deploy a VPN gateway in each spoke"
+      },
+      {
+        "id": "d",
+        "text": "On Hub's peerings: Allow gateway transit. On each spoke's peering: Use remote gateways"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Gateway transit lets peered VNets share the hub's gateway. The VNet that owns the gateway enables 'Allow gateway transit'; the VNets that use it enable 'Use remote gateways'. On-premises routes are then propagated to the spokes.",
+    "incorrectAnswerExplanations": {
+      "a": "Forwarded traffic doesn't let spokes use a remote gateway.",
+      "b": "This reverses the settings — the spokes don't have gateways to share.",
+      "c": "Deploying gateways per spoke works but adds cost and administrative effort."
+    },
+    "examTakeaway": "Gateway owner: Allow gateway transit. Consumer: Use remote gateways.",
+    "relatedTopics": [
+      "vnet-peering",
+      "vpn-expressroute"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Configure VPN gateway transit for peering",
+        "url": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-peering-gateway-transit"
+      }
+    ]
+  },
+  {
+    "id": "nw-004",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "vnet-peering",
+    "services": [
+      "virtual-network"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "You try to peer VNetA (10.10.0.0/16) with VNetB (10.10.128.0/17). The operation fails. Why?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The address spaces overlap"
+      },
+      {
+        "id": "b",
+        "text": "Peering requires VPN gateways"
+      },
+      {
+        "id": "c",
+        "text": "The VNets are in different regions"
+      },
+      {
+        "id": "d",
+        "text": "VNetB has no subnets"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "10.10.128.0/17 is inside 10.10.0.0/16. Peering requires non-overlapping address spaces so routes are unambiguous.",
+    "incorrectAnswerExplanations": {
+      "b": "Peering doesn't need gateways.",
+      "c": "Global peering supports VNets in different regions.",
+      "d": "Subnet presence doesn't block peering creation."
+    },
+    "examTakeaway": "Overlapping address space blocks peering.",
+    "relatedTopics": [
+      "vnet-peering",
+      "vnets-subnets"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Requirements and constraints for peering",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-network-manage-peering#requirements-and-constraints"
+      }
+    ]
+  },
+  {
+    "id": "nw-005",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "nsg-asg",
+    "services": [
+      "network-security-groups"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "NSG1 is associated with Subnet1, where VM1 runs a web server on TCP 443. NSG1 has these inbound rules: priority 200 Deny TCP 443 from Any; priority 300 Allow TCP 443 from Internet; plus the default rules. VM1's NIC has no NSG.",
+    "question": "Can internet users reach VM1 on port 443?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, because Allow rules take precedence over Deny rules"
+      },
+      {
+        "id": "b",
+        "text": "Yes, because the more specific source (Internet) wins"
+      },
+      {
+        "id": "c",
+        "text": "No, because NIC-level NSGs are required"
+      },
+      {
+        "id": "d",
+        "text": "No, because the rule with priority 200 matches first and denies the traffic"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "NSG rules are processed in priority order, lowest number first, and processing stops at the first match. The Deny at 200 matches HTTPS from any source, so the Allow at 300 is never evaluated.",
+    "incorrectAnswerExplanations": {
+      "a": "Allow and Deny have no inherent precedence; priority decides.",
+      "b": "Specificity doesn't matter in NSGs — only priority.",
+      "c": "A NIC NSG isn't required; a subnet NSG alone filters traffic."
+    },
+    "examTakeaway": "NSG: lowest priority number that matches wins.",
+    "relatedTopics": [
+      "nsg-asg"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Security rules",
+        "url": "https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview#security-rules"
+      }
+    ]
+  },
+  {
+    "id": "nw-006",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "nsg-asg",
+    "services": [
+      "network-security-groups"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Subnet-Web has NSG-Subnet allowing inbound TCP 80 from Internet at priority 100. VM2 in Subnet-Web has NSG-NIC associated to its NIC containing only the default rules.",
+    "question": "Can internet clients reach VM2 on TCP 80?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes — the subnet NSG allows it"
+      },
+      {
+        "id": "b",
+        "text": "Yes — NIC NSGs only filter outbound traffic"
+      },
+      {
+        "id": "c",
+        "text": "No — port 80 is always blocked in Azure"
+      },
+      {
+        "id": "d",
+        "text": "No — inbound traffic must be allowed by both NSGs, and NSG-NIC's DenyAllInBound blocks it"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "For inbound traffic, Azure evaluates the subnet NSG, then the NIC NSG. Traffic must be allowed by both. NSG-NIC has no rule allowing Internet traffic, so default DenyAllInBound (65500) drops it.",
+    "incorrectAnswerExplanations": {
+      "a": "Passing the subnet NSG isn't enough when a NIC NSG also exists.",
+      "b": "NIC NSGs filter both inbound and outbound.",
+      "c": "Port 80 isn't blocked by Azure; the default NSG rule is what denies it here."
+    },
+    "examTakeaway": "Subnet NSG AND NIC NSG must both allow.",
+    "relatedTopics": [
+      "nsg-asg"
+    ],
+    "documentationLinks": [
+      {
+        "title": "How network security groups filter traffic",
+        "url": "https://learn.microsoft.com/azure/virtual-network/network-security-group-how-it-works"
+      }
+    ]
+  },
+  {
+    "id": "nw-007",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "nsg-asg",
+    "services": [
+      "network-security-groups"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "In VNet1, web servers and database servers are in the same subnet. IP addresses change often. You must allow only the web servers to connect to the database servers on TCP 1433, without maintaining IP lists.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create application security groups ASG-Web and ASG-DB, add each VM's NIC to the right ASG, and create an NSG rule allowing ASG-Web → ASG-DB on 1433 (with a lower-priority deny for other sources)"
+      },
+      {
+        "id": "b",
+        "text": "Use a route table with next hop None"
+      },
+      {
+        "id": "c",
+        "text": "Create a service endpoint for SQL"
+      },
+      {
+        "id": "d",
+        "text": "Move the database servers to a different subscription"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "ASGs group NICs by workload role, so rules reference groups instead of IPs. Because AllowVnetInBound would otherwise allow all VNet traffic, add a deny for other sources to 1433 after the ASG allow rule.",
+    "incorrectAnswerExplanations": {
+      "b": "Route tables don't filter by port, and None would drop all traffic to the prefix.",
+      "c": "Service endpoints are for Azure PaaS services such as Azure SQL Database, not SQL Server on VMs.",
+      "d": "Moving subscriptions doesn't create filtering and isn't practical."
+    },
+    "examTakeaway": "Role-based NSG rules without IPs → application security groups.",
+    "relatedTopics": [
+      "nsg-asg"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Application security groups",
+        "url": "https://learn.microsoft.com/azure/virtual-network/application-security-groups"
+      }
+    ]
+  },
+  {
+    "id": "nw-008",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "nsg-asg",
+    "services": [
+      "network-security-groups",
+      "load-balancer"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "A Standard Load Balancer health probe on TCP 80 marks all backend VMs as unhealthy. The web servers are running. The backend subnet's NSG has a custom rule at priority 100: Deny Any from Any (inbound), added to block unwanted traffic, followed by an allow for TCP 80 from Internet at priority 200.",
+    "question": "What should you change?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add an outbound rule allowing Internet"
+      },
+      {
+        "id": "b",
+        "text": "Change the probe to UDP"
+      },
+      {
+        "id": "c",
+        "text": "Switch to a Basic Load Balancer"
+      },
+      {
+        "id": "d",
+        "text": "Add an inbound rule with priority lower than 100 (e.g., 90) allowing the AzureLoadBalancer service tag, and move the Internet allow above the deny (or remove the broad deny)"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "The priority 100 Deny overrides the default AllowAzureLoadBalancerInBound (65001) and the Internet allow at 200. Probes come from 168.63.129.16 (AzureLoadBalancer tag), so an allow for that tag must have a lower number than the deny, and client traffic must be allowed before the deny too.",
+    "incorrectAnswerExplanations": {
+      "a": "NSGs are stateful and probes are inbound; outbound rules aren't the issue.",
+      "b": "Load Balancer health probes support TCP, HTTP and HTTPS — not UDP — and the problem is the NSG.",
+      "c": "Basic LB is retired and wouldn't fix an NSG that blocks probes."
+    },
+    "examTakeaway": "Don't block AzureLoadBalancer (168.63.129.16) — probes fail.",
+    "relatedTopics": [
+      "nsg-asg",
+      "load-balancer"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Load Balancer health probes",
+        "url": "https://learn.microsoft.com/azure/load-balancer/load-balancer-custom-probe-overview"
+      }
+    ]
+  },
+  {
+    "id": "nw-009",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "azure-bastion",
+    "services": [
+      "azure-bastion"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Administrators need RDP and SSH access to 40 VMs across VNet-Hub and two peered spoke VNets. VMs must not have public IP addresses and ports 3389/22 must not be exposed to the internet.",
+    "question": "What should you deploy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An internal load balancer with inbound NAT rules"
+      },
+      {
+        "id": "b",
+        "text": "A NAT gateway on each subnet"
+      },
+      {
+        "id": "c",
+        "text": "Azure Bastion in an AzureBastionSubnet (/26 or larger) in VNet-Hub"
+      },
+      {
+        "id": "d",
+        "text": "A public IP on each VM with an NSG allowing RDP from the admins' office"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Azure Bastion provides browser-based (or native client, on Standard+) RDP/SSH over TLS 443. A Bastion in the hub can connect to VMs in peered VNets using their private IPs.",
+    "incorrectAnswerExplanations": {
+      "a": "An internal LB isn't reachable from the internet and doesn't provide secure admin sessions; it also isn't a management solution.",
+      "b": "NAT Gateway is outbound only.",
+      "d": "Violates the 'no public IPs' requirement."
+    },
+    "examTakeaway": "Secure RDP/SSH without public IPs → Azure Bastion (works across peering).",
+    "relatedTopics": [
+      "azure-bastion"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Bastion and VNet peering",
+        "url": "https://learn.microsoft.com/azure/bastion/vnet-peering"
+      }
+    ]
+  },
+  {
+    "id": "nw-010",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "azure-bastion",
+    "services": [
+      "azure-bastion"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "Deploying Azure Bastion fails. The subnet is named BastionSubnet with prefix /27. What should you fix?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Add a NAT gateway to the subnet"
+      },
+      {
+        "id": "b",
+        "text": "Delegate the subnet to Microsoft.Web"
+      },
+      {
+        "id": "c",
+        "text": "Assign a public IP to every VM"
+      },
+      {
+        "id": "d",
+        "text": "Rename the subnet to AzureBastionSubnet and make it /26 or larger"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Azure Bastion requires a dedicated subnet named exactly AzureBastionSubnet with a /26 or larger prefix.",
+    "incorrectAnswerExplanations": {
+      "a": "NAT Gateway isn't required for Bastion.",
+      "b": "Subnet delegation to Microsoft.Web is for App Service VNet integration.",
+      "c": "Bastion's purpose is to avoid public IPs on VMs."
+    },
+    "examTakeaway": "AzureBastionSubnet, /26 minimum.",
+    "relatedTopics": [
+      "azure-bastion",
+      "vnets-subnets"
+    ],
+    "documentationLinks": [
+      {
+        "title": "About Bastion configuration settings",
+        "url": "https://learn.microsoft.com/azure/bastion/configuration-settings#subnet"
+      }
+    ]
+  },
+  {
+    "id": "nw-011",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "private-service-endpoints",
+    "services": [
+      "private-link",
+      "storage-accounts"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "You created a private endpoint for storage account st1 in VNet1. VMs in VNet1 still connect to st1's public IP address. The VNet uses Azure-provided DNS.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Assign a public IP to the private endpoint"
+      },
+      {
+        "id": "b",
+        "text": "Create a private DNS zone privatelink.blob.core.windows.net with an A record for st1 pointing to the private endpoint IP, and link it to VNet1"
+      },
+      {
+        "id": "c",
+        "text": "Add a service endpoint for Microsoft.Storage"
+      },
+      {
+        "id": "d",
+        "text": "Disable the storage account firewall"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Clients use st1.blob.core.windows.net, which CNAMEs to st1.privatelink.blob.core.windows.net. A private DNS zone for privatelink.blob.core.windows.net linked to the VNet makes that name resolve to the private endpoint's IP. (Integrating with a private DNS zone during endpoint creation does this automatically.)",
+    "incorrectAnswerExplanations": {
+      "a": "Private endpoints don't have public IPs.",
+      "c": "Service endpoints use the public endpoint; they don't make the name resolve to the private IP.",
+      "d": "Disabling the firewall reduces security and doesn't change name resolution."
+    },
+    "examTakeaway": "Private endpoint not used → fix DNS (privatelink zone linked to the VNet).",
+    "relatedTopics": [
+      "private-service-endpoints",
+      "azure-dns"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure Private Endpoint DNS configuration",
+        "url": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns"
+      }
+    ]
+  },
+  {
+    "id": "nw-012",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "private-service-endpoints",
+    "services": [
+      "private-link",
+      "virtual-network"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "multi",
+    "question": "Which TWO statements about service endpoints are true?",
+    "options": [
+      {
+        "id": "a",
+        "text": "They allow on-premises clients to reach the service privately over ExpressRoute private peering"
+      },
+      {
+        "id": "b",
+        "text": "They assign the PaaS resource a private IP address in your VNet"
+      },
+      {
+        "id": "c",
+        "text": "They're configured on a subnet for a specific Azure service type"
+      },
+      {
+        "id": "d",
+        "text": "Traffic to the service travels over the Microsoft backbone, and the service can restrict access to that subnet"
+      }
+    ],
+    "correctAnswer": [
+      "c",
+      "d"
+    ],
+    "explanation": "Service endpoints are enabled per subnet for a service (e.g., Microsoft.Storage). Traffic uses an optimized backbone route and carries the subnet identity, allowing the service's firewall to permit that subnet.",
+    "incorrectAnswerExplanations": {
+      "a": "Service endpoints don't apply to traffic originating on-premises; use private endpoints for that.",
+      "b": "That's a private endpoint. With service endpoints, the service keeps its public endpoint."
+    },
+    "examTakeaway": "Service endpoint = subnet identity to a public endpoint; no private IP; not for on-prem.",
+    "relatedTopics": [
+      "private-service-endpoints"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Virtual network service endpoints",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-network-service-endpoints-overview"
+      }
+    ]
+  },
+  {
+    "id": "nw-013",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "private-service-endpoints",
+    "services": [
+      "private-link"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "A subnet has a Microsoft.Storage service endpoint. Security is concerned that a compromised VM could copy data to an attacker-owned storage account using the same service endpoint path.",
+    "question": "What should you configure to allow the subnet to reach only your organization's storage accounts?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable infrastructure encryption"
+      },
+      {
+        "id": "b",
+        "text": "A service endpoint policy that allows only specific storage accounts"
+      },
+      {
+        "id": "c",
+        "text": "A route table with next hop Internet"
+      },
+      {
+        "id": "d",
+        "text": "An NSG rule allowing the Storage service tag"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Service endpoint policies filter service endpoint traffic to specific Azure Storage accounts, mitigating exfiltration to other accounts. (Private endpoints with NSG/firewall egress controls are another approach.)",
+    "incorrectAnswerExplanations": {
+      "a": "Encryption at rest doesn't control network destinations.",
+      "c": "Routing to Internet doesn't restrict which accounts are reachable.",
+      "d": "The Storage service tag covers all storage accounts in the region/service — not just yours."
+    },
+    "examTakeaway": "Restrict service endpoint traffic to specific storage accounts → service endpoint policy.",
+    "relatedTopics": [
+      "private-service-endpoints"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Virtual network service endpoint policies",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-network-service-endpoint-policies-overview"
+      }
+    ]
+  },
+  {
+    "id": "nw-014",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "routing-udr",
+    "services": [
+      "virtual-network",
+      "azure-firewall"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "All internet-bound traffic from Subnet-App must be inspected by a third-party firewall VM at 10.0.0.4 in Subnet-FW. You create route table RT1 with route 0.0.0.0/0 → Virtual appliance 10.0.0.4 and associate it to Subnet-App. Traffic now fails entirely.",
+    "question": "What is the most likely missing configuration?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A VPN gateway is required for UDRs"
+      },
+      {
+        "id": "b",
+        "text": "The route's next hop type must be Internet"
+      },
+      {
+        "id": "c",
+        "text": "IP forwarding isn't enabled on the firewall VM's network interface"
+      },
+      {
+        "id": "d",
+        "text": "The route table must be associated to Subnet-FW instead"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "An NVA must have IP forwarding enabled on its Azure NIC (and forwarding enabled in its OS) to receive and forward packets not addressed to itself. Otherwise Azure drops the traffic sent to it.",
+    "incorrectAnswerExplanations": {
+      "a": "UDRs work without any gateway.",
+      "b": "Next hop Internet would bypass the firewall.",
+      "d": "The route belongs on the source subnet (Subnet-App) to steer its traffic to the NVA."
+    },
+    "examTakeaway": "UDR to NVA → enable IP forwarding on the NVA NIC.",
+    "relatedTopics": [
+      "routing-udr"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Enable or disable IP forwarding",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-network-network-interface#enable-or-disable-ip-forwarding"
+      }
+    ]
+  },
+  {
+    "id": "nw-015",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "routing-udr",
+    "services": [
+      "virtual-network"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "Subnet1's route table has two routes: 10.0.0.0/8 → Virtual appliance 10.1.0.4, and 10.20.0.0/16 → Virtual network gateway. A VM in Subnet1 sends traffic to 10.20.5.10. Which next hop is used?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Both, using ECMP"
+      },
+      {
+        "id": "b",
+        "text": "Internet, because system routes take precedence"
+      },
+      {
+        "id": "c",
+        "text": "Virtual appliance 10.1.0.4, because it was created first"
+      },
+      {
+        "id": "d",
+        "text": "Virtual network gateway, because 10.20.0.0/16 is the longest prefix match"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Azure selects the route with the longest matching prefix. /16 is more specific than /8, so traffic goes to the virtual network gateway.",
+    "incorrectAnswerExplanations": {
+      "a": "Equal-cost multipath isn't used between different prefixes.",
+      "b": "System routes don't override more specific UDRs, and 10.20.x isn't an internet route.",
+      "c": "Creation order doesn't matter."
+    },
+    "examTakeaway": "Routing = longest prefix match; ties: UDR > BGP > system.",
+    "relatedTopics": [
+      "routing-udr"
+    ],
+    "documentationLinks": [
+      {
+        "title": "How Azure selects a route",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-udr-overview#how-azure-selects-a-route"
+      }
+    ]
+  },
+  {
+    "id": "nw-016",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "routing-udr",
+    "services": [
+      "nat-gateway"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Fifty VMs without public IPs in Subnet-Workers must call a partner API that allowlists a small set of source IPs. The VMs must not be reachable from the internet. Outbound connections are frequent and you've seen SNAT port exhaustion with load balancer outbound rules.",
+    "question": "What should you implement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A private endpoint for the partner API"
+      },
+      {
+        "id": "b",
+        "text": "A NAT gateway with a Standard public IP (or prefix) associated with Subnet-Workers"
+      },
+      {
+        "id": "c",
+        "text": "Azure Bastion"
+      },
+      {
+        "id": "d",
+        "text": "A public IP on each VM"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "NAT Gateway provides scalable outbound-only SNAT for a subnet through fixed public IPs (easy to allowlist) and greatly reduces SNAT exhaustion. Inbound connections from the internet aren't allowed through it.",
+    "incorrectAnswerExplanations": {
+      "a": "Private endpoints are for Azure Private Link services, not an arbitrary external partner API.",
+      "c": "Bastion is for administrative access, not outbound API calls.",
+      "d": "Public IPs on VMs make them reachable inbound (if NSGs allow) and produce 50 IPs to allowlist."
+    },
+    "examTakeaway": "Fixed outbound IPs + scale + no inbound → NAT Gateway.",
+    "relatedTopics": [
+      "routing-udr"
+    ],
+    "documentationLinks": [
+      {
+        "title": "What is Azure NAT Gateway?",
+        "url": "https://learn.microsoft.com/azure/nat-gateway/nat-overview"
+      }
+    ]
+  },
+  {
+    "id": "nw-017",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "vnets-subnets",
+    "services": [
+      "virtual-network"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "Which statement about Standard SKU public IP addresses is correct?",
+    "options": [
+      {
+        "id": "a",
+        "text": "They can't be zone-redundant"
+      },
+      {
+        "id": "b",
+        "text": "They're open to inbound traffic by default"
+      },
+      {
+        "id": "c",
+        "text": "They only support dynamic allocation"
+      },
+      {
+        "id": "d",
+        "text": "They're secure by default — inbound traffic is blocked unless an NSG allows it"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Standard public IPs use static allocation, support zone redundancy and are closed to inbound traffic until explicitly allowed by an NSG.",
+    "incorrectAnswerExplanations": {
+      "a": "Standard public IPs can be zone-redundant or zonal.",
+      "b": "That was the behavior of the retired Basic SKU.",
+      "c": "Standard public IPs are always static."
+    },
+    "examTakeaway": "Standard public IP: static, zone-capable, closed by default.",
+    "relatedTopics": [
+      "vnets-subnets"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Public IP addresses",
+        "url": "https://learn.microsoft.com/azure/virtual-network/ip-services/public-ip-addresses"
+      }
+    ]
+  },
+  {
+    "id": "nw-018",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "vnets-subnets",
+    "services": [
+      "virtual-network"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "You plan VNet-Prod in East US with three tiers. Each tier needs up to 100 VMs now, with room to double. You'll later connect on-premises (172.16.0.0/16) and a dev VNet (10.50.0.0/16).",
+    "question": "Which address design is valid and meets the requirements?",
+    "options": [
+      {
+        "id": "a",
+        "text": "VNet 172.16.0.0/16 with three /24 subnets"
+      },
+      {
+        "id": "b",
+        "text": "VNet 10.60.0.0/24 with three /26 subnets"
+      },
+      {
+        "id": "c",
+        "text": "VNet 10.50.0.0/20 with three /25 subnets"
+      },
+      {
+        "id": "d",
+        "text": "VNet 10.60.0.0/16 with three /24 subnets"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "10.60.0.0/16 doesn't overlap on-premises or the dev VNet. Each /24 provides 251 usable addresses — enough for 200 VMs with headroom.",
+    "incorrectAnswerExplanations": {
+      "a": "Overlaps the on-premises range, blocking hybrid connectivity.",
+      "b": "/26 subnets give 59 usable addresses — too small.",
+      "c": "Overlaps the dev VNet (10.50.0.0/16), and /25 subnets give only 123 usable addresses — not enough to double."
+    },
+    "examTakeaway": "Plan non-overlapping spaces and size subnets for growth (minus 5).",
+    "relatedTopics": [
+      "vnets-subnets",
+      "vnet-peering"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Plan virtual networks",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-network-vnet-plan-design-arm"
+      }
+    ]
+  },
+  {
+    "id": "nw-019",
+    "domain": "networking",
+    "objectiveId": "dns-load-balancing",
+    "topic": "azure-dns",
+    "services": [
+      "azure-dns"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "You bought contoso.com from a third-party registrar and created a public DNS zone named contoso.com in Azure DNS with A and MX records. Internet users still get answers from the registrar's old name servers.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Create a private DNS zone named contoso.com"
+      },
+      {
+        "id": "b",
+        "text": "At the registrar, update the domain's name server (NS) records to the four Azure DNS name servers assigned to the zone"
+      },
+      {
+        "id": "c",
+        "text": "Transfer the domain registration to Azure DNS"
+      },
+      {
+        "id": "d",
+        "text": "Add a CNAME at the zone apex pointing to Azure DNS"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Delegation is done at the registrar (parent zone) by setting NS records to the Azure DNS name servers listed on the zone. Azure DNS hosts zones but isn't a registrar.",
+    "incorrectAnswerExplanations": {
+      "a": "Private zones resolve only within linked VNets.",
+      "c": "Azure DNS doesn't register domains (App Service Domains is a separate offering).",
+      "d": "CNAMEs aren't allowed at the apex and wouldn't delegate the domain."
+    },
+    "examTakeaway": "Public zone in Azure → update NS at the registrar.",
+    "relatedTopics": [
+      "azure-dns"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Delegate a domain to Azure DNS",
+        "url": "https://learn.microsoft.com/azure/dns/dns-delegate-domain-azure-dns"
+      }
+    ]
+  },
+  {
+    "id": "nw-020",
+    "domain": "networking",
+    "objectiveId": "dns-load-balancing",
+    "topic": "azure-dns",
+    "services": [
+      "azure-dns"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "You create a private DNS zone corp.contoso.com. VMs in VNet1 and VNet2 must automatically register their hostnames. VMs in VNet3 must be able to resolve those names but must not register.",
+    "question": "How should you configure the virtual network links?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Link VNet1 and VNet2 with auto-registration enabled; link VNet3 with auto-registration disabled"
+      },
+      {
+        "id": "b",
+        "text": "Link all three with auto-registration enabled"
+      },
+      {
+        "id": "c",
+        "text": "Link only VNet1 with auto-registration; peer VNet2 and VNet3 to VNet1"
+      },
+      {
+        "id": "d",
+        "text": "Create three separate private zones"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Registration-enabled links auto-register VM records from that VNet; resolution-only links let a VNet resolve the zone without registering. A private zone can have multiple registration VNets (but each VNet can be a registration network for only one private zone).",
+    "incorrectAnswerExplanations": {
+      "b": "VNet3 must not register its VMs.",
+      "c": "Peering doesn't provide DNS registration or resolution of private zones; each VNet needs its own link.",
+      "d": "Three zones would split names that need to live in one zone."
+    },
+    "examTakeaway": "Registration link = auto-register; resolution link = resolve only.",
+    "relatedTopics": [
+      "azure-dns"
+    ],
+    "documentationLinks": [
+      {
+        "title": "What is the auto registration feature?",
+        "url": "https://learn.microsoft.com/azure/dns/private-dns-autoregistration"
+      }
+    ]
+  },
+  {
+    "id": "nw-021",
+    "domain": "networking",
+    "objectiveId": "dns-load-balancing",
+    "topic": "azure-dns",
+    "services": [
+      "azure-dns",
+      "front-door"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "You want contoso.com (the zone apex) in Azure DNS to point to a Standard public IP resource and automatically follow it if the IP changes. Which record should you create?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An alias record set (type A) targeting the public IP resource"
+      },
+      {
+        "id": "b",
+        "text": "A CNAME record at the apex"
+      },
+      {
+        "id": "c",
+        "text": "An MX record"
+      },
+      {
+        "id": "d",
+        "text": "An NS record"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Alias records reference an Azure resource (public IP, Traffic Manager, Front Door, CDN) and update automatically. They can be used at the zone apex where CNAMEs aren't permitted.",
+    "incorrectAnswerExplanations": {
+      "b": "DNS standards forbid CNAMEs at the apex.",
+      "c": "MX records direct email.",
+      "d": "NS records delegate zones."
+    },
+    "examTakeaway": "Apex → Azure resource = alias record.",
+    "relatedTopics": [
+      "azure-dns"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Azure DNS alias records",
+        "url": "https://learn.microsoft.com/azure/dns/dns-alias"
+      }
+    ]
+  },
+  {
+    "id": "nw-022",
+    "domain": "networking",
+    "objectiveId": "dns-load-balancing",
+    "topic": "load-balancer",
+    "services": [
+      "load-balancer"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "You need to load-balance TCP 1433 traffic from application VMs to three SQL Server VMs. The frontend must have a private IP address only. What should you deploy?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A public Standard Load Balancer"
+      },
+      {
+        "id": "b",
+        "text": "An internal (private) Standard Load Balancer"
+      },
+      {
+        "id": "c",
+        "text": "Traffic Manager"
+      },
+      {
+        "id": "d",
+        "text": "Application Gateway"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "An internal load balancer has a private frontend IP in a subnet and balances TCP traffic within the VNet (and connected networks).",
+    "incorrectAnswerExplanations": {
+      "a": "A public LB has a public frontend.",
+      "c": "Traffic Manager is DNS-based global routing for public endpoints.",
+      "d": "Application Gateway balances HTTP(S), not SQL's TDS protocol on 1433."
+    },
+    "examTakeaway": "Private L4 balancing → internal Standard Load Balancer.",
+    "relatedTopics": [
+      "load-balancer"
+    ],
+    "documentationLinks": [
+      {
+        "title": "What is Azure Load Balancer?",
+        "url": "https://learn.microsoft.com/azure/load-balancer/load-balancer-overview"
+      }
+    ]
+  },
+  {
+    "id": "nw-023",
+    "domain": "networking",
+    "objectiveId": "dns-load-balancing",
+    "topic": "load-balancer",
+    "services": [
+      "load-balancer"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "Users of a shopping app behind a public Standard Load Balancer lose their session when requests land on a different backend VM. The app stores session state in memory.",
+    "question": "What should you configure on the load-balancing rule?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Session persistence: Client IP"
+      },
+      {
+        "id": "b",
+        "text": "An outbound rule"
+      },
+      {
+        "id": "c",
+        "text": "Floating IP"
+      },
+      {
+        "id": "d",
+        "text": "TCP reset on idle"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Client IP (source IP affinity) sends requests from the same client IP to the same backend. The default distribution (None / 5-tuple hash) can spread a client's connections across backends.",
+    "incorrectAnswerExplanations": {
+      "b": "Outbound rules configure SNAT for backend-initiated traffic.",
+      "c": "Floating IP (direct server return) is used for scenarios like SQL Always On listeners, not session affinity.",
+      "d": "TCP reset improves idle-timeout behavior but doesn't keep users on one backend."
+    },
+    "examTakeaway": "Sticky sessions on Load Balancer → session persistence (Client IP).",
+    "relatedTopics": [
+      "load-balancer"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Configure the distribution mode",
+        "url": "https://learn.microsoft.com/azure/load-balancer/load-balancer-distribution-mode"
+      }
+    ]
+  },
+  {
+    "id": "nw-024",
+    "domain": "networking",
+    "objectiveId": "dns-load-balancing",
+    "topic": "load-balancer",
+    "services": [
+      "load-balancer"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "A Standard Load Balancer has a rule for TCP 80 with an HTTP health probe on path /health, port 8080. The web app listens only on port 80 and doesn't expose /health. All backends show as unhealthy.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Increase the idle timeout"
+      },
+      {
+        "id": "b",
+        "text": "Configure the probe to use a port and path the app actually serves (e.g., HTTP port 80 on an existing path, or TCP 80), or implement /health on 8080"
+      },
+      {
+        "id": "c",
+        "text": "Add an inbound NAT rule for port 8080"
+      },
+      {
+        "id": "d",
+        "text": "Enable session persistence"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Health probes determine backend eligibility. If the probe targets a port/path that isn't served (or doesn't return HTTP 200), instances are marked unhealthy and receive no new flows.",
+    "incorrectAnswerExplanations": {
+      "a": "Idle timeout affects established flows, not probes.",
+      "c": "NAT rules forward a frontend port to one VM; they don't fix probe health.",
+      "d": "Session persistence doesn't affect health status."
+    },
+    "examTakeaway": "No backend traffic → check probe port/path and NSGs first.",
+    "relatedTopics": [
+      "load-balancer"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Troubleshoot Azure Load Balancer health probe status",
+        "url": "https://learn.microsoft.com/azure/load-balancer/load-balancer-troubleshoot-health-probe-status"
+      }
+    ]
+  },
+  {
+    "id": "nw-025",
+    "domain": "networking",
+    "objectiveId": "dns-load-balancing",
+    "topic": "load-balancer",
+    "services": [
+      "load-balancer"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Three VMs are behind a public Standard Load Balancer with no public IPs of their own. Administrators occasionally need direct SSH access to VM2 specifically, through the load balancer's public IP on port 50022.",
+    "question": "What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A load-balancing rule for port 22"
+      },
+      {
+        "id": "b",
+        "text": "A health probe on port 22"
+      },
+      {
+        "id": "c",
+        "text": "An inbound NAT rule mapping frontend port 50022 to VM2 port 22"
+      },
+      {
+        "id": "d",
+        "text": "An outbound rule"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Inbound NAT rules forward a specific frontend port to a specific backend instance and port — ideal for targeted management access. (Azure Bastion is a more secure alternative.)",
+    "incorrectAnswerExplanations": {
+      "a": "A load-balancing rule spreads connections across all backends rather than targeting VM2.",
+      "b": "A probe checks health; it doesn't forward traffic.",
+      "d": "Outbound rules configure SNAT for outbound connections."
+    },
+    "examTakeaway": "Port-forward to one backend VM → inbound NAT rule.",
+    "relatedTopics": [
+      "load-balancer"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Inbound NAT rules",
+        "url": "https://learn.microsoft.com/azure/load-balancer/inbound-nat-rules"
+      }
+    ]
+  },
+  {
+    "id": "nw-026",
+    "domain": "networking",
+    "objectiveId": "dns-load-balancing",
+    "topic": "application-gateway",
+    "services": [
+      "application-gateway"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "A website must route requests for /images/* to an image server pool and /api/* to an API server pool. It must terminate TLS and block common attacks like SQL injection. All servers are in one Azure region.",
+    "question": "Which service should you use?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Application Gateway WAF_v2 with a path-based routing rule"
+      },
+      {
+        "id": "b",
+        "text": "Azure Load Balancer (Standard)"
+      },
+      {
+        "id": "c",
+        "text": "NAT Gateway"
+      },
+      {
+        "id": "d",
+        "text": "Traffic Manager with performance routing"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Application Gateway is a regional Layer 7 load balancer that supports URL path-based routing and TLS termination; the WAF_v2 SKU adds web application firewall protection.",
+    "incorrectAnswerExplanations": {
+      "b": "Load Balancer works at Layer 4 and can't route by URL or terminate TLS.",
+      "c": "NAT Gateway handles outbound connectivity only.",
+      "d": "Traffic Manager is DNS-based and can't inspect URLs."
+    },
+    "examTakeaway": "URL routing + TLS + WAF in one region → Application Gateway WAF_v2.",
+    "relatedTopics": [
+      "application-gateway"
+    ],
+    "documentationLinks": [
+      {
+        "title": "URL path-based routing",
+        "url": "https://learn.microsoft.com/azure/application-gateway/url-route-overview"
+      }
+    ]
+  },
+  {
+    "id": "nw-027",
+    "domain": "networking",
+    "objectiveId": "dns-load-balancing",
+    "topic": "application-gateway",
+    "services": [
+      "application-gateway"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "You need one Application Gateway to host fabrikam.com and contoso.com, each with its own backend pool and certificate. What should you configure?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Two separate frontend public IPs are mandatory"
+      },
+      {
+        "id": "b",
+        "text": "One basic listener and two health probes"
+      },
+      {
+        "id": "c",
+        "text": "Two multi-site listeners with host names fabrikam.com and contoso.com, each linked to its own routing rule"
+      },
+      {
+        "id": "d",
+        "text": "Cookie-based affinity"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Multi-site listeners match the request's host header, letting one gateway and one IP serve multiple sites, each routed to its own pool with its own certificate.",
+    "incorrectAnswerExplanations": {
+      "a": "Multiple IPs aren't required; host-based listeners share one frontend IP.",
+      "b": "A basic listener accepts all host names and can't distinguish sites.",
+      "d": "Affinity keeps a client on one server; it doesn't route by domain."
+    },
+    "examTakeaway": "Multiple domains on one gateway → multi-site listeners.",
+    "relatedTopics": [
+      "application-gateway"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Application Gateway multiple site hosting",
+        "url": "https://learn.microsoft.com/azure/application-gateway/multiple-site-overview"
+      }
+    ]
+  },
+  {
+    "id": "nw-028",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "vpn-expressroute",
+    "services": [
+      "vpn-gateway"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "ordering",
+    "question": "Order the steps to create a site-to-site VPN between on-premises and VNet1 using the Azure portal.",
+    "options": [
+      {
+        "id": "s1",
+        "text": "Create the GatewaySubnet in VNet1"
+      },
+      {
+        "id": "s2",
+        "text": "Create the route-based VPN gateway"
+      },
+      {
+        "id": "s3",
+        "text": "Create the local network gateway (on-premises public IP and address prefixes)"
+      },
+      {
+        "id": "s4",
+        "text": "Configure the on-premises VPN device with the gateway's public IP and shared key"
+      },
+      {
+        "id": "s5",
+        "text": "Create the site-to-site connection with the shared key"
+      }
+    ],
+    "correctAnswer": [
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5"
+    ],
+    "explanation": "The gateway needs its subnet first. The gateway (slow to provision) is created next; the local network gateway describes on-premises. The device is configured with Azure's gateway IP and the shared key, and the connection object links both sides. (Steps 3 and 4 can overlap with gateway provisioning.)",
+    "incorrectAnswerExplanations": {
+      "s1": "The GatewaySubnet must exist before deploying a gateway.",
+      "s2": "Create the gateway early; it can take 45 minutes or more.",
+      "s3": "The local network gateway is required to create the connection.",
+      "s4": "The on-prem device needs the Azure gateway's public IP, which exists only after the gateway is created.",
+      "s5": "The connection is last, tying the gateway and local network gateway together."
+    },
+    "examTakeaway": "GatewaySubnet → gateway → local network gateway → device config → connection.",
+    "relatedTopics": [
+      "vpn-expressroute"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Tutorial: Create a site-to-site VPN connection",
+        "url": "https://learn.microsoft.com/azure/vpn-gateway/tutorial-site-to-site-portal"
+      }
+    ]
+  },
+  {
+    "id": "nw-029",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "vpn-expressroute",
+    "services": [
+      "vpn-gateway"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "The site-to-site VPN connection is up, but after the network team added a new on-premises subnet 192.168.50.0/24, Azure VMs can't reach it. Static routing is used (no BGP).",
+    "question": "What should you update?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The VNet's DNS servers"
+      },
+      {
+        "id": "b",
+        "text": "The local network gateway's address space to include 192.168.50.0/24"
+      },
+      {
+        "id": "c",
+        "text": "The GatewaySubnet prefix"
+      },
+      {
+        "id": "d",
+        "text": "The VPN gateway SKU"
+      }
+    ],
+    "correctAnswer": "b",
+    "explanation": "With static routing, Azure learns on-premises prefixes from the local network gateway's address space. New on-premises subnets must be added there.",
+    "incorrectAnswerExplanations": {
+      "a": "DNS settings don't affect routing.",
+      "c": "The GatewaySubnet size isn't related to on-premises prefixes.",
+      "d": "SKU affects throughput and features, not which prefixes are routed."
+    },
+    "examTakeaway": "New on-prem prefixes (no BGP) → update local network gateway.",
+    "relatedTopics": [
+      "vpn-expressroute"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Modify local network gateway settings",
+        "url": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-modify-local-network-gateway-portal"
+      }
+    ]
+  },
+  {
+    "id": "nw-030",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "vpn-expressroute",
+    "services": [
+      "vpn-gateway",
+      "expressroute"
+    ],
+    "difficulty": "exam",
+    "questionType": "matching",
+    "question": "Match each requirement to the connectivity option.",
+    "options": [
+      {
+        "id": "o1",
+        "text": "15 developers connect to Azure VNets from home laptops"
+      },
+      {
+        "id": "o2",
+        "text": "A branch office router connects to a VNet over the internet"
+      },
+      {
+        "id": "o3",
+        "text": "Datacenter connectivity that must not traverse the public internet, with predictable latency"
+      }
+    ],
+    "matchTargets": [
+      {
+        "id": "p2s",
+        "text": "Point-to-site VPN"
+      },
+      {
+        "id": "s2s",
+        "text": "Site-to-site VPN"
+      },
+      {
+        "id": "er",
+        "text": "ExpressRoute"
+      }
+    ],
+    "correctAnswer": {
+      "o1": "p2s",
+      "o2": "s2s",
+      "o3": "er"
+    },
+    "explanation": "P2S connects individual clients; S2S connects networks via an on-premises VPN device over the internet; ExpressRoute provides private connectivity through a provider.",
+    "incorrectAnswerExplanations": {
+      "o1": "Individual devices → point-to-site.",
+      "o2": "Network-to-network over the internet with a VPN device → site-to-site.",
+      "o3": "No internet + predictable performance → ExpressRoute."
+    },
+    "examTakeaway": "Clients = P2S; sites = S2S; private circuit = ExpressRoute.",
+    "relatedTopics": [
+      "vpn-expressroute"
+    ],
+    "documentationLinks": [
+      {
+        "title": "VPN Gateway topology and design",
+        "url": "https://learn.microsoft.com/azure/vpn-gateway/design"
+      }
+    ]
+  },
+  {
+    "id": "nw-031",
+    "domain": "monitoring",
+    "objectiveId": "monitor-resources",
+    "topic": "network-watcher",
+    "services": [
+      "network-watcher"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "scenario",
+    "scenario": "Users report they can't reach VM3 on TCP 8443. You suspect an NSG rule but there are NSGs on both the subnet and NIC with dozens of rules.",
+    "question": "Which Network Watcher feature quickly tells you whether the traffic is allowed and which rule decides it?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Packet capture"
+      },
+      {
+        "id": "b",
+        "text": "Next hop"
+      },
+      {
+        "id": "c",
+        "text": "IP flow verify"
+      },
+      {
+        "id": "d",
+        "text": "Topology"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "IP flow verify tests a specific 5-tuple against the effective NSG rules of a VM's NIC and returns Allow/Deny with the name of the rule responsible.",
+    "incorrectAnswerExplanations": {
+      "a": "Packet capture shows packets but not which rule blocked them, and needs analysis.",
+      "b": "Next hop diagnoses routing, not NSG decisions.",
+      "d": "Topology visualizes resources, not traffic decisions."
+    },
+    "examTakeaway": "Blocked by which rule? → IP flow verify.",
+    "relatedTopics": [
+      "network-watcher",
+      "nsg-asg"
+    ],
+    "documentationLinks": [
+      {
+        "title": "IP flow verify overview",
+        "url": "https://learn.microsoft.com/azure/network-watcher/ip-flow-verify-overview"
+      }
+    ]
+  },
+  {
+    "id": "nw-032",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "routing-udr",
+    "services": [
+      "network-watcher"
+    ],
+    "difficulty": "intermediate",
+    "questionType": "single",
+    "question": "Traffic from VM1 to 10.40.1.5 should go through an Azure Firewall but appears to go directly. Which tool shows the next hop type and route used for that destination?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Azure Advisor"
+      },
+      {
+        "id": "b",
+        "text": "IP flow verify"
+      },
+      {
+        "id": "c",
+        "text": "Connection Monitor"
+      },
+      {
+        "id": "d",
+        "text": "Network Watcher next hop"
+      }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Next hop returns the next hop type (e.g., VirtualAppliance, VnetLocal, Internet), its IP, and the route table/route that applies, making it the right tool for routing problems.",
+    "incorrectAnswerExplanations": {
+      "a": "Advisor provides best-practice recommendations.",
+      "b": "IP flow verify checks NSG allow/deny, not routes.",
+      "c": "Connection Monitor tracks reachability and latency over time, not route selection details."
+    },
+    "examTakeaway": "Wrong path → next hop; blocked → IP flow verify.",
+    "relatedTopics": [
+      "routing-udr",
+      "network-watcher"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Next hop overview",
+        "url": "https://learn.microsoft.com/azure/network-watcher/next-hop-overview"
+      }
+    ]
+  },
+  {
+    "id": "nw-033",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "nsg-asg",
+    "services": [
+      "network-security-groups"
+    ],
+    "difficulty": "beginner",
+    "questionType": "single",
+    "question": "VMs in Subnet-A and Subnet-B of the same VNet can communicate even though you haven't created any NSG rules. Which default rule allows this?",
+    "options": [
+      {
+        "id": "a",
+        "text": "DenyAllInBound"
+      },
+      {
+        "id": "b",
+        "text": "AllowAzureLoadBalancerInBound"
+      },
+      {
+        "id": "c",
+        "text": "AllowVnetInBound"
+      },
+      {
+        "id": "d",
+        "text": "AllowInternetOutBound"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "AllowVnetInBound (65000) allows inbound traffic from the VirtualNetwork service tag (the VNet, peered VNets and connected on-premises ranges). Along with AllowVnetOutBound, it enables intra-VNet communication by default.",
+    "incorrectAnswerExplanations": {
+      "a": "DenyAllInBound denies everything else.",
+      "b": "AllowAzureLoadBalancerInBound permits load balancer probes.",
+      "d": "AllowInternetOutBound permits outbound internet traffic."
+    },
+    "examTakeaway": "VNet traffic is allowed by default — segment with explicit denies.",
+    "relatedTopics": [
+      "nsg-asg"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Default security rules",
+        "url": "https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview#default-security-rules"
+      }
+    ]
+  },
+  {
+    "id": "nw-034",
+    "domain": "networking",
+    "objectiveId": "dns-load-balancing",
+    "topic": "load-balancer",
+    "services": [
+      "load-balancer",
+      "application-gateway",
+      "front-door",
+      "traffic-manager"
+    ],
+    "difficulty": "exam",
+    "questionType": "matching",
+    "question": "Match each scenario to the load-balancing service.",
+    "options": [
+      {
+        "id": "o1",
+        "text": "Global HTTP app with users worldwide, edge caching and WAF"
+      },
+      {
+        "id": "o2",
+        "text": "Regional HTTPS app needing URL path routing"
+      },
+      {
+        "id": "o3",
+        "text": "Regional UDP game servers"
+      },
+      {
+        "id": "o4",
+        "text": "DNS-based failover between two regions for a non-HTTP service"
+      }
+    ],
+    "matchTargets": [
+      {
+        "id": "fd",
+        "text": "Azure Front Door"
+      },
+      {
+        "id": "agw",
+        "text": "Application Gateway"
+      },
+      {
+        "id": "lb",
+        "text": "Azure Load Balancer"
+      },
+      {
+        "id": "tm",
+        "text": "Traffic Manager"
+      }
+    ],
+    "correctAnswer": {
+      "o1": "fd",
+      "o2": "agw",
+      "o3": "lb",
+      "o4": "tm"
+    },
+    "explanation": "Front Door = global L7 at the edge; Application Gateway = regional L7; Load Balancer = regional L4 (TCP/UDP); Traffic Manager = global DNS-based routing for any protocol.",
+    "incorrectAnswerExplanations": {
+      "o1": "Global + HTTP + edge + WAF → Front Door.",
+      "o2": "Regional + URL routing → Application Gateway.",
+      "o3": "UDP → Load Balancer (L4).",
+      "o4": "DNS failover for any protocol → Traffic Manager."
+    },
+    "examTakeaway": "Scope (global/regional) × layer (L4/L7/DNS) picks the service.",
+    "relatedTopics": [
+      "load-balancer",
+      "application-gateway"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Load-balancing options",
+        "url": "https://learn.microsoft.com/azure/architecture/guide/technology-choices/load-balancing-overview"
+      }
+    ]
+  },
+  {
+    "id": "nw-035",
+    "domain": "networking",
+    "objectiveId": "secure-vnet-access",
+    "topic": "private-service-endpoints",
+    "services": [
+      "private-link"
+    ],
+    "difficulty": "exam",
+    "questionType": "scenario",
+    "scenario": "VNet-Spoke1 hosts a private endpoint for Key Vault kv1 and is linked to the privatelink.vaultcore.azure.net zone. VNet-Spoke2 is peered to VNet-Spoke1 but isn't linked to the zone. VMs in Spoke2 resolve kv1 to its public IP and are blocked because kv1 has public access disabled.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Link the privatelink.vaultcore.azure.net private DNS zone to VNet-Spoke2"
+      },
+      {
+        "id": "b",
+        "text": "Enable public access on kv1"
+      },
+      {
+        "id": "c",
+        "text": "Create a second private endpoint in Spoke2"
+      },
+      {
+        "id": "d",
+        "text": "Add a service endpoint for Microsoft.KeyVault to Spoke2"
+      }
+    ],
+    "correctAnswer": "a",
+    "explanation": "The private endpoint is reachable over peering, but Spoke2 VMs need DNS to resolve kv1 to the private IP. Linking the privatelink zone to Spoke2 (or using centralized DNS) fixes resolution with no extra endpoint.",
+    "incorrectAnswerExplanations": {
+      "b": "Re-enabling public access defeats the security goal.",
+      "c": "A second endpoint is unnecessary; the existing one is reachable via peering.",
+      "d": "Service endpoints use the public endpoint, which is disabled."
+    },
+    "examTakeaway": "Private endpoints work across peering — make sure each VNet resolves the privatelink zone.",
+    "relatedTopics": [
+      "private-service-endpoints",
+      "azure-dns"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Private endpoint DNS integration scenarios",
+        "url": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns-integration"
+      }
+    ]
+  },
+  {
+    "id": "nw-036",
+    "domain": "networking",
+    "objectiveId": "vnets",
+    "topic": "vnets-subnets",
+    "services": [
+      "virtual-network"
+    ],
+    "difficulty": "challenging",
+    "questionType": "scenario",
+    "scenario": "VNet1 (10.1.0.0/16) is peered with VNet2. You need to add the address space 10.2.0.0/16 to VNet1 for a new subnet. After adding it, VMs in VNet2 can't reach the new subnet's VMs.",
+    "question": "What should you do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Enable gateway transit"
+      },
+      {
+        "id": "b",
+        "text": "Add a UDR in VNet2 for 10.2.0.0/16 with next hop Internet"
+      },
+      {
+        "id": "c",
+        "text": "Sync the peering (on the peering link) so VNet2 learns the updated address space"
+      },
+      {
+        "id": "d",
+        "text": "Delete and recreate the peering"
+      }
+    ],
+    "correctAnswer": "c",
+    "explanation": "When a peered VNet's address space changes, the peering must be synced so the remote VNet receives the new prefixes. Azure supports updating address space without deleting the peering.",
+    "incorrectAnswerExplanations": {
+      "a": "Gateway transit is for sharing VPN/ER gateways, not address space updates.",
+      "b": "Routing VNet traffic to Internet is wrong and won't reach private IPs.",
+      "d": "Recreating works but causes an unnecessary outage — sync instead."
+    },
+    "examTakeaway": "Changed address space on a peered VNet → sync the peering.",
+    "relatedTopics": [
+      "vnet-peering",
+      "vnets-subnets"
+    ],
+    "documentationLinks": [
+      {
+        "title": "Update the address space for a peered VNet",
+        "url": "https://learn.microsoft.com/azure/virtual-network/update-virtual-network-peering-address-space"
+      }
+    ]
+  }
+]
