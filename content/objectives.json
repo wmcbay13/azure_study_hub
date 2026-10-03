@@ -1,0 +1,243 @@
+{
+  "exam": "AZ-104",
+  "title": "Microsoft Azure Administrator",
+  "asOf": "2025 skills-measured outline",
+  "source": {
+    "title": "AZ-104 study guide (Microsoft Learn)",
+    "url": "https://learn.microsoft.com/credentials/certifications/resources/study-guides/az-104"
+  },
+  "note": "Microsoft periodically revises the skills measured. Always compare this outline with the official study guide before your exam; update this file (not the UI) when the outline changes.",
+  "domains": [
+    {
+      "id": "identity-governance",
+      "name": "Manage Azure identities and governance",
+      "shortName": "Identity & Governance",
+      "weight": "20–25%",
+      "weightValue": 22.5,
+      "color": "purple",
+      "icon": "shield-check",
+      "description": "Microsoft Entra users and groups, Azure RBAC, subscriptions, management groups, Azure Policy, locks, tags and cost management.",
+      "objectives": [
+        {
+          "id": "entra-users-groups",
+          "title": "Manage Microsoft Entra users and groups",
+          "skills": [
+            "Create users and groups",
+            "Manage user and group properties",
+            "Manage licenses in Microsoft Entra ID",
+            "Manage external users",
+            "Configure self-service password reset (SSPR)"
+          ]
+        },
+        {
+          "id": "access-to-resources",
+          "title": "Manage access to Azure resources",
+          "skills": [
+            "Manage built-in Azure roles",
+            "Assign roles at different scopes",
+            "Interpret access assignments"
+          ]
+        },
+        {
+          "id": "subscriptions-governance",
+          "title": "Manage Azure subscriptions and governance",
+          "skills": [
+            "Implement and manage Azure Policy",
+            "Configure resource locks",
+            "Apply and manage tags on resources",
+            "Manage resource groups",
+            "Manage subscriptions",
+            "Manage costs by using alerts, budgets, and Azure Advisor recommendations",
+            "Configure management groups"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "storage",
+      "name": "Implement and manage storage",
+      "shortName": "Storage",
+      "weight": "15–20%",
+      "weightValue": 17.5,
+      "color": "teal",
+      "icon": "database",
+      "description": "Storage accounts, redundancy, access control (keys, SAS, identity), networking, Blob storage, Azure Files and data management.",
+      "objectives": [
+        {
+          "id": "storage-access",
+          "title": "Configure access to storage",
+          "skills": [
+            "Configure Azure Storage firewalls and virtual networks",
+            "Create and use shared access signature (SAS) tokens",
+            "Configure stored access policies",
+            "Manage access keys",
+            "Configure identity-based access for Azure Files"
+          ]
+        },
+        {
+          "id": "storage-accounts",
+          "title": "Configure and manage storage accounts",
+          "skills": [
+            "Create and configure storage accounts",
+            "Configure Azure Storage redundancy",
+            "Configure object replication",
+            "Configure storage account encryption",
+            "Manage data by using Azure Storage Explorer and AzCopy"
+          ]
+        },
+        {
+          "id": "files-blobs",
+          "title": "Configure Azure Files and Azure Blob Storage",
+          "skills": [
+            "Create and configure a file share in Azure Storage",
+            "Create and configure a container in Blob Storage",
+            "Configure storage tiers",
+            "Configure snapshots and soft delete for Azure Files",
+            "Configure blob lifecycle management",
+            "Configure blob versioning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compute",
+      "name": "Deploy and manage Azure compute resources",
+      "shortName": "Compute",
+      "weight": "20–25%",
+      "weightValue": 22.5,
+      "color": "blue",
+      "icon": "server",
+      "description": "ARM templates and Bicep, virtual machines, availability options, scale sets, containers and Azure App Service.",
+      "objectives": [
+        {
+          "id": "arm-bicep",
+          "title": "Automate deployment of resources by using ARM templates or Bicep files",
+          "skills": [
+            "Interpret an Azure Resource Manager template or a Bicep file",
+            "Modify an existing Azure Resource Manager template",
+            "Modify an existing Bicep file",
+            "Deploy resources by using an Azure Resource Manager template or a Bicep file",
+            "Export a deployment as an Azure Resource Manager template or convert an Azure Resource Manager template to a Bicep file"
+          ]
+        },
+        {
+          "id": "virtual-machines",
+          "title": "Create and configure virtual machines",
+          "skills": [
+            "Create a virtual machine",
+            "Configure Azure Disk Encryption",
+            "Move a virtual machine to another resource group, subscription, or region",
+            "Manage virtual machine sizes",
+            "Manage virtual machine disks",
+            "Deploy virtual machines to availability zones and availability sets",
+            "Deploy and configure Azure Virtual Machine Scale Sets"
+          ]
+        },
+        {
+          "id": "containers",
+          "title": "Provision and manage containers in the Azure portal",
+          "skills": [
+            "Create and manage an Azure container registry",
+            "Provision a container by using Azure Container Instances",
+            "Provision a container by using Azure Container Apps",
+            "Manage sizing and scaling for containers, including Azure Container Instances and Azure Container Apps"
+          ]
+        },
+        {
+          "id": "app-service",
+          "title": "Create and configure Azure App Service",
+          "skills": [
+            "Provision an App Service plan",
+            "Configure scaling for an App Service plan",
+            "Create an App Service",
+            "Configure certificates and Transport Layer Security (TLS) for an App Service",
+            "Map an existing custom DNS name to an App Service",
+            "Configure backup for an App Service",
+            "Configure networking settings for an App Service",
+            "Configure deployment slots for an App Service"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "networking",
+      "name": "Implement and manage virtual networking",
+      "shortName": "Networking",
+      "weight": "15–20%",
+      "weightValue": 17.5,
+      "color": "orange",
+      "icon": "network",
+      "description": "Virtual networks, peering, routing, NSGs and ASGs, Bastion, service and private endpoints, Azure DNS and load balancing.",
+      "objectives": [
+        {
+          "id": "vnets",
+          "title": "Configure and manage virtual networks in Azure",
+          "skills": [
+            "Create and configure virtual networks and subnets",
+            "Create and configure virtual network peering",
+            "Configure public IP addresses",
+            "Configure user-defined network routes",
+            "Troubleshoot network connectivity"
+          ]
+        },
+        {
+          "id": "secure-vnet-access",
+          "title": "Configure secure access to virtual networks",
+          "skills": [
+            "Create and configure network security groups (NSGs) and application security groups",
+            "Evaluate effective security rules in NSGs",
+            "Implement Azure Bastion",
+            "Configure service endpoints for Azure platform as a service (PaaS)",
+            "Configure private endpoints for Azure PaaS"
+          ]
+        },
+        {
+          "id": "dns-load-balancing",
+          "title": "Configure name resolution and load balancing",
+          "skills": [
+            "Configure Azure DNS",
+            "Configure an internal or public load balancer",
+            "Troubleshoot load balancing"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "monitoring",
+      "name": "Monitor and maintain Azure resources",
+      "shortName": "Monitoring & Backup",
+      "weight": "10–15%",
+      "weightValue": 12.5,
+      "color": "green",
+      "icon": "activity",
+      "description": "Azure Monitor metrics, logs, alerts and insights, Network Watcher, Azure Backup and Azure Site Recovery.",
+      "objectives": [
+        {
+          "id": "monitor-resources",
+          "title": "Monitor resources in Azure",
+          "skills": [
+            "Interpret metrics in Azure Monitor",
+            "Configure log settings in Azure Monitor",
+            "Query and analyze logs in Azure Monitor",
+            "Set up alert rules, action groups, and alert processing rules in Azure Monitor",
+            "Configure and interpret monitoring of virtual machines, storage accounts, and networks by using Azure Monitor Insights",
+            "Use Azure Network Watcher and Connection Monitor"
+          ]
+        },
+        {
+          "id": "backup-recovery",
+          "title": "Implement backup and recovery",
+          "skills": [
+            "Create a Recovery Services vault",
+            "Create an Azure Backup vault",
+            "Create and configure a backup policy",
+            "Perform backup and restore operations by using Azure Backup",
+            "Configure Azure Site Recovery for Azure resources",
+            "Perform a failover to a secondary region by using Site Recovery",
+            "Configure and interpret reports and alerts for backups"
+          ]
+        }
+      ]
+    }
+  ]
+}
