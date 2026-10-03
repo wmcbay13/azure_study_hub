@@ -1,0 +1,160 @@
+[
+  {
+    "id": "storage-redundancy",
+    "title": "Storage Redundancy Models",
+    "summary": "Where Azure Storage keeps its copies for LRS, ZRS, GRS and GZRS — and what each survives.",
+    "domain": "storage",
+    "topics": ["storage-redundancy", "storage-accounts"],
+    "width": 1000,
+    "height": 600,
+    "groups": [
+      { "id": "primary", "label": "Primary region", "x": 160, "y": 30, "w": 480, "h": 545, "color": "blue" },
+      { "id": "secondary", "label": "Secondary (paired) region", "x": 670, "y": 30, "w": 310, "h": 545, "color": "purple" }
+    ],
+    "nodes": [
+      { "id": "lrs", "label": "LRS", "sublabel": "1 datacenter", "icon": "hard-drive", "x": 75, "y": 110, "w": 130, "color": "gray", "detail": "Locally redundant: 3 synchronous copies in one datacenter. Survives disk/rack failures, not a datacenter or zone outage." },
+      { "id": "lrs-dc", "label": "Datacenter", "sublabel": "3 copies", "icon": "building", "x": 400, "y": 110, "w": 220, "color": "teal", "detail": "All three copies live in a single datacenter in the primary region." },
+      { "id": "zrs", "label": "ZRS", "sublabel": "3 zones", "icon": "layers", "x": 75, "y": 240, "w": 130, "color": "gray", "detail": "Zone-redundant: 3 synchronous copies across three availability zones. Survives a zone outage." },
+      { "id": "zrs1", "label": "Zone 1", "sublabel": "1 copy", "icon": "building", "x": 240, "y": 240, "w": 140, "color": "teal", "detail": "Each zone is a separate datacenter with independent power, cooling and networking." },
+      { "id": "zrs2", "label": "Zone 2", "sublabel": "1 copy", "icon": "building", "x": 400, "y": 240, "w": 140, "color": "teal", "detail": "Writes succeed only after all three zones have the data (synchronous)." },
+      { "id": "zrs3", "label": "Zone 3", "sublabel": "1 copy", "icon": "building", "x": 560, "y": 240, "w": 140, "color": "teal", "detail": "If one zone fails, reads and writes continue from the other zones." },
+      { "id": "grs", "label": "GRS", "sublabel": "LRS + geo copy", "icon": "globe", "x": 75, "y": 370, "w": 130, "color": "gray", "detail": "Geo-redundant: LRS in the primary region plus asynchronous replication to the paired region. RA-GRS adds read access to the secondary." },
+      { "id": "grs-dc", "label": "Datacenter", "sublabel": "3 copies (LRS)", "icon": "building", "x": 400, "y": 370, "w": 220, "color": "teal", "detail": "Primary copies are LRS — a single datacenter." },
+      { "id": "grs-sec", "label": "Datacenter", "sublabel": "3 copies (LRS)", "icon": "building", "x": 825, "y": 370, "w": 220, "color": "purple", "detail": "The secondary region always stores data with LRS. Not readable unless you use RA-GRS or fail over." },
+      { "id": "gzrs", "label": "GZRS", "sublabel": "ZRS + geo copy", "icon": "shield-check", "x": 75, "y": 500, "w": 130, "color": "gray", "detail": "Geo-zone-redundant: ZRS in the primary region plus asynchronous replication to the paired region. RA-GZRS adds read access." },
+      { "id": "gz1", "label": "Zone 1", "sublabel": "1 copy", "icon": "building", "x": 240, "y": 500, "w": 140, "color": "teal", "detail": "Zone-redundant primary copies, as with ZRS." },
+      { "id": "gz2", "label": "Zone 2", "sublabel": "1 copy", "icon": "building", "x": 400, "y": 500, "w": 140, "color": "teal", "detail": "Zone-redundant primary copies, as with ZRS." },
+      { "id": "gz3", "label": "Zone 3", "sublabel": "1 copy", "icon": "building", "x": 560, "y": 500, "w": 140, "color": "teal", "detail": "Zone-redundant primary copies, as with ZRS." },
+      { "id": "gz-sec", "label": "Datacenter", "sublabel": "3 copies (LRS)", "icon": "building", "x": 825, "y": 500, "w": 220, "color": "purple", "detail": "Again LRS in the secondary region." }
+    ],
+    "edges": [
+      { "from": "grs-dc", "to": "grs-sec", "label": "async geo-replication", "style": "dashed", "color": "purple" },
+      { "from": "gz3", "to": "gz-sec", "label": "async", "style": "dashed", "color": "purple" }
+    ],
+    "legend": [
+      { "color": "teal", "label": "Primary region copies (synchronous)" },
+      { "color": "purple", "label": "Secondary region copies (asynchronous, LRS)" }
+    ],
+    "steps": [
+      { "title": "LRS", "text": "Three copies in one datacenter. Cheapest; doesn't survive a datacenter failure.", "highlight": ["lrs", "lrs-dc"] },
+      { "title": "ZRS", "text": "One copy in each of three zones. Data stays available if a zone fails.", "highlight": ["zrs", "zrs1", "zrs2", "zrs3"] },
+      { "title": "GRS", "text": "LRS in the primary plus an asynchronous copy (LRS) in the paired region. Survives a regional disaster after failover.", "highlight": ["grs", "grs-dc", "grs-sec"] },
+      { "title": "GZRS", "text": "Zone resilience in the primary region plus a geo copy — the most durable option.", "highlight": ["gzrs", "gz1", "gz2", "gz3", "gz-sec"] }
+    ],
+    "examExpects": [
+      "Match the failure to survive with the option: datacenter/zone → ZRS; region → GRS/GZRS; read during regional outage → RA-GRS/RA-GZRS.",
+      "Geo-replication is asynchronous, so a failover can lose recent writes.",
+      "The secondary region always uses LRS.",
+      "Premium accounts support only LRS and ZRS."
+    ],
+    "docLinks": [
+      { "title": "Azure Storage redundancy", "url": "https://learn.microsoft.com/azure/storage/common/storage-redundancy" }
+    ]
+  },
+  {
+    "id": "availability-sets-zones",
+    "title": "Availability Sets vs Availability Zones",
+    "summary": "Fault and update domains inside one datacenter versus VMs spread across physically separate zones.",
+    "domain": "compute",
+    "topics": ["vm-availability", "virtual-machines"],
+    "width": 1000,
+    "height": 500,
+    "groups": [
+      { "id": "aset", "label": "Availability set (one datacenter)", "x": 20, "y": 30, "w": 470, "h": 440, "color": "blue" },
+      { "id": "fd0", "label": "Fault domain 0", "x": 35, "y": 70, "w": 145, "h": 380, "color": "gray" },
+      { "id": "fd1", "label": "Fault domain 1", "x": 185, "y": 70, "w": 145, "h": 380, "color": "gray" },
+      { "id": "fd2", "label": "Fault domain 2", "x": 335, "y": 70, "w": 145, "h": 380, "color": "gray" },
+      { "id": "region", "label": "Region with availability zones", "x": 510, "y": 30, "w": 470, "h": 440, "color": "green" },
+      { "id": "z1", "label": "Zone 1", "x": 525, "y": 70, "w": 145, "h": 230, "color": "teal" },
+      { "id": "z2", "label": "Zone 2", "x": 675, "y": 70, "w": 145, "h": 230, "color": "teal" },
+      { "id": "z3", "label": "Zone 3", "x": 825, "y": 70, "w": 145, "h": 230, "color": "teal" }
+    ],
+    "nodes": [
+      { "id": "vm1", "label": "VM1", "sublabel": "FD0 · UD0", "icon": "server", "x": 107, "y": 170, "w": 125, "color": "blue", "detail": "Fault domains are racks with separate power and network. If rack FD0 fails, only VMs in FD0 go down." },
+      { "id": "vm4", "label": "VM4", "sublabel": "FD0 · UD3", "icon": "server", "x": 107, "y": 330, "w": 125, "color": "blue", "detail": "VMs are distributed round-robin across fault and update domains as they're created." },
+      { "id": "vm2", "label": "VM2", "sublabel": "FD1 · UD1", "icon": "server", "x": 257, "y": 170, "w": 125, "color": "blue", "detail": "Update domains are rebooted one at a time during planned maintenance." },
+      { "id": "vm5", "label": "VM5", "sublabel": "FD1 · UD4", "icon": "server", "x": 257, "y": 330, "w": 125, "color": "blue", "detail": "With 5 update domains (the default), the 6th VM would go back into UD0." },
+      { "id": "vm3", "label": "VM3", "sublabel": "FD2 · UD2", "icon": "server", "x": 407, "y": 170, "w": 125, "color": "blue", "detail": "Availability sets protect against rack failures and planned maintenance, but not against a whole datacenter outage." },
+      { "id": "za", "label": "VM-A", "sublabel": "zonal", "icon": "server", "x": 597, "y": 190, "w": 125, "color": "green", "detail": "Each zone is a separate datacenter. A zone outage takes down only VMs in that zone." },
+      { "id": "zb", "label": "VM-B", "sublabel": "zonal", "icon": "server", "x": 747, "y": 190, "w": 125, "color": "green", "detail": "Deploy at least two VMs in different zones to qualify for the highest VM SLA." },
+      { "id": "zc", "label": "VM-C", "sublabel": "zonal", "icon": "server", "x": 897, "y": 190, "w": 125, "color": "green", "detail": "Three zones give room for one zone to fail while two keep serving." },
+      { "id": "lb", "label": "Standard LB", "sublabel": "zone-redundant frontend", "icon": "split", "x": 747, "y": 390, "w": 220, "color": "orange", "detail": "A zone-redundant Standard Load Balancer and Standard public IP keep the frontend available if a zone fails." }
+    ],
+    "edges": [
+      { "from": "lb", "to": "za", "color": "orange" },
+      { "from": "lb", "to": "zb", "color": "orange" },
+      { "from": "lb", "to": "zc", "color": "orange" }
+    ],
+    "legend": [
+      { "color": "blue", "label": "VMs in an availability set" },
+      { "color": "green", "label": "Zonal VMs" },
+      { "color": "orange", "label": "Load balancer" }
+    ],
+    "steps": [
+      { "title": "Fault domains", "text": "An availability set spreads VMs across up to three fault domains (racks) so a hardware failure affects only some of them.", "highlight": ["vm1", "vm2", "vm3", "vm4", "vm5"] },
+      { "title": "Update domains", "text": "Planned maintenance reboots one update domain at a time. VM1 (UD0) and VM2 (UD1) never reboot together.", "highlight": ["vm1", "vm2"] },
+      { "title": "Availability zones", "text": "Zones are separate datacenters. Spreading VMs across zones survives a full datacenter outage.", "highlight": ["za", "zb", "zc"] },
+      { "title": "Front it with a load balancer", "text": "A zone-redundant Standard LB distributes traffic only to healthy VMs in surviving zones.", "highlight": ["lb", "za", "zb", "zc"] }
+    ],
+    "examExpects": [
+      "Availability sets: fault domains (unplanned hardware failure) and update domains (planned maintenance) in one datacenter.",
+      "Availability zones: separate datacenters in a region; highest VM SLA with 2+ VMs across zones.",
+      "You choose the availability option at VM creation; you can't add an existing VM to a set.",
+      "Neither option protects against a regional outage — use Site Recovery or multi-region designs."
+    ],
+    "docLinks": [
+      { "title": "Availability options for Azure VMs", "url": "https://learn.microsoft.com/azure/virtual-machines/availability" },
+      { "title": "Availability sets overview", "url": "https://learn.microsoft.com/azure/virtual-machines/availability-set-overview" }
+    ]
+  },
+  {
+    "id": "vm-scale-sets",
+    "title": "VM Scale Sets & Autoscale",
+    "summary": "How metrics drive autoscale rules that add and remove load-balanced scale set instances.",
+    "domain": "compute",
+    "topics": ["vm-scale-sets"],
+    "width": 980,
+    "height": 460,
+    "groups": [
+      { "id": "vmss", "label": "Scale set (min 2 · max 10)", "x": 410, "y": 40, "w": 310, "h": 380, "color": "blue" }
+    ],
+    "nodes": [
+      { "id": "users", "label": "Users", "sublabel": "HTTP traffic", "icon": "users", "x": 90, "y": 230, "w": 150, "color": "gray", "detail": "Client requests arrive at the load balancer's frontend." },
+      { "id": "lb", "label": "Load balancer", "sublabel": "health probe", "icon": "split", "x": 290, "y": 230, "w": 170, "color": "orange", "detail": "The scale set registers instances in the backend pool; the probe ensures only healthy instances get traffic." },
+      { "id": "i1", "label": "Instance 1", "sublabel": "running", "icon": "server", "x": 565, "y": 120, "w": 170, "color": "blue", "detail": "Instances are created from the scale set model (image, size, extensions)." },
+      { "id": "i2", "label": "Instance 2", "sublabel": "running", "icon": "server", "x": 565, "y": 230, "w": 170, "color": "blue", "detail": "Minimum instance count is always maintained." },
+      { "id": "i3", "label": "Instance 3", "sublabel": "added by scale-out", "icon": "server", "x": 565, "y": 340, "w": 190, "color": "green", "detail": "Added automatically when the scale-out rule fired. It will be removed when the scale-in rule fires (respecting the scale-in policy)." },
+      { "id": "mon", "label": "Azure Monitor", "sublabel": "Percentage CPU", "icon": "activity", "x": 860, "y": 120, "w": 190, "color": "purple", "detail": "Host metrics such as Percentage CPU are collected automatically; guest metrics need an agent." },
+      { "id": "as", "label": "Autoscale setting", "sublabel": "CPU > 70% → +1", "icon": "gauge", "x": 860, "y": 340, "w": 190, "color": "amber", "detail": "Profile with min/max/default, scale-out and scale-in rules, cooldown, and optional schedules." }
+    ],
+    "edges": [
+      { "from": "users", "to": "lb", "color": "gray" },
+      { "from": "lb", "to": "i1", "color": "orange" },
+      { "from": "lb", "to": "i2", "color": "orange" },
+      { "from": "lb", "to": "i3", "color": "orange" },
+      { "from": "i1", "to": "mon", "label": "metrics", "style": "dashed", "color": "purple" },
+      { "from": "mon", "to": "as", "label": "evaluate rules", "color": "purple" },
+      { "from": "as", "to": "i3", "label": "scale out / in", "color": "amber" }
+    ],
+    "legend": [
+      { "color": "orange", "label": "Traffic" },
+      { "color": "purple", "label": "Telemetry" },
+      { "color": "amber", "label": "Scaling action" }
+    ],
+    "steps": [
+      { "title": "Traffic", "text": "Users hit the load balancer, which spreads requests across healthy instances.", "highlight": ["users", "lb", "i1", "i2"] },
+      { "title": "Metrics", "text": "Instances emit CPU metrics to Azure Monitor.", "highlight": ["i1", "mon"] },
+      { "title": "Rule evaluation", "text": "Autoscale evaluates rules: average CPU above 70% for 10 minutes triggers scale-out.", "highlight": ["mon", "as"] },
+      { "title": "Scale out", "text": "A new instance is added (up to the maximum) and joins the backend pool automatically. A paired scale-in rule removes it when load drops.", "highlight": ["as", "i3", "lb"] }
+    ],
+    "examExpects": [
+      "Autoscale needs both scale-out and scale-in rules, bounded by min and max counts.",
+      "Use schedule-based profiles for predictable load patterns.",
+      "Scale-in policy controls which instances are removed first.",
+      "Scale sets integrate with Load Balancer or Application Gateway backend pools automatically."
+    ],
+    "docLinks": [
+      { "title": "Overview of autoscale with scale sets", "url": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-autoscale-overview" }
+    ]
+  }
+]

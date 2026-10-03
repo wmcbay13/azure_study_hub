@@ -1,0 +1,589 @@
+[
+  {
+    "slug": "vnets-subnets",
+    "title": "Virtual Networks, Subnets & Public IPs",
+    "domain": "networking",
+    "objectiveIds": ["vnets"],
+    "icon": "network",
+    "summary": "Design VNet address spaces and subnets, understand reserved addresses and special subnets, and configure public IP addresses.",
+    "overview": [
+      "An Azure virtual network (VNet) is your private network in Azure. It has one or more address spaces (CIDR blocks, usually from RFC 1918 ranges) and is divided into subnets where you place resources.",
+      "Resources in the same VNet can communicate by default, across subnets, without any routing configuration. VNets are scoped to a single region and subscription, but can be connected to other VNets (peering) and on-premises networks (VPN/ExpressRoute).",
+      "Public IP addresses give resources such as load balancers, VPN gateways, Bastion and VMs a reachable internet address. The Standard SKU is secure by default and supports availability zones."
+    ],
+    "keyConcepts": [
+      { "term": "Address space", "definition": "The CIDR range(s) of the VNet, e.g., 10.10.0.0/16. Must not overlap with networks you plan to connect." },
+      { "term": "Subnet", "definition": "A range within the address space. NSGs, route tables, NAT gateways and service endpoints are associated per subnet." },
+      { "term": "Reserved addresses", "definition": "Azure reserves 5 IPs in every subnet: the network address, the first three host addresses (gateway and Azure DNS mapping), and the broadcast address. A /29 is the smallest subnet (3 usable)." },
+      { "term": "Special subnets", "definition": "GatewaySubnet (VPN/ExpressRoute gateways), AzureBastionSubnet (/26 or larger), AzureFirewallSubnet (/26). Names must be exact." },
+      { "term": "Private IP allocation", "definition": "Dynamic (default — assigned from the subnet and kept until the NIC is deleted) or Static (a specific address you choose)." },
+      { "term": "Standard public IP", "definition": "Static allocation, zone-redundant or zonal, closed to inbound traffic unless allowed by an NSG. Required for Standard Load Balancer." },
+      { "term": "Basic public IP (retired)", "definition": "Older SKU open by default and without zone support; retired in September 2025. Migrate to Standard." },
+      { "term": "Public IP prefix", "definition": "A contiguous, reserved block of public IPs you can allocate from — useful for allowlisting." }
+    ],
+    "howItWorks": [
+      "Plan non-overlapping address spaces for every VNet and on-premises network you'll connect.",
+      "Create the VNet with an address space and subnets sized for growth (remember the 5 reserved addresses).",
+      "Deploy resources into subnets; each NIC gets a private IP from its subnet. Azure's default system routes let all subnets talk.",
+      "Attach a Standard public IP where internet inbound access is required, and allow the traffic with an NSG.",
+      "You can add address spaces and subnets later; you can't change a subnet's range while it has resources using it."
+    ],
+    "whenToUse": [
+      "Separate tiers (web, app, data) into subnets so you can apply different NSGs and routes.",
+      "Use static private IPs for DNS servers, domain controllers and network appliances.",
+      "Use Standard public IPs for anything new; avoid public IPs on VMs where Bastion or a load balancer can be used instead."
+    ],
+    "examTips": [
+      "Usable addresses in a subnet = total − 5. A /24 gives 251 usable; a /28 gives 11; a /29 gives 3.",
+      "VNets that will be peered or connected to on-premises must not have overlapping address spaces.",
+      "A VNet can't span regions — use peering to connect VNets in different regions.",
+      "Standard public IPs block inbound traffic by default; you need an NSG rule to allow it.",
+      "The GatewaySubnet must be named exactly 'GatewaySubnet' and shouldn't have an NSG associated."
+    ],
+    "commonMistakes": [
+      "Forgetting the 5 reserved addresses when sizing subnets.",
+      "Planning overlapping address spaces and discovering later that peering is impossible.",
+      "Expecting a Standard public IP to be reachable without an NSG allowing the traffic."
+    ],
+    "confusedWith": [
+      { "name": "VNet peering", "difference": "A VNet is one network; peering connects two VNets so they route privately." },
+      { "name": "Service endpoints", "difference": "Subnet setting for reaching PaaS services, not a way to create address space." }
+    ],
+    "diagrams": ["vnet-architecture"],
+    "services": ["virtual-network"],
+    "docLinks": [
+      { "title": "What is Azure Virtual Network?", "url": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-overview" },
+      { "title": "Virtual network FAQ (reserved addresses, sizes)", "url": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-faq" },
+      { "title": "Public IP addresses in Azure", "url": "https://learn.microsoft.com/azure/virtual-network/ip-services/public-ip-addresses" }
+    ]
+  },
+  {
+    "slug": "vnet-peering",
+    "title": "Virtual Network Peering & Gateway Transit",
+    "domain": "networking",
+    "objectiveIds": ["vnets"],
+    "icon": "link-2",
+    "summary": "Connect VNets privately across regions and subscriptions, understand non-transitivity, and share a VPN gateway with gateway transit.",
+    "overview": [
+      "VNet peering connects two virtual networks so resources communicate using private IPs over the Microsoft backbone, with low latency and no gateway required. Peering works within a region (regional) or across regions (global), and across subscriptions and even tenants.",
+      "Peering is non-transitive: if A is peered with B and B with C, A cannot reach C through B. Hub-and-spoke designs solve this with a network virtual appliance or Azure Firewall in the hub plus user-defined routes, or with Azure Virtual Network Manager / Virtual WAN.",
+      "Gateway transit lets spoke VNets use a VPN or ExpressRoute gateway in the hub VNet to reach on-premises networks, so you deploy and pay for one gateway."
+    ],
+    "keyConcepts": [
+      { "term": "Peering link", "definition": "A peering is created as two links, one in each VNet. Both must be in place for status 'Connected'." },
+      { "term": "Non-transitive", "definition": "Traffic doesn't flow through a peered VNet to a third VNet without additional routing (NVA/firewall + UDRs)." },
+      { "term": "Allow forwarded traffic", "definition": "Accepts traffic that didn't originate in the peered VNet — needed when an NVA in the hub forwards traffic between spokes." },
+      { "term": "Allow gateway transit", "definition": "Set on the hub's peering link so peers may use its gateway." },
+      { "term": "Use remote gateways", "definition": "Set on the spoke's peering link so it routes to on-premises via the hub's gateway. The spoke can't have its own gateway." },
+      { "term": "Address space sync", "definition": "If you change a peered VNet's address space, sync the peering so the other side learns the new prefixes." }
+    ],
+    "howItWorks": [
+      "Ensure the two VNets have non-overlapping address spaces.",
+      "Create the peering (the portal can create both links at once). You need network contributor-level permissions on both VNets.",
+      "Azure adds system routes so each VNet routes the other's prefixes directly via the peering.",
+      "For on-premises access through a hub, enable Allow gateway transit on the hub link and Use remote gateways on the spoke link.",
+      "For spoke-to-spoke traffic, route via an NVA/Azure Firewall in the hub with UDRs and enable Allow forwarded traffic, or peer the spokes directly."
+    ],
+    "whenToUse": [
+      "Connecting VNets in the same or different regions with private, low-latency connectivity.",
+      "Hub-and-spoke topologies where shared services (firewall, DNS, gateways) live in a hub.",
+      "Connecting VNets in different subscriptions or tenants without VPN tunnels."
+    ],
+    "examTips": [
+      "Overlapping address spaces block peering — you'd have to re-address one VNet.",
+      "Spoke A can't reach Spoke B just because both peer with the hub. Add a direct peering, or an NVA/firewall in the hub with UDRs.",
+      "'Spokes must use the hub's VPN gateway' → Allow gateway transit (hub) + Use remote gateways (spokes).",
+      "Peering status 'Initiated' means only one side is configured.",
+      "Global peering supports most scenarios but some features, such as Basic Load Balancer front ends, can't be reached across global peering."
+    ],
+    "commonMistakes": [
+      "Assuming peering is transitive.",
+      "Configuring Use remote gateways on a spoke that already has its own VPN gateway.",
+      "Forgetting to create the second peering link."
+    ],
+    "confusedWith": [
+      { "name": "VPN Gateway VNet-to-VNet", "difference": "VNet-to-VNet uses encrypted IPsec tunnels through gateways (higher latency, bandwidth limited by SKU); peering uses the backbone directly with no gateway." },
+      { "name": "ExpressRoute", "difference": "ExpressRoute connects on-premises to Azure; peering connects Azure VNets to each other." }
+    ],
+    "diagrams": ["vnet-peering"],
+    "services": ["virtual-network", "vpn-gateway"],
+    "docLinks": [
+      { "title": "Virtual network peering", "url": "https://learn.microsoft.com/azure/virtual-network/virtual-network-peering-overview" },
+      { "title": "Configure VPN gateway transit for peering", "url": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-peering-gateway-transit" },
+      { "title": "Hub-spoke network topology", "url": "https://learn.microsoft.com/azure/architecture/networking/architecture/hub-spoke" }
+    ]
+  },
+  {
+    "slug": "nsg-asg",
+    "title": "Network Security Groups & Application Security Groups",
+    "domain": "networking",
+    "objectiveIds": ["secure-vnet-access"],
+    "icon": "shield",
+    "summary": "Filter traffic with NSG rules, understand processing order and default rules, group VMs with ASGs, and evaluate effective security rules.",
+    "overview": [
+      "A network security group (NSG) contains security rules that allow or deny inbound and outbound traffic based on source, destination, port and protocol (a 5-tuple). NSGs can be associated with subnets and with individual NICs.",
+      "Rules are processed in priority order (lowest number first) and processing stops at the first match. NSGs are stateful: if inbound traffic is allowed, the response is automatically allowed.",
+      "Application security groups (ASGs) let you group VMs by role (e.g., 'WebServers') and use the group name as a source or destination in NSG rules instead of IP addresses."
+    ],
+    "keyConcepts": [
+      { "term": "Priority", "definition": "100–4096 for custom rules. Lower numbers are evaluated first; first match wins." },
+      { "term": "Default inbound rules", "definition": "65000 AllowVnetInBound, 65001 AllowAzureLoadBalancerInBound, 65500 DenyAllInBound. They can't be deleted, but higher-priority rules override them." },
+      { "term": "Default outbound rules", "definition": "65000 AllowVnetOutBound, 65001 AllowInternetOutBound, 65500 DenyAllOutBound." },
+      { "term": "Service tag", "definition": "A Microsoft-managed group of IP prefixes, such as Internet, VirtualNetwork, AzureLoadBalancer, Storage or Sql.Westeurope." },
+      { "term": "Subnet + NIC NSGs", "definition": "Inbound traffic is evaluated by the subnet NSG then the NIC NSG; outbound by the NIC NSG then the subnet NSG. Traffic must be allowed by both." },
+      { "term": "Application security group", "definition": "A logical group of NICs. ASGs used in a rule must be in the same VNet as the NICs." },
+      { "term": "Effective security rules", "definition": "The combined rules applied to a NIC from its subnet and NIC NSGs, viewable in the portal or Network Watcher." }
+    ],
+    "howItWorks": [
+      "Create an NSG in the same region as the VNet and add inbound/outbound rules with priority, source, destination, port range, protocol and action.",
+      "Associate it with a subnet (applies to all resources in it) and/or a NIC.",
+      "For inbound traffic, the subnet NSG is evaluated first, then the NIC NSG; a deny in either blocks the traffic.",
+      "Within each NSG, rules are checked from lowest to highest priority until one matches.",
+      "Use Network Watcher IP flow verify or the effective security rules view to find which rule allowed or denied a flow."
+    ],
+    "whenToUse": [
+      "Restrict inbound management ports (RDP 3389, SSH 22) — or better, remove them and use Bastion.",
+      "Segment tiers: only the web subnet can reach the app subnet on its port; only the app tier can reach SQL on 1433.",
+      "Use ASGs to write rules by workload role so rules don't need updating when IPs change.",
+      "Use service tags to allow or deny categories like Internet or Azure services without listing IPs."
+    ],
+    "examTips": [
+      "Find the lowest-numbered matching rule — that's the outcome. A deny at priority 200 beats an allow at 300.",
+      "If a subnet NSG allows port 80 but the NIC NSG has no allow rule, the default DenyAllInBound on the NIC NSG blocks it.",
+      "AllowVnetInBound means VMs in the VNet (and peered/connected networks) can talk by default — add explicit denies to segment.",
+      "Standard Load Balancer health probes come from the AzureLoadBalancer service tag (168.63.129.16); don't block it.",
+      "NSGs are stateful — you don't need an outbound rule for responses to allowed inbound traffic."
+    ],
+    "commonMistakes": [
+      "Reading rules top-to-bottom as listed instead of by priority.",
+      "Forgetting that both the subnet and NIC NSG must allow the traffic.",
+      "Trying to use an ASG from a different VNet in a rule.",
+      "Adding outbound rules for return traffic."
+    ],
+    "confusedWith": [
+      { "name": "Azure Firewall", "difference": "NSGs are distributed L3/L4 filters on subnets/NICs; Azure Firewall is a centralized, stateful firewall service with FQDN filtering, threat intelligence and logging.", "comparison": "nsg-vs-firewall" },
+      { "name": "User-defined routes", "difference": "Routes decide where traffic goes; NSGs decide whether it's allowed." }
+    ],
+    "diagrams": ["nsg-processing"],
+    "services": ["network-security-groups", "network-watcher"],
+    "docLinks": [
+      { "title": "Network security groups overview", "url": "https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview" },
+      { "title": "How network security groups filter traffic", "url": "https://learn.microsoft.com/azure/virtual-network/network-security-group-how-it-works" },
+      { "title": "Application security groups", "url": "https://learn.microsoft.com/azure/virtual-network/application-security-groups" },
+      { "title": "Virtual network service tags", "url": "https://learn.microsoft.com/azure/virtual-network/service-tags-overview" }
+    ]
+  },
+  {
+    "slug": "azure-bastion",
+    "title": "Azure Bastion",
+    "domain": "networking",
+    "objectiveIds": ["secure-vnet-access"],
+    "icon": "lock-keyhole",
+    "summary": "Securely RDP/SSH to VMs over TLS from the Azure portal without exposing public IPs or management ports.",
+    "overview": [
+      "Azure Bastion is a fully managed PaaS service that provides RDP and SSH access to VMs over TLS (port 443) directly from the Azure portal or native clients. VMs need no public IP and you don't expose ports 3389 or 22 to the internet.",
+      "Bastion is deployed into a dedicated subnet named AzureBastionSubnet in a VNet. From there it can reach VMs in that VNet and in peered VNets.",
+      "SKUs range from Developer (free, shared, basic connectivity) through Basic, Standard and Premium, which add features such as native client support, shareable links, IP-based connections, scaling and session recording."
+    ],
+    "keyConcepts": [
+      { "term": "AzureBastionSubnet", "definition": "Required subnet name; must be /26 or larger." },
+      { "term": "Public IP", "definition": "Bastion's own Standard public IP (not needed by the target VMs) — except the Developer SKU, which uses shared infrastructure." },
+      { "term": "Native client support", "definition": "Connect with your local RDP/SSH client via Azure CLI. Standard SKU and above." },
+      { "term": "Shareable links", "definition": "Let users connect to a VM via a link without portal access. Standard SKU and above." },
+      { "term": "Host scaling", "definition": "Standard and above can add scale units for more concurrent sessions." },
+      { "term": "Peered VNet access", "definition": "A Bastion in a hub can connect to VMs in peered spoke VNets." }
+    ],
+    "howItWorks": [
+      "Create AzureBastionSubnet (/26 or larger) in the VNet.",
+      "Deploy Bastion with a Standard public IP and choose the SKU.",
+      "Users open the VM in the portal and choose Connect → Bastion; the session streams over HTTPS 443 to the browser.",
+      "Bastion connects to the VM's private IP on 3389/22; NSGs on the VM subnet must allow traffic from the Bastion subnet."
+    ],
+    "whenToUse": [
+      "Remote administration of VMs without public IPs or jump boxes.",
+      "Meeting security requirements that forbid exposing RDP/SSH to the internet.",
+      "Centralized access to VMs across peered VNets in a hub-and-spoke design."
+    ],
+    "examTips": [
+      "'Connect to VMs without public IPs and without opening 3389/22 to the internet' → Azure Bastion.",
+      "The subnet must be named AzureBastionSubnet and be at least /26.",
+      "Native client connections and shareable links require Standard (or Premium).",
+      "One Bastion deployment can serve peered VNets — you don't need one per VNet."
+    ],
+    "commonMistakes": [
+      "Naming the subnet something other than AzureBastionSubnet, or making it too small.",
+      "Blocking traffic from the Bastion subnet to VMs with NSGs.",
+      "Choosing Basic or Developer SKU when native client support is required."
+    ],
+    "confusedWith": [
+      { "name": "Point-to-site VPN", "difference": "P2S gives a client full network access to the VNet; Bastion gives browser/native RDP/SSH sessions to specific VMs." },
+      { "name": "Just-in-time VM access", "difference": "JIT (Defender for Cloud) opens management ports temporarily via NSG rules; Bastion avoids exposing them at all." }
+    ],
+    "diagrams": ["vnet-architecture"],
+    "services": ["azure-bastion"],
+    "docLinks": [
+      { "title": "What is Azure Bastion?", "url": "https://learn.microsoft.com/azure/bastion/bastion-overview" },
+      { "title": "Bastion configuration settings and SKUs", "url": "https://learn.microsoft.com/azure/bastion/configuration-settings" },
+      { "title": "Working with NSGs and Azure Bastion", "url": "https://learn.microsoft.com/azure/bastion/bastion-nsg" }
+    ],
+    "versionNote": "Bastion SKUs and per-SKU features have changed several times (Developer and Premium SKUs are recent additions). Check the configuration settings page."
+  },
+  {
+    "slug": "routing-udr",
+    "title": "Routing: System Routes, UDRs & NAT Gateway",
+    "domain": "networking",
+    "objectiveIds": ["vnets"],
+    "icon": "route",
+    "summary": "How Azure routes traffic by default, how to override it with route tables, and how NAT Gateway provides outbound internet connectivity.",
+    "overview": [
+      "Azure automatically creates system routes for each subnet: traffic within the VNet and to peered VNets is routed directly, and 0.0.0.0/0 goes to the Internet. On-premises routes are added by VPN/ExpressRoute gateways via BGP.",
+      "User-defined routes (UDRs) in a route table override system routes. The classic use is forcing traffic through a network virtual appliance (NVA) or Azure Firewall for inspection.",
+      "When several routes match, Azure picks the longest prefix match; if prefixes are equal, UDRs win over BGP routes, which win over system routes. NAT Gateway gives a subnet scalable, outbound-only internet access through fixed public IPs."
+    ],
+    "keyConcepts": [
+      { "term": "Next hop types", "definition": "Virtual network gateway, Virtual network, Internet, Virtual appliance (with an IP) and None (drop)." },
+      { "term": "Route table", "definition": "A resource containing UDRs, associated with one or more subnets in the same region and subscription." },
+      { "term": "Longest prefix match", "definition": "A /24 route is preferred over a /16 route for an address in both ranges." },
+      { "term": "Forced tunneling", "definition": "A 0.0.0.0/0 route sending internet-bound traffic to a firewall/NVA or on-premises instead of directly out." },
+      { "term": "IP forwarding", "definition": "Must be enabled on the NVA's NIC (and inside its OS) for it to forward traffic not addressed to itself." },
+      { "term": "NAT Gateway", "definition": "Subnet-level, outbound-only SNAT using Standard public IPs or prefixes. Prevents SNAT port exhaustion and gives predictable egress IPs. Unsolicited inbound connections aren't allowed." },
+      { "term": "Effective routes", "definition": "The combined routes applied to a NIC, viewable in the portal and used by Network Watcher's next hop tool." }
+    ],
+    "howItWorks": [
+      "Create a route table and add routes (address prefix → next hop).",
+      "Associate the route table to the subnet(s) whose outbound traffic you want to steer.",
+      "For an NVA: set next hop 'Virtual appliance' with the NVA's private IP and enable IP forwarding on its NIC.",
+      "For outbound internet with fixed IPs: create a NAT gateway, attach Standard public IPs or a prefix, and associate it with the subnet. It takes precedence over other outbound methods for that subnet.",
+      "Verify with effective routes and Network Watcher next hop."
+    ],
+    "whenToUse": [
+      "Inspect traffic between spokes or to the internet with Azure Firewall or a third-party NVA.",
+      "Force internet traffic on-premises for compliance (forced tunneling).",
+      "Drop traffic to specific prefixes (next hop None).",
+      "Use NAT Gateway when many VMs need outbound internet with a small, known set of public IPs."
+    ],
+    "examTips": [
+      "Route tables are associated with subnets, not NICs or VNets.",
+      "Traffic to an NVA is dropped if IP forwarding isn't enabled on the NVA's NIC.",
+      "Use Network Watcher next hop to diagnose 'traffic goes to the wrong place'; use IP flow verify for 'traffic is blocked'.",
+      "NAT Gateway is outbound only; for inbound, use a load balancer or public IP.",
+      "A route table must be in the same region and subscription as the VNet it's associated with."
+    ],
+    "commonMistakes": [
+      "Forgetting the return route, creating asymmetric routing through a stateful firewall.",
+      "Associating a route table with the GatewaySubnet in a way that breaks gateway traffic.",
+      "Expecting NAT Gateway to allow inbound connections."
+    ],
+    "confusedWith": [
+      { "name": "NSGs", "difference": "NSGs allow or deny; routes direct. A UDR won't block traffic unless its next hop is None." },
+      { "name": "Load balancer outbound rules", "difference": "Both provide SNAT; NAT Gateway is simpler and takes precedence for its subnet." }
+    ],
+    "diagrams": ["vnet-architecture"],
+    "services": ["virtual-network", "nat-gateway", "azure-firewall"],
+    "docLinks": [
+      { "title": "Virtual network traffic routing", "url": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-udr-overview" },
+      { "title": "What is Azure NAT Gateway?", "url": "https://learn.microsoft.com/azure/nat-gateway/nat-overview" },
+      { "title": "Diagnose a VM routing problem", "url": "https://learn.microsoft.com/azure/virtual-network/diagnose-network-routing-problem" }
+    ]
+  },
+  {
+    "slug": "azure-dns",
+    "title": "Azure DNS: Public & Private Zones",
+    "domain": "networking",
+    "objectiveIds": ["dns-load-balancing"],
+    "icon": "globe",
+    "summary": "Host public DNS domains in Azure, resolve private names inside VNets with private DNS zones, and understand name resolution flow.",
+    "overview": [
+      "Azure DNS hosts DNS zones on Microsoft's global name servers. A public DNS zone answers internet queries for your domain once you delegate the domain to Azure's name servers at your registrar. Azure DNS doesn't sell domains.",
+      "Azure Private DNS zones resolve names only within linked virtual networks — for example, vm1.corp.contoso.com or the privatelink zones used by private endpoints. With auto-registration enabled, VMs in a linked VNet get A records automatically.",
+      "By default, VMs use Azure-provided DNS at the virtual IP 168.63.129.16. You can switch a VNet to custom DNS servers (such as domain controllers), and use Azure DNS Private Resolver for hybrid resolution between on-premises and Azure."
+    ],
+    "keyConcepts": [
+      { "term": "Public DNS zone", "definition": "Hosts records for a domain on the internet; requires NS delegation from the parent zone/registrar." },
+      { "term": "Record set", "definition": "All records of one type with the same name, e.g., several A records for www. Common types: A, AAAA, CNAME, MX, TXT, NS, SOA, SRV, CAA, PTR." },
+      { "term": "Alias record", "definition": "An Azure DNS record that points to an Azure resource (public IP, Traffic Manager, Front Door, CDN) and updates automatically. Allows pointing the zone apex at a resource." },
+      { "term": "Private DNS zone", "definition": "Names resolvable only from linked VNets. Global resource — not tied to a region." },
+      { "term": "Virtual network link", "definition": "Connects a private zone to a VNet. Registration-enabled links auto-register VM records; a VNet can have registration enabled with only one private zone." },
+      { "term": "168.63.129.16", "definition": "Azure's virtual public IP used for Azure-provided DNS, health probes and more." },
+      { "term": "DNS Private Resolver", "definition": "Managed inbound/outbound endpoints that let on-premises resolve Azure private zones and Azure resolve on-premises names, without running DNS VMs." }
+    ],
+    "howItWorks": [
+      "Public: create the zone (e.g., contoso.com), note its four Azure name servers, and update NS records at your registrar to delegate the domain.",
+      "Add record sets; changes propagate globally within the zone's TTL.",
+      "Private: create a private zone, link it to VNets (with or without auto-registration), and add records for anything not auto-registered.",
+      "VMs query 168.63.129.16, which answers from linked private zones, Azure-provided names and public DNS.",
+      "For hybrid: forward on-premises queries for Azure zones to a Private Resolver inbound endpoint, and use outbound endpoints with forwarding rules to resolve on-premises names."
+    ],
+    "whenToUse": [
+      "Public zones to host your internet domain records alongside Azure resources.",
+      "Alias records for the apex domain pointing to a public IP or Traffic Manager profile.",
+      "Private zones for custom internal names across VNets without running DNS servers.",
+      "Private zones (privatelink.*) to make private endpoints resolve to private IPs."
+    ],
+    "examTips": [
+      "Buying a domain isn't done in Azure DNS — delegate an existing domain by updating NS records at the registrar.",
+      "To automatically create DNS records for new VMs, link the private zone to the VNet with auto-registration enabled.",
+      "A CNAME can't be used at the zone apex; use an alias record (or A record) instead.",
+      "Private DNS zones are linked to VNets, not subnets, and linking doesn't depend on peering.",
+      "If VMs use custom DNS servers, those servers must forward to 168.63.129.16 to resolve Azure private zones."
+    ],
+    "commonMistakes": [
+      "Forgetting to update the registrar's NS records after creating a public zone.",
+      "Trying to enable auto-registration for one VNet in two private zones.",
+      "Expecting private zone records to resolve from the internet."
+    ],
+    "confusedWith": [
+      { "name": "Traffic Manager", "difference": "Traffic Manager is DNS-based global traffic routing; Azure DNS hosts zones and records." },
+      { "name": "Private endpoint", "difference": "The private endpoint provides the private IP; the private DNS zone makes the service's name resolve to it." }
+    ],
+    "diagrams": ["dns-resolution"],
+    "services": ["azure-dns"],
+    "docLinks": [
+      { "title": "What is Azure DNS?", "url": "https://learn.microsoft.com/azure/dns/dns-overview" },
+      { "title": "What is a private Azure DNS zone?", "url": "https://learn.microsoft.com/azure/dns/private-dns-overview" },
+      { "title": "Delegate a domain to Azure DNS", "url": "https://learn.microsoft.com/azure/dns/dns-delegate-domain-azure-dns" },
+      { "title": "Azure DNS alias records", "url": "https://learn.microsoft.com/azure/dns/dns-alias" },
+      { "title": "What is Azure DNS Private Resolver?", "url": "https://learn.microsoft.com/azure/dns/dns-private-resolver-overview" }
+    ]
+  },
+  {
+    "slug": "private-service-endpoints",
+    "title": "Private Endpoints vs Service Endpoints",
+    "domain": "networking",
+    "objectiveIds": ["secure-vnet-access"],
+    "icon": "plug-zap",
+    "summary": "Two ways to secure access from VNets to Azure PaaS services — and why private endpoints are usually the stronger choice.",
+    "overview": [
+      "Service endpoints extend your subnet's identity to an Azure service over the Microsoft backbone. You enable the endpoint on the subnet (e.g., Microsoft.Storage) and then add that subnet to the service's firewall. The service still uses its public endpoint and public IP, but it can now tell traffic came from your subnet.",
+      "Private endpoints (Azure Private Link) place a network interface with a private IP from your subnet that maps to one specific resource — for example, one storage account's blob service. The service becomes reachable at a private IP, from the VNet, peered VNets and on-premises over VPN/ExpressRoute, and you can disable public access entirely.",
+      "Private endpoints need DNS: clients must resolve the service's normal FQDN to the private IP, typically through a privatelink private DNS zone linked to the VNet."
+    ],
+    "keyConcepts": [
+      { "term": "Service endpoint", "definition": "Subnet-level setting per service type. Free. Traffic leaves via optimal backbone route; service firewall can allow that subnet." },
+      { "term": "Service endpoint policy", "definition": "Restricts service endpoint traffic to specific storage accounts, mitigating data exfiltration to other accounts." },
+      { "term": "Private endpoint", "definition": "A NIC with a private IP mapped to one resource (and sub-resource such as blob, file, sqlServer). Charged per hour and per GB." },
+      { "term": "Private Link service", "definition": "Lets you expose your own service behind a Standard Load Balancer to consumers via private endpoints." },
+      { "term": "privatelink DNS zone", "definition": "E.g., privatelink.blob.core.windows.net. The public name CNAMEs to the privatelink name, which resolves to the private IP inside linked VNets." },
+      { "term": "Public network access", "definition": "Service setting you can disable once private endpoints are in place." }
+    ],
+    "howItWorks": [
+      "Service endpoint: enable Microsoft.<Service> on the subnet → in the service's networking blade, allow the subnet → traffic from that subnet is accepted; other public traffic can be denied.",
+      "Private endpoint: create it in a subnet, select the target resource and sub-resource, and integrate with a private DNS zone.",
+      "Clients resolve the service name to the private IP and connect over the VNet.",
+      "On-premises clients reach the private endpoint over VPN/ExpressRoute if their DNS resolves to the private IP (often via DNS Private Resolver or conditional forwarders).",
+      "Disable public network access on the service to force all access through private endpoints."
+    ],
+    "whenToUse": [
+      "Service endpoints: simple, free way to lock a PaaS service down to specific Azure subnets when on-premises access isn't needed.",
+      "Private endpoints: when the service must not be reachable publicly, when on-premises or peered networks need private access, or to prevent exfiltration to other instances of the service.",
+      "Private endpoints when compliance requires traffic to stay on private IP addresses."
+    ],
+    "examTips": [
+      "'Access a storage account from on-premises over ExpressRoute/VPN using a private IP' → private endpoint (service endpoints don't extend to on-premises).",
+      "'Disable public access to the storage account' → private endpoint.",
+      "Service endpoints are configured on the subnet AND the service firewall; forgetting either breaks it.",
+      "A private endpoint maps to one specific resource; a service endpoint applies to the whole service type (all storage accounts) unless restricted with a service endpoint policy.",
+      "If a private endpoint 'doesn't work', check DNS — the name must resolve to the private IP."
+    ],
+    "commonMistakes": [
+      "Creating a private endpoint without DNS integration, so clients still resolve the public IP.",
+      "Expecting service endpoints to work from on-premises networks.",
+      "Believing a service endpoint gives the service a private IP in the VNet."
+    ],
+    "confusedWith": [
+      { "name": "Private endpoint vs service endpoint", "difference": "Private IP for one resource vs. subnet identity to a public endpoint for a whole service type.", "comparison": "service-vs-private-endpoint" },
+      { "name": "VNet integration (App Service)", "difference": "VNet integration lets an app call into a VNet; private endpoints let clients reach the app privately." }
+    ],
+    "diagrams": ["private-vs-service-endpoint", "dns-resolution"],
+    "services": ["private-link", "virtual-network", "storage-accounts"],
+    "docLinks": [
+      { "title": "Virtual network service endpoints", "url": "https://learn.microsoft.com/azure/virtual-network/virtual-network-service-endpoints-overview" },
+      { "title": "What is a private endpoint?", "url": "https://learn.microsoft.com/azure/private-link/private-endpoint-overview" },
+      { "title": "Private endpoint DNS configuration", "url": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns" },
+      { "title": "Service endpoint policies", "url": "https://learn.microsoft.com/azure/virtual-network/virtual-network-service-endpoint-policies-overview" }
+    ]
+  },
+  {
+    "slug": "load-balancer",
+    "title": "Azure Load Balancer",
+    "domain": "networking",
+    "objectiveIds": ["dns-load-balancing"],
+    "icon": "split",
+    "summary": "Layer 4 load balancing for TCP/UDP: public vs internal, frontends, backend pools, health probes, rules, NAT rules and troubleshooting.",
+    "overview": [
+      "Azure Load Balancer distributes inbound TCP and UDP flows across healthy backend instances at Layer 4. It's ultra-low latency and high throughput but doesn't inspect HTTP — no URL routing or TLS termination.",
+      "A public load balancer has a public frontend IP and balances internet traffic; an internal (private) load balancer has a private frontend IP in a subnet and balances traffic inside the VNet or from on-premises.",
+      "The Standard SKU is the production SKU: zone-redundant, secure by default (requires NSGs to allow traffic), with an SLA and diagnostics. The Basic SKU was retired in September 2025."
+    ],
+    "keyConcepts": [
+      { "term": "Frontend IP configuration", "definition": "Public or private IP clients connect to." },
+      { "term": "Backend pool", "definition": "NICs or IP addresses of VMs/scale set instances in one VNet that receive traffic." },
+      { "term": "Health probe", "definition": "TCP, HTTP or HTTPS check. Unhealthy instances stop receiving new flows. Probes originate from 168.63.129.16 (AzureLoadBalancer tag)." },
+      { "term": "Load-balancing rule", "definition": "Maps frontend IP:port to backend pool:port with a health probe and distribution mode." },
+      { "term": "Session persistence", "definition": "None (5-tuple hash, default), Client IP (2-tuple) or Client IP and protocol (3-tuple)." },
+      { "term": "Inbound NAT rule", "definition": "Forwards a frontend port to a specific backend instance's port (e.g., 50001 → VM1:3389)." },
+      { "term": "Outbound rule", "definition": "Configures SNAT for backend instances' outbound internet traffic (Standard public LB)." },
+      { "term": "HA ports", "definition": "Internal Standard LB rule that balances all ports and protocols — used for NVAs." }
+    ],
+    "howItWorks": [
+      "Create the load balancer (public or internal, Standard SKU) with a frontend IP.",
+      "Add backend instances to a backend pool.",
+      "Create a health probe on the app's port/path.",
+      "Create a load-balancing rule tying frontend, backend pool, ports and probe; choose session persistence.",
+      "Ensure NSGs allow client traffic to the backends and allow the AzureLoadBalancer probe source."
+    ],
+    "whenToUse": [
+      "Balancing non-HTTP protocols (RDP gateways, SQL, custom TCP/UDP apps).",
+      "Internal tiers (app or database tier) that need a private VIP.",
+      "Highly available NVAs with HA ports.",
+      "Any Layer 4 scenario where you don't need URL-based routing or WAF."
+    ],
+    "examTips": [
+      "'Backends receive no traffic' → check the health probe (port/path, app listening) and NSGs allowing the probe and client traffic.",
+      "Standard LB requires Standard public IPs and backends in a single VNet; it's closed by default until NSGs allow traffic.",
+      "Use Client IP session persistence when users must return to the same backend.",
+      "Path-based routing (/images, /api) or TLS offload → that's Application Gateway, not Load Balancer.",
+      "Inbound NAT rules map a unique frontend port to one VM for direct management access."
+    ],
+    "commonMistakes": [
+      "Mixing Basic and Standard SKU resources (public IPs, LB).",
+      "Blocking 168.63.129.16 / AzureLoadBalancer in an NSG, causing all probes to fail.",
+      "Pointing the health probe at a port the app doesn't listen on."
+    ],
+    "confusedWith": [
+      { "name": "Application Gateway", "difference": "Layer 7 HTTP(S) with URL routing, TLS termination and WAF vs. Layer 4 TCP/UDP.", "comparison": "lb-vs-appgw" },
+      { "name": "Traffic Manager / Front Door", "difference": "Global services that route users to regions; Load Balancer is regional." }
+    ],
+    "diagrams": ["load-balancer-architecture"],
+    "services": ["load-balancer"],
+    "docLinks": [
+      { "title": "What is Azure Load Balancer?", "url": "https://learn.microsoft.com/azure/load-balancer/load-balancer-overview" },
+      { "title": "Load Balancer health probes", "url": "https://learn.microsoft.com/azure/load-balancer/load-balancer-custom-probe-overview" },
+      { "title": "Troubleshoot Azure Load Balancer", "url": "https://learn.microsoft.com/azure/load-balancer/load-balancer-troubleshoot" },
+      { "title": "Configure distribution mode (session persistence)", "url": "https://learn.microsoft.com/azure/load-balancer/load-balancer-distribution-mode" }
+    ]
+  },
+  {
+    "slug": "application-gateway",
+    "title": "Azure Application Gateway",
+    "domain": "networking",
+    "objectiveIds": ["dns-load-balancing"],
+    "icon": "router",
+    "summary": "Layer 7 web traffic load balancing with listeners, routing rules, URL path and multi-site routing, TLS termination and Web Application Firewall.",
+    "overview": [
+      "Azure Application Gateway is a regional Layer 7 load balancer for HTTP and HTTPS. It makes routing decisions on request attributes such as host name and URL path, terminates TLS, and can protect apps with a Web Application Firewall (WAF).",
+      "It's deployed into its own dedicated subnet in a VNet and can front backends anywhere it can reach: VMs, scale sets, App Service, IP addresses or FQDNs.",
+      "The v2 SKUs (Standard_v2 and WAF_v2) support autoscaling, zone redundancy, static VIPs and header rewrites."
+    ],
+    "keyConcepts": [
+      { "term": "Listener", "definition": "Frontend IP + port + protocol (+ host name for multi-site) that accepts requests. Basic or multi-site." },
+      { "term": "Routing rule", "definition": "Binds a listener to backend targets. Basic rules send all traffic to one pool; path-based rules use a URL path map." },
+      { "term": "Backend pool", "definition": "VMs, VMSS, App Service, IPs or FQDNs that receive requests." },
+      { "term": "Backend settings (HTTP settings)", "definition": "Port, protocol, cookie-based affinity, timeouts, host name override and custom probe for backend connections." },
+      { "term": "TLS termination", "definition": "Decrypt at the gateway (offload) or re-encrypt to the backend for end-to-end TLS." },
+      { "term": "WAF", "definition": "Protection against common exploits (OWASP rule sets) in Detection or Prevention mode." },
+      { "term": "Cookie-based affinity", "definition": "Keeps a user session on the same backend server." }
+    ],
+    "howItWorks": [
+      "Deploy the gateway into a dedicated subnet with a public and/or private frontend IP.",
+      "Create listeners for each site/port (multi-site listeners for several host names on one gateway).",
+      "Create backend pools and backend settings, plus health probes.",
+      "Create routing rules: basic or path-based (/images/* → image pool, /api/* → API pool).",
+      "Optionally enable WAF policies, redirects (HTTP→HTTPS) and header rewrites."
+    ],
+    "whenToUse": [
+      "Web apps needing URL path or host-based routing.",
+      "Central TLS certificate management and offload.",
+      "Protecting web apps with a WAF in a single region.",
+      "Hosting multiple websites behind one public IP."
+    ],
+    "examTips": [
+      "'Route /video to one pool and /images to another' → Application Gateway path-based routing.",
+      "'Host several domains on one IP' → multi-site listeners.",
+      "'Protect against SQL injection/XSS' → WAF SKU.",
+      "Application Gateway needs its own subnet — don't put other resources in it.",
+      "Global HTTP load balancing with WAF across regions is Front Door, not Application Gateway."
+    ],
+    "commonMistakes": [
+      "Using Application Gateway for non-HTTP protocols (use Load Balancer).",
+      "Deploying it in a subnet shared with VMs.",
+      "Forgetting that backend health depends on the probe and backend settings (host name, protocol, certificates)."
+    ],
+    "confusedWith": [
+      { "name": "Azure Load Balancer", "difference": "L4 TCP/UDP distribution vs. L7 HTTP(S) routing.", "comparison": "lb-vs-appgw" },
+      { "name": "Azure Front Door", "difference": "Front Door is global (edge) L7 load balancing and acceleration; Application Gateway is regional." }
+    ],
+    "diagrams": ["app-gateway-architecture"],
+    "services": ["application-gateway", "front-door"],
+    "docLinks": [
+      { "title": "What is Azure Application Gateway?", "url": "https://learn.microsoft.com/azure/application-gateway/overview" },
+      { "title": "Application Gateway components", "url": "https://learn.microsoft.com/azure/application-gateway/application-gateway-components" },
+      { "title": "URL path-based routing overview", "url": "https://learn.microsoft.com/azure/application-gateway/url-route-overview" },
+      { "title": "Load-balancing options decision guide", "url": "https://learn.microsoft.com/azure/architecture/guide/technology-choices/load-balancing-overview" }
+    ]
+  },
+  {
+    "slug": "vpn-expressroute",
+    "title": "VPN Gateway & ExpressRoute",
+    "domain": "networking",
+    "objectiveIds": ["vnets"],
+    "icon": "cable",
+    "summary": "Hybrid connectivity: site-to-site and point-to-site VPNs over the internet, and private ExpressRoute circuits.",
+    "overview": [
+      "Azure VPN Gateway sends encrypted traffic between an Azure VNet and other networks over the public internet using IPsec/IKE (site-to-site, VNet-to-VNet) or SSL/IKEv2 (point-to-site for individual clients).",
+      "ExpressRoute provides a private, dedicated connection from your network to Microsoft's network through a connectivity provider. Traffic doesn't traverse the public internet, giving more predictable latency and higher bandwidth. It isn't encrypted by default.",
+      "Both use a virtual network gateway deployed in the VNet's GatewaySubnet. Many organizations use ExpressRoute as the primary path with a site-to-site VPN as a backup."
+    ],
+    "keyConcepts": [
+      { "term": "Site-to-site (S2S)", "definition": "IPsec tunnel between an on-premises VPN device (with a public IP) and the Azure VPN gateway." },
+      { "term": "Point-to-site (P2S)", "definition": "Individual clients connect using OpenVPN, IKEv2 or SSTP, authenticated with certificates, Entra ID or RADIUS." },
+      { "term": "Local network gateway", "definition": "Azure resource representing the on-premises site: its public IP and address prefixes (or BGP settings)." },
+      { "term": "Connection", "definition": "Links the VPN gateway and local network gateway with a shared key (PSK)." },
+      { "term": "Route-based VPN", "definition": "Uses routing (any-to-any traffic selectors); required for P2S, VNet-to-VNet, multiple sites and coexistence with ExpressRoute. Most common choice." },
+      { "term": "Policy-based VPN", "definition": "Static traffic selectors; limited features. Used mainly for legacy devices." },
+      { "term": "GatewaySubnet", "definition": "Required subnet for gateways; /27 or larger recommended." },
+      { "term": "ExpressRoute circuit", "definition": "The logical connection via a provider with a bandwidth and SKU (Local, Standard, Premium)." },
+      { "term": "Private peering", "definition": "ExpressRoute routing domain to VNets (private IPs)." },
+      { "term": "Microsoft peering", "definition": "ExpressRoute routing domain to Microsoft public services such as Microsoft 365." }
+    ],
+    "howItWorks": [
+      "Create a GatewaySubnet in the VNet.",
+      "Create a virtual network gateway (type VPN or ExpressRoute, SKU, route-based for VPN). Gateway creation can take 45 minutes or more.",
+      "For S2S: create a local network gateway with the on-premises public IP and prefixes, configure the on-premises device, and create a connection with a shared key.",
+      "For P2S: configure the address pool for clients, tunnel types and authentication, then distribute the client profile.",
+      "For ExpressRoute: order a circuit through a provider, have it provisioned, configure private peering, then connect the ExpressRoute gateway to the circuit."
+    ],
+    "whenToUse": [
+      "S2S VPN: connecting branch offices or datacenters quickly and cheaply over the internet.",
+      "P2S VPN: remote workers or admins connecting from individual devices.",
+      "ExpressRoute: predictable performance, high bandwidth, or regulatory requirements to avoid the public internet.",
+      "ExpressRoute + S2S VPN failover for resilient hybrid connectivity."
+    ],
+    "examTips": [
+      "The local network gateway represents on-premises: public IP of the on-prem VPN device + on-prem address ranges.",
+      "'Single users connecting from home' → point-to-site. 'Whole office network' → site-to-site.",
+      "'Must not traverse the internet' → ExpressRoute.",
+      "Route-based VPN is required for P2S and for coexisting with ExpressRoute.",
+      "Spokes reach on-premises through the hub's gateway with gateway transit on peering.",
+      "If on-premises address ranges change, update the local network gateway's address prefixes."
+    ],
+    "commonMistakes": [
+      "Putting the on-premises device's private IP in the local network gateway.",
+      "Choosing a policy-based gateway and then needing P2S.",
+      "Assuming ExpressRoute traffic is encrypted by default.",
+      "Undersizing the GatewaySubnet."
+    ],
+    "confusedWith": [
+      { "name": "VPN Gateway vs ExpressRoute", "difference": "Encrypted over the internet vs. private provider connection.", "comparison": "vpn-vs-expressroute" },
+      { "name": "VNet peering", "difference": "Peering connects Azure VNets with no gateway; VPN/ExpressRoute connect to other networks." }
+    ],
+    "diagrams": ["vpn-connectivity"],
+    "services": ["vpn-gateway", "expressroute"],
+    "docLinks": [
+      { "title": "What is Azure VPN Gateway?", "url": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpngateways" },
+      { "title": "About VPN Gateway configuration settings", "url": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings" },
+      { "title": "What is Azure ExpressRoute?", "url": "https://learn.microsoft.com/azure/expressroute/expressroute-introduction" },
+      { "title": "Create a site-to-site VPN connection in the portal", "url": "https://learn.microsoft.com/azure/vpn-gateway/tutorial-site-to-site-portal" }
+    ]
+  }
+]

@@ -1,0 +1,424 @@
+[
+  {
+    "slug": "arm-bicep",
+    "title": "ARM Templates & Bicep",
+    "domain": "compute",
+    "objectiveIds": ["arm-bicep"],
+    "icon": "file-text",
+    "summary": "Read, modify and deploy infrastructure-as-code with Azure Resource Manager templates and Bicep, and export or convert existing deployments.",
+    "overview": [
+      "Azure Resource Manager (ARM) is the deployment and management layer for Azure. ARM templates are JSON files that declaratively describe the resources you want; Resource Manager works out how to create or update them.",
+      "Bicep is a domain-specific language that compiles to ARM JSON. It has cleaner syntax, type safety and modules, and everything an ARM template can do, Bicep can do. You can decompile ARM JSON into Bicep as a starting point.",
+      "Templates are idempotent: deploying the same template again produces the same result. Deployments can target a resource group, subscription, management group or tenant."
+    ],
+    "keyConcepts": [
+      { "term": "Template sections", "definition": "ARM JSON: $schema, contentVersion, parameters, variables, functions, resources, outputs." },
+      { "term": "Parameters", "definition": "Values supplied at deployment time (e.g., VM size, admin username). Can have allowed values, defaults and secure types." },
+      { "term": "Variables", "definition": "Values computed inside the template to simplify expressions." },
+      { "term": "Outputs", "definition": "Values returned after deployment, such as a public IP address or resource ID." },
+      { "term": "dependsOn", "definition": "Explicit deployment ordering in ARM JSON; Bicep infers most dependencies from symbolic references." },
+      { "term": "Incremental mode", "definition": "Default. Adds/updates resources in the template and leaves other resources in the resource group untouched." },
+      { "term": "Complete mode", "definition": "Deletes resources in the resource group that aren't in the template. Use with care." },
+      { "term": "What-if", "definition": "Previews the changes a deployment would make before you run it." },
+      { "term": "Bicep module", "definition": "A reusable Bicep file called from another file to deploy a set of resources." }
+    ],
+    "howItWorks": [
+      "Author a template or Bicep file, or export one from an existing resource group/deployment in the portal.",
+      "Supply parameter values inline or via a parameters file (.parameters.json or .bicepparam).",
+      "Optionally run what-if to preview changes.",
+      "Deploy with the portal (Deploy a custom template), Azure CLI (az deployment group create) or PowerShell (New-AzResourceGroupDeployment).",
+      "Resource Manager validates the template, orders resources by dependencies, deploys in parallel where possible and records the deployment history on the resource group."
+    ],
+    "whenToUse": [
+      "Repeatable, consistent environments (dev/test/prod) from the same code.",
+      "Change tracking in source control and CI/CD pipelines.",
+      "Bicep for new authoring; ARM JSON when tooling requires it or when interpreting existing templates.",
+      "Exporting a template to capture an environment that was built in the portal."
+    ],
+    "examTips": [
+      "Know where to change things: a VM size or name usually lives in parameters or variables; a new resource goes in the resources array; a value to return goes in outputs.",
+      "Complete mode removes resources not in the template — the trap answer when someone deploys a partial template.",
+      "Convert ARM JSON to Bicep with 'az bicep decompile' (or 'bicep decompile'); Bicep compiles to JSON with 'az bicep build'.",
+      "Exported templates may need cleanup and aren't guaranteed to redeploy as-is; some resource types can't be exported.",
+      "Use a secure string parameter (and ideally a Key Vault reference) for passwords — never hard-code secrets."
+    ],
+    "commonMistakes": [
+      "Running a Complete-mode deployment against a resource group that contains other resources.",
+      "Hard-coding locations or names instead of using parameters and functions like resourceGroup().location.",
+      "Assuming Bicep requires a separate runtime — it compiles to standard ARM JSON."
+    ],
+    "confusedWith": [
+      { "name": "Terraform", "difference": "Terraform is a third-party IaC tool with its own state file; ARM/Bicep are native and stateless (Azure is the source of truth)." },
+      { "name": "Azure Policy DeployIfNotExists", "difference": "Policy deploys missing configuration reactively at scale; templates deploy what you define on demand." }
+    ],
+    "diagrams": [],
+    "services": ["arm-templates"],
+    "docLinks": [
+      { "title": "What are ARM templates?", "url": "https://learn.microsoft.com/azure/azure-resource-manager/templates/overview" },
+      { "title": "Understand the structure and syntax of ARM templates", "url": "https://learn.microsoft.com/azure/azure-resource-manager/templates/syntax" },
+      { "title": "What is Bicep?", "url": "https://learn.microsoft.com/azure/azure-resource-manager/bicep/overview" },
+      { "title": "Decompile ARM template JSON to Bicep", "url": "https://learn.microsoft.com/azure/azure-resource-manager/bicep/decompile" },
+      { "title": "Deployment modes", "url": "https://learn.microsoft.com/azure/azure-resource-manager/templates/deployment-modes" }
+    ]
+  },
+  {
+    "slug": "virtual-machines",
+    "title": "Azure Virtual Machines: Sizing, Encryption & Moves",
+    "domain": "compute",
+    "objectiveIds": ["virtual-machines"],
+    "icon": "server",
+    "summary": "Create and size VMs, understand what a VM depends on, encrypt disks, and move VMs between resource groups, subscriptions and regions.",
+    "overview": [
+      "An Azure VM is IaaS compute: you choose an image, a size, disks and networking, and you remain responsible for the guest OS. A VM is really a set of resources — the VM itself, a NIC in a subnet, an OS managed disk, optional data disks and an optional public IP.",
+      "VM sizes are grouped into families optimized for different workloads. Resizing changes vCPU and memory; if the new size isn't available on the current hardware cluster, the VM must be deallocated first.",
+      "Data on managed disks is always encrypted at rest with server-side encryption. You can add customer-managed keys, encryption at host, or guest-level Azure Disk Encryption (BitLocker/DM-Crypt)."
+    ],
+    "keyConcepts": [
+      { "term": "B-series", "definition": "Burstable, low-cost VMs for workloads that idle most of the time (dev/test, small web servers)." },
+      { "term": "D-series", "definition": "General-purpose balanced CPU-to-memory ratio." },
+      { "term": "E / M-series", "definition": "Memory-optimized for databases and in-memory analytics." },
+      { "term": "F-series", "definition": "Compute-optimized, high CPU-to-memory ratio." },
+      { "term": "L-series", "definition": "Storage-optimized with high local disk throughput." },
+      { "term": "N-series", "definition": "GPU-enabled for graphics, AI and HPC." },
+      { "term": "Temporary disk", "definition": "Local, non-persistent disk on the host. Data can be lost during deallocation, resize or host maintenance — never store important data there." },
+      { "term": "Azure Disk Encryption (ADE)", "definition": "Guest-OS encryption with BitLocker (Windows) or DM-Crypt (Linux) using keys in Key Vault. The vault must be in the same region and subscription and have 'Azure Disk Encryption for volume encryption' enabled." },
+      { "term": "Encryption at host", "definition": "Encrypts temp disks and disk caches on the VM host, end to end with the platform encryption of managed disks." },
+      { "term": "Azure Resource Mover", "definition": "Service for moving resources such as VMs and their dependencies to another region." }
+    ],
+    "howItWorks": [
+      "Choose a region, image, size, authentication (password or SSH key), disks, VNet/subnet and optional public IP. Optionally set availability options at creation.",
+      "Azure places the VM on a host. Stopping from inside the OS keeps it allocated (still billed for compute); 'Stop (deallocate)' from Azure releases the hardware and stops compute billing.",
+      "Resize from the Size blade; if the size isn't listed as available, deallocate and resize.",
+      "To move to another resource group or subscription, use Move and include dependent resources. To move to another region, use Azure Resource Mover (or Site Recovery)."
+    ],
+    "whenToUse": [
+      "Lift-and-shift applications that need full OS control.",
+      "Workloads with custom software, legacy dependencies, or specialized hardware (GPU, high memory).",
+      "B-series for intermittent workloads to minimize cost.",
+      "Encryption at host or CMK when compliance requires control of keys or encryption of temp disks/caches."
+    ],
+    "examTips": [
+      "Stopped (allocated) VMs still incur compute charges; Stopped (deallocated) VMs do not (disks still cost).",
+      "Moving a VM between resource groups or subscriptions doesn't change its region; use Resource Mover for cross-region moves.",
+      "For ADE, the Key Vault must be in the same region and subscription as the VM and have the disk encryption access policy enabled.",
+      "Ultra Disks and Premium SSD v2 can't be used as OS disks.",
+      "Resizing a running VM to a size not available in its current cluster requires deallocating it (brief downtime).",
+      "Availability set/zone placement is chosen at creation — you can't add an existing VM to an availability set."
+    ],
+    "commonMistakes": [
+      "Storing data on the temporary disk.",
+      "Shutting down from inside the OS and expecting billing to stop.",
+      "Moving a VM without its NIC, disks or public IP.",
+      "Putting the Key Vault for ADE in a different region."
+    ],
+    "confusedWith": [
+      { "name": "VM Scale Sets", "difference": "A VM is a single instance; scale sets manage many identical VMs with autoscaling." },
+      { "name": "App Service", "difference": "App Service is PaaS — no OS to manage — ideal for web apps; VMs give full OS control." }
+    ],
+    "diagrams": ["availability-sets-zones"],
+    "services": ["virtual-machines", "managed-disks", "key-vault"],
+    "docLinks": [
+      { "title": "Sizes for virtual machines in Azure", "url": "https://learn.microsoft.com/azure/virtual-machines/sizes/overview" },
+      { "title": "Resize a virtual machine", "url": "https://learn.microsoft.com/azure/virtual-machines/resize-vm" },
+      { "title": "Overview of managed disk encryption options", "url": "https://learn.microsoft.com/azure/virtual-machines/disk-encryption-overview" },
+      { "title": "What is Azure Resource Mover?", "url": "https://learn.microsoft.com/azure/resource-mover/overview" }
+    ],
+    "versionNote": "Microsoft has announced a retirement path for Azure Disk Encryption in favor of encryption at host and other options. Check the current guidance before choosing an encryption method for new VMs."
+  },
+  {
+    "slug": "vm-availability",
+    "title": "VM Availability: Availability Sets & Availability Zones",
+    "domain": "compute",
+    "objectiveIds": ["virtual-machines"],
+    "icon": "shield-check",
+    "summary": "Protect VM workloads from hardware failures, maintenance and datacenter outages with availability sets and availability zones.",
+    "overview": [
+      "A single VM is a single point of failure. Azure gives you two placement features to keep multiple VMs from failing together.",
+      "An availability set spreads VMs across fault domains (separate racks with independent power and network) and update domains (groups rebooted together during planned maintenance) within one datacenter.",
+      "Availability zones are physically separate datacenters within a region, each with independent power, cooling and networking. Spreading VMs across zones protects against the loss of an entire datacenter."
+    ],
+    "keyConcepts": [
+      { "term": "Fault domain (FD)", "definition": "A group of hardware sharing power and network switch. Availability sets use up to 3 FDs (region dependent)." },
+      { "term": "Update domain (UD)", "definition": "A group of VMs that can be rebooted at the same time during planned maintenance. Up to 20 (default 5). Only one UD is rebooted at a time." },
+      { "term": "Availability zone", "definition": "A unique physical location within a region. Regions that support zones have at least three." },
+      { "term": "Zonal deployment", "definition": "A VM pinned to a specific zone (1, 2 or 3). For high availability, deploy at least two VMs in different zones." },
+      { "term": "SLA tiers", "definition": "Higher availability guarantees apply to two or more VMs across zones than to VMs in an availability set, which are higher than a single VM. Check the SLA document for current percentages." },
+      { "term": "Proximity placement group", "definition": "Places VMs physically close for low latency — the opposite goal of spreading them." }
+    ],
+    "howItWorks": [
+      "Choose the availability option when creating the VM: no redundancy, availability zone, availability set, or a scale set.",
+      "With an availability set, Azure distributes VMs round-robin across fault and update domains.",
+      "With zones, you choose a zone per VM (or let a scale set spread instances), and pair them with zone-redundant services such as a Standard Load Balancer and Standard public IPs.",
+      "Put a load balancer in front so traffic shifts to healthy VMs when one fails or reboots."
+    ],
+    "whenToUse": [
+      "Availability sets: regions without zones, or applications needing low inter-VM latency within one datacenter.",
+      "Availability zones: protecting against a datacenter-level failure with the highest VM SLA.",
+      "Multiple regions (with Site Recovery or active-active designs) when you must survive a regional outage."
+    ],
+    "examTips": [
+      "You must configure an availability set or zone when the VM is created; existing VMs can't be added later (redeploy instead).",
+      "A VM can be in an availability set or a zone, not both.",
+      "'Survive the failure of a datacenter' → availability zones. 'Survive a rack failure or planned maintenance' → availability set (or zones).",
+      "With 2 FDs and 5 UDs, the maximum number of VMs down during planned maintenance is the VMs in one UD.",
+      "Zone-redundant designs need Standard SKU load balancers and public IPs."
+    ],
+    "commonMistakes": [
+      "Deploying a single VM in an availability set and expecting improved availability.",
+      "Confusing update domains (planned maintenance) with fault domains (unplanned hardware failures).",
+      "Thinking availability zones protect against region-wide disasters."
+    ],
+    "confusedWith": [
+      { "name": "Availability zones vs availability sets", "difference": "Zones = separate datacenters; sets = separate racks in one datacenter.", "comparison": "availability-set-vs-zone" },
+      { "name": "Zone-redundant storage", "difference": "ZRS replicates storage data across zones; VMs need to be explicitly deployed across zones." }
+    ],
+    "diagrams": ["availability-sets-zones"],
+    "services": ["virtual-machines", "load-balancer"],
+    "docLinks": [
+      { "title": "Availability sets overview", "url": "https://learn.microsoft.com/azure/virtual-machines/availability-set-overview" },
+      { "title": "What are availability zones?", "url": "https://learn.microsoft.com/azure/reliability/availability-zones-overview" },
+      { "title": "Availability options for Azure Virtual Machines", "url": "https://learn.microsoft.com/azure/virtual-machines/availability" }
+    ]
+  },
+  {
+    "slug": "vm-scale-sets",
+    "title": "Virtual Machine Scale Sets",
+    "domain": "compute",
+    "objectiveIds": ["virtual-machines"],
+    "icon": "boxes",
+    "summary": "Deploy and autoscale groups of load-balanced VMs with Uniform or Flexible orchestration.",
+    "overview": [
+      "Virtual Machine Scale Sets (VMSS) create and manage a group of VMs from a common configuration and scale them automatically based on demand or a schedule.",
+      "Flexible orchestration (recommended for most new workloads) supports mixing VM sizes and gives you standard VM resources with high availability across zones and fault domains. Uniform orchestration uses identical instances managed as a set and is optimized for large-scale stateless workloads.",
+      "Scale sets integrate with Azure Load Balancer or Application Gateway to distribute traffic, and with availability zones for resilience."
+    ],
+    "keyConcepts": [
+      { "term": "Orchestration mode", "definition": "Flexible or Uniform; chosen at creation and cannot be changed afterwards." },
+      { "term": "Autoscale profile", "definition": "Minimum, maximum and default instance counts, plus rules (e.g., CPU > 70% for 10 minutes → add 2 instances) or schedules." },
+      { "term": "Scale-out / scale-in rules", "definition": "Separate rules increase and decrease capacity; always pair them to avoid flapping or never scaling in." },
+      { "term": "Cooldown", "definition": "Wait period after a scale action before evaluating rules again." },
+      { "term": "Scale-in policy", "definition": "Which instances are removed first: Default (balance across zones/FDs, then highest instance ID), NewestVM or OldestVM." },
+      { "term": "Upgrade policy", "definition": "How model changes reach instances: Automatic, Rolling or Manual." },
+      { "term": "Instance protection", "definition": "Protects specific instances from scale-in or scale-set actions." }
+    ],
+    "howItWorks": [
+      "Define the VM model: image, size, networking, extensions, and optionally a load balancer backend pool.",
+      "Choose zones and fault-domain spreading, and the orchestration mode.",
+      "Configure autoscale with Azure Monitor metrics (host metrics like CPU or guest/app metrics) or schedules.",
+      "When a rule triggers, the scale set adds or removes instances within the min/max bounds, and the load balancer starts or stops sending them traffic based on health probes.",
+      "Update the model and roll changes out according to the upgrade policy."
+    ],
+    "whenToUse": [
+      "Stateless web or API tiers with variable demand.",
+      "Batch or compute workloads that need many identical workers.",
+      "Any IaaS workload where you want automatic scaling and self-healing instead of managing individual VMs."
+    ],
+    "examTips": [
+      "'Automatically add VMs when CPU is high and remove them when low' → scale set with autoscale (both scale-out and scale-in rules).",
+      "Autoscale always respects the min and max instance counts — if max is reached, no more instances are added.",
+      "Scheduled scaling is the answer for predictable patterns (e.g., business hours).",
+      "To control which VMs are removed first during scale-in, configure the scale-in policy.",
+      "With Manual upgrade policy, existing instances don't get model changes until you upgrade them."
+    ],
+    "commonMistakes": [
+      "Creating a scale-out rule without a matching scale-in rule.",
+      "Setting min = max and expecting autoscale to do anything.",
+      "Storing state on individual instances that may be removed during scale-in."
+    ],
+    "confusedWith": [
+      { "name": "Availability sets", "difference": "Availability sets spread a fixed set of VMs across racks; scale sets add automatic scaling and centralized management." },
+      { "name": "App Service scale-out", "difference": "App Service scales PaaS app instances; VMSS scales IaaS VMs." }
+    ],
+    "diagrams": ["vm-scale-sets"],
+    "services": ["vm-scale-sets", "load-balancer", "azure-monitor"],
+    "docLinks": [
+      { "title": "What are Virtual Machine Scale Sets?", "url": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/overview" },
+      { "title": "Orchestration modes for scale sets", "url": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-orchestration-modes" },
+      { "title": "Autoscale with scale sets", "url": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-autoscale-overview" },
+      { "title": "Scale-in policies", "url": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-scale-in-policy" }
+    ]
+  },
+  {
+    "slug": "managed-disks-images",
+    "title": "Managed Disks, Images & Azure Compute Gallery",
+    "domain": "compute",
+    "objectiveIds": ["virtual-machines"],
+    "icon": "hard-drive",
+    "summary": "Choose disk types, add and resize disks, take snapshots, and share standardized images with Azure Compute Gallery.",
+    "overview": [
+      "Managed disks are block storage volumes managed by Azure for VMs. You choose the type and size; Azure handles the storage accounts, replication and scale.",
+      "Disk types range from Standard HDD (cheapest) through Standard SSD and Premium SSD to Premium SSD v2 and Ultra Disk (highest, independently tunable performance).",
+      "Images capture a VM's configuration so you can create identical VMs. Azure Compute Gallery stores image definitions and versions, replicates them to multiple regions and shares them across subscriptions and tenants."
+    ],
+    "keyConcepts": [
+      { "term": "Standard HDD", "definition": "Low cost for backups and infrequent access." },
+      { "term": "Standard SSD", "definition": "Consistent performance for web servers and light workloads." },
+      { "term": "Premium SSD", "definition": "High-performance, low-latency SSD for production and I/O-intensive workloads." },
+      { "term": "Premium SSD v2 / Ultra Disk", "definition": "Performance (IOPS and throughput) configurable independently of size. Data disks only." },
+      { "term": "Snapshot", "definition": "A full or incremental, read-only point-in-time copy of a single disk." },
+      { "term": "Generalized image", "definition": "Machine-specific info removed (Sysprep/waagent deprovision); used to create many new VMs." },
+      { "term": "Specialized image", "definition": "Keeps machine-specific settings; used for copies of a specific VM." },
+      { "term": "Image definition / version", "definition": "In Compute Gallery, a definition describes the image (OS, generation); versions are the actual images, replicated to target regions." },
+      { "term": "Shared disk", "definition": "A managed disk attached to multiple VMs simultaneously for clustered applications." }
+    ],
+    "howItWorks": [
+      "Attach a new or existing data disk to a VM, then initialize and format it in the guest OS.",
+      "Increase a disk's size (you can't shrink a managed disk); expand the partition in the OS afterwards. Some changes require deallocation depending on disk type and size.",
+      "Change performance tier or disk type (e.g., Standard SSD → Premium SSD) when needs change; changing type typically requires deallocating the VM.",
+      "To standardize builds, generalize a VM, capture it into a Compute Gallery image definition, and replicate versions to the regions where you deploy."
+    ],
+    "whenToUse": [
+      "Premium SSD for production databases and latency-sensitive apps.",
+      "Ultra Disk / Premium SSD v2 for top-tier transactional workloads that need tunable IOPS.",
+      "Snapshots before risky changes or to copy disks.",
+      "Compute Gallery to share golden images across regions, subscriptions or tenants and to deploy scale sets from custom images."
+    ],
+    "examTips": [
+      "You can grow a managed disk but not shrink it.",
+      "Managed disks are tied to a region; to use one elsewhere, copy a snapshot to the other region.",
+      "Ultra Disks and Premium SSD v2 can't be OS disks and have region/zone and VM-size restrictions.",
+      "A newly attached data disk must be initialized and formatted inside the OS before use.",
+      "Compute Gallery is the answer for 'share a custom image with another subscription' or 'replicate an image to multiple regions'."
+    ],
+    "commonMistakes": [
+      "Trying to reduce a disk size.",
+      "Expecting a new data disk to appear as a usable drive without initializing it.",
+      "Using a specialized image to deploy many different VMs (causes duplicate identities)."
+    ],
+    "confusedWith": [
+      { "name": "Azure Backup", "difference": "Snapshots are manual point-in-time copies; Azure Backup automates, schedules and retains recovery points with policies." },
+      { "name": "Storage account page blobs", "difference": "Unmanaged disks lived in storage accounts you managed; managed disks abstract that away." }
+    ],
+    "diagrams": [],
+    "services": ["managed-disks", "compute-gallery", "virtual-machines"],
+    "docLinks": [
+      { "title": "Introduction to Azure managed disks", "url": "https://learn.microsoft.com/azure/virtual-machines/managed-disks-overview" },
+      { "title": "Azure managed disk types", "url": "https://learn.microsoft.com/azure/virtual-machines/disks-types" },
+      { "title": "Store and share images in an Azure Compute Gallery", "url": "https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery" },
+      { "title": "Expand virtual hard disks on a Windows VM", "url": "https://learn.microsoft.com/azure/virtual-machines/windows/expand-os-disk" }
+    ]
+  },
+  {
+    "slug": "app-service",
+    "title": "Azure App Service",
+    "domain": "compute",
+    "objectiveIds": ["app-service"],
+    "icon": "app-window",
+    "summary": "Host web apps and APIs on managed PaaS: App Service plans and scaling, custom domains and TLS, deployment slots, backup and networking.",
+    "overview": [
+      "Azure App Service is a fully managed platform for web apps, REST APIs and mobile back ends in languages such as .NET, Java, Node.js, Python and PHP, or in containers. Microsoft manages the OS, patching and load balancing.",
+      "Apps run in an App Service plan, which defines the region, the VM size and count (instances) and the pricing tier. Multiple apps can share one plan and its compute.",
+      "Higher tiers unlock features: custom domains with TLS, autoscaling, deployment slots, backups, VNet integration and private endpoints."
+    ],
+    "keyConcepts": [
+      { "term": "App Service plan", "definition": "The compute that runs your apps. All apps in a plan share its instances and scale together." },
+      { "term": "Pricing tiers", "definition": "Free and Shared (shared compute, dev/test), Basic, Standard, Premium (v3) and Isolated (v2, App Service Environment)." },
+      { "term": "Scale up", "definition": "Change the plan's tier/size for more CPU, memory and features." },
+      { "term": "Scale out", "definition": "Increase instance count manually or with autoscale (Standard and above) or automatic scaling (Premium)." },
+      { "term": "Deployment slot", "definition": "A live app with its own hostname (e.g., staging). Swap with production for near-zero-downtime deployments and easy rollback. Standard tier and above." },
+      { "term": "Slot setting", "definition": "An app setting or connection string marked 'deployment slot setting' stays with its slot during swaps." },
+      { "term": "Custom domain", "definition": "Map your domain with a CNAME (subdomain) or A record (apex) plus a TXT 'asuid' verification record." },
+      { "term": "TLS binding", "definition": "Bind an uploaded, Key Vault or free App Service managed certificate to a custom domain (Basic tier and above)." },
+      { "term": "VNet integration", "definition": "Lets the app make outbound calls into a VNet. Inbound private access uses private endpoints instead." }
+    ],
+    "howItWorks": [
+      "Create an App Service plan (OS, region, tier) and one or more apps in it.",
+      "Deploy code via ZIP deploy, GitHub Actions, Azure DevOps, local Git or a container image.",
+      "Map custom domains (create DNS records, then validate in the portal) and bind TLS certificates.",
+      "Create a staging slot, deploy and warm it up, then swap into production; swap back to roll back.",
+      "Configure autoscale on the plan, scheduled backups, and networking (access restrictions, VNet integration, private endpoints)."
+    ],
+    "whenToUse": [
+      "Web apps and APIs where you don't want to manage VMs or OS patching.",
+      "Applications that benefit from built-in autoscale, slots and CI/CD.",
+      "Containerized web apps that don't need the full flexibility of Kubernetes."
+    ],
+    "examTips": [
+      "Deployment slots and autoscale require Standard or higher; custom TLS bindings require Basic or higher; Free tier doesn't support custom domains.",
+      "Scale up = bigger instances/more features; scale out = more instances. Both are configured on the plan, affecting every app in it.",
+      "Mark environment-specific settings (like a production database connection string) as slot settings so they don't swap.",
+      "Apex/root domains use an A record (plus TXT asuid); subdomains like www typically use a CNAME.",
+      "VNet integration is for outbound traffic from the app; private endpoints are for inbound private access to the app."
+    ],
+    "commonMistakes": [
+      "Trying to create deployment slots on a Basic plan.",
+      "Scaling one app expecting other apps in the same plan to be unaffected.",
+      "Forgetting the TXT verification record when mapping a custom domain.",
+      "Using VNet integration to make the app privately reachable."
+    ],
+    "confusedWith": [
+      { "name": "Azure Container Apps / ACI", "difference": "Container services run containers with different scaling models; App Service focuses on web apps with slots and built-in web features.", "comparison": "container-hosting-options" },
+      { "name": "Virtual machines", "difference": "VMs give OS control; App Service abstracts the OS." }
+    ],
+    "diagrams": [],
+    "services": ["app-service"],
+    "docLinks": [
+      { "title": "App Service overview", "url": "https://learn.microsoft.com/azure/app-service/overview" },
+      { "title": "App Service plans", "url": "https://learn.microsoft.com/azure/app-service/overview-hosting-plans" },
+      { "title": "Set up staging environments (deployment slots)", "url": "https://learn.microsoft.com/azure/app-service/deploy-staging-slots" },
+      { "title": "Map an existing custom DNS name", "url": "https://learn.microsoft.com/azure/app-service/app-service-web-tutorial-custom-domain" },
+      { "title": "Back up and restore your app", "url": "https://learn.microsoft.com/azure/app-service/manage-backup" },
+      { "title": "Integrate your app with an Azure virtual network", "url": "https://learn.microsoft.com/azure/app-service/overview-vnet-integration" }
+    ],
+    "versionNote": "Feature availability by App Service tier (slots, backups, VNet integration, managed certificates) is updated periodically. Check the App Service limits and pricing pages."
+  },
+  {
+    "slug": "containers",
+    "title": "Containers: ACR, Container Instances & Container Apps",
+    "domain": "compute",
+    "objectiveIds": ["containers"],
+    "icon": "container",
+    "summary": "Store images in Azure Container Registry and run containers on Azure Container Instances or Azure Container Apps, including sizing and scaling.",
+    "overview": [
+      "Azure Container Registry (ACR) is a private registry for container images and artifacts. It integrates with Entra ID and managed identities so services can pull images without passwords.",
+      "Azure Container Instances (ACI) runs containers on demand without managing servers or orchestrators — ideal for simple apps, tasks and jobs. You request CPU and memory per container group and pay per second.",
+      "Azure Container Apps (ACA) is a serverless container platform built on Kubernetes concepts that adds autoscaling (including scale to zero), revisions, ingress and microservice features without exposing the Kubernetes API."
+    ],
+    "keyConcepts": [
+      { "term": "ACR SKUs", "definition": "Basic, Standard and Premium. Premium adds geo-replication, private endpoints and higher throughput." },
+      { "term": "ACR authentication", "definition": "Entra identities and managed identities with AcrPull/AcrPush roles; the admin user account is disabled by default and intended for testing." },
+      { "term": "Container group", "definition": "ACI's unit of deployment: one or more containers on the same host sharing network, storage and lifecycle (similar to a pod)." },
+      { "term": "Restart policy", "definition": "ACI: Always (default), OnFailure or Never. Use OnFailure/Never for run-to-completion tasks." },
+      { "term": "ACI sizing", "definition": "You set CPU and memory per container; ACI doesn't autoscale — create more groups to scale out." },
+      { "term": "Container Apps environment", "definition": "A secure boundary around a group of container apps sharing a VNet and Log Analytics workspace." },
+      { "term": "Revision", "definition": "An immutable snapshot of a container app version; traffic can be split between revisions." },
+      { "term": "Scale rules", "definition": "ACA scales replicas between min and max on HTTP traffic, CPU/memory or KEDA event sources; min 0 enables scale to zero." }
+    ],
+    "howItWorks": [
+      "Build an image and push it to ACR (docker push or ACR Tasks build in the cloud).",
+      "For ACI, create a container group with the image, CPU/memory, OS type, restart policy, optional public IP/DNS label, environment variables and volume mounts (such as an Azure file share).",
+      "For ACA, create an environment and a container app with ingress settings, min/max replicas and scale rules; new deployments create revisions.",
+      "Grant the service's managed identity AcrPull on the registry to pull private images."
+    ],
+    "whenToUse": [
+      "ACI: quick, isolated containers, batch jobs, build agents, or bursting with minimal setup.",
+      "ACA: microservices, APIs and event-driven processing that need autoscaling and scale-to-zero.",
+      "ACR Premium: geo-replicated registries for multi-region deployments or private-endpoint access.",
+      "AKS (not in AZ-104 scope in depth) when you need full Kubernetes control."
+    ],
+    "examTips": [
+      "Persist ACI data by mounting an Azure file share — container file systems are ephemeral.",
+      "ACI has no built-in autoscaling; ACA does (including scale to zero).",
+      "Geo-replication and private link for a registry need ACR Premium.",
+      "Use a managed identity with AcrPull rather than the admin account for production pulls.",
+      "For a run-once task in ACI, set restart policy to Never or OnFailure so it doesn't restart endlessly."
+    ],
+    "commonMistakes": [
+      "Expecting to resize an existing ACI container group in place — CPU/memory are set at creation; redeploy to change them.",
+      "Storing data in the container's file system and losing it on restart.",
+      "Enabling the ACR admin user for production workloads."
+    ],
+    "confusedWith": [
+      { "name": "App Service for containers", "difference": "App Service hosts web apps (including containers) with slots and web features; ACA focuses on microservices and event-driven scaling.", "comparison": "container-hosting-options" },
+      { "name": "Azure Kubernetes Service", "difference": "AKS gives you a managed Kubernetes cluster to operate; ACA hides the cluster." }
+    ],
+    "diagrams": [],
+    "services": ["container-registry", "container-instances", "container-apps"],
+    "docLinks": [
+      { "title": "Introduction to Azure Container Registry", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-intro" },
+      { "title": "What is Azure Container Instances?", "url": "https://learn.microsoft.com/azure/container-instances/container-instances-overview" },
+      { "title": "Azure Container Apps overview", "url": "https://learn.microsoft.com/azure/container-apps/overview" },
+      { "title": "Set scaling rules in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/scale-app" }
+    ]
+  }
+]

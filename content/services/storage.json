@@ -1,0 +1,94 @@
+[
+  {
+    "id": "storage-accounts",
+    "name": "Azure Storage Accounts",
+    "category": "Storage",
+    "icon": "database",
+    "tagline": "The namespace for blobs, files, queues and tables.",
+    "whatItIs": "A storage account provides a unique namespace and endpoints for Azure Storage data services, with settings for performance, redundancy, networking, encryption and data protection.",
+    "primaryPurpose": "Durable, highly available, scalable storage for any data type.",
+    "useCases": ["Application data and media", "File shares", "Backups and archives", "Data lakes (with hierarchical namespace)"],
+    "keyFeatures": ["Standard GPv2 and Premium account types", "LRS, ZRS, GRS, GZRS (+RA) redundancy", "Encryption at rest with Microsoft- or customer-managed keys", "Firewalls, service endpoints, private endpoints"],
+    "security": ["Prefer Entra ID over shared keys; consider disabling shared key access", "Use SAS with least privilege and short expiry", "Disable anonymous blob access", "Require secure transfer (HTTPS) and a minimum TLS version"],
+    "networking": ["Public endpoint with firewall rules (VNets, IPs, resource instances, trusted services)", "Private endpoints per sub-resource (blob, file, queue, table, dfs, web)"],
+    "pricing": "Pay for capacity (by tier and redundancy), operations/transactions, data retrieval for cool/cold/archive, and geo-replication egress.",
+    "relatedServices": ["blob-storage", "azure-files", "private-link", "key-vault"],
+    "confusedWith": [
+      { "name": "Managed disks", "difference": "Disks are separate managed resources, not storage accounts you manage." }
+    ],
+    "relevance": "core",
+    "relevanceNote": "Creating and configuring accounts, redundancy, encryption and access are all tested.",
+    "examTips": ["Premium supports only LRS/ZRS", "Name: 3–24 lowercase letters and numbers, globally unique"],
+    "topics": ["storage-accounts", "storage-redundancy", "storage-security"],
+    "docLinks": [{ "title": "Storage account overview", "url": "https://learn.microsoft.com/azure/storage/common/storage-account-overview" }]
+  },
+  {
+    "id": "blob-storage",
+    "name": "Azure Blob Storage",
+    "category": "Storage",
+    "icon": "archive",
+    "tagline": "Massively scalable object storage with hot-to-archive tiers.",
+    "whatItIs": "Object storage for unstructured data organized in containers, accessed via HTTPS REST APIs and SDKs.",
+    "primaryPurpose": "Store large amounts of unstructured data cost-effectively.",
+    "useCases": ["Images, video and documents", "Backups and disaster recovery data", "Data lakes for analytics", "Static website hosting"],
+    "keyFeatures": ["Block, append and page blobs", "Hot, cool, cold, archive tiers", "Lifecycle management policies", "Versioning, soft delete, point-in-time restore, immutability"],
+    "security": ["Entra ID data roles (Storage Blob Data Reader/Contributor/Owner)", "User delegation SAS", "Immutable storage (WORM) for compliance"],
+    "networking": ["Accessed through the storage account's blob endpoint, firewall and private endpoints"],
+    "pricing": "Capacity by tier, operations, and data retrieval/early-deletion fees for cooler tiers.",
+    "relatedServices": ["storage-accounts", "azure-backup"],
+    "confusedWith": [
+      { "name": "Azure Files", "difference": "Files provides mountable SMB/NFS shares; Blob is HTTP object storage." }
+    ],
+    "relevance": "core",
+    "relevanceNote": "Containers, tiers, lifecycle, versioning and soft delete are explicit skills.",
+    "examTips": ["Archive is offline — rehydrate before reading", "Lifecycle rules run about once a day"],
+    "topics": ["blob-storage", "storage-security"],
+    "docLinks": [{ "title": "Introduction to Blob storage", "url": "https://learn.microsoft.com/azure/storage/blobs/storage-blobs-introduction" }]
+  },
+  {
+    "id": "azure-files",
+    "name": "Azure Files",
+    "category": "Storage",
+    "icon": "folder",
+    "tagline": "Fully managed SMB and NFS file shares.",
+    "whatItIs": "Cloud file shares mountable from Windows, Linux and macOS, with identity-based access and snapshot protection.",
+    "primaryPurpose": "Replace or extend file servers and provide shared storage for apps.",
+    "useCases": ["Lift-and-shift file servers", "Shared configuration for VMs", "Persistent storage for containers", "Hybrid caching with Azure File Sync"],
+    "keyFeatures": ["SMB 3.x and NFS 4.1 (premium)", "Identity-based auth (AD DS, Entra Domain Services, Entra Kerberos)", "Share snapshots and soft delete", "Premium and standard tiers"],
+    "security": ["Share-level RBAC roles plus NTFS ACLs", "Encryption in transit with SMB 3.x", "Private endpoints to keep traffic private"],
+    "networking": ["SMB uses TCP 445 — often blocked by ISPs; use VPN/ExpressRoute or File Sync"],
+    "pricing": "Provisioned (premium) or pay-as-you-go/provisioned v2 by capacity and transactions depending on tier and billing model.",
+    "relatedServices": ["azure-file-sync", "storage-accounts", "azure-backup"],
+    "confusedWith": [
+      { "name": "Azure NetApp Files", "difference": "Enterprise NAS service for high-performance workloads; Azure Files is the general-purpose managed share." }
+    ],
+    "relevance": "core",
+    "relevanceNote": "Creating shares, snapshots, soft delete and identity-based access are in the outline.",
+    "examTips": ["Port 445 blocked → can't mount over internet", "Snapshot = restore files; soft delete = restore deleted share"],
+    "topics": ["azure-files", "storage-security"],
+    "docLinks": [{ "title": "What is Azure Files?", "url": "https://learn.microsoft.com/azure/storage/files/storage-files-introduction" }]
+  },
+  {
+    "id": "azure-file-sync",
+    "name": "Azure File Sync",
+    "category": "Storage",
+    "icon": "refresh-cw",
+    "tagline": "Cache Azure file shares on Windows Servers.",
+    "whatItIs": "A service that synchronizes Azure file shares with Windows Servers, optionally tiering cold files to the cloud.",
+    "primaryPurpose": "Hybrid file services: local performance with central cloud storage.",
+    "useCases": ["Branch office file caching", "File server consolidation", "Fast disaster recovery of a file server", "Multi-site sync"],
+    "keyFeatures": ["Storage Sync Service, sync groups, cloud and server endpoints", "Cloud tiering (free space and date policies)", "Multi-server sync"],
+    "security": ["NTFS ACLs preserved", "Agent communicates over HTTPS 443"],
+    "networking": ["Agent uses outbound HTTPS 443 — no need to open SMB 445 to Azure"],
+    "pricing": "Per registered server beyond any included servers, plus underlying Azure Files costs.",
+    "relatedServices": ["azure-files", "storage-accounts"],
+    "confusedWith": [
+      { "name": "Robocopy / AzCopy", "difference": "One-time or scripted copies; File Sync is continuous multi-way sync with tiering." }
+    ],
+    "relevance": "important",
+    "relevanceNote": "Commonly appears in Azure Files scenarios.",
+    "examTips": ["One cloud endpoint per sync group", "A server registers with only one Storage Sync Service"],
+    "topics": ["azure-files"],
+    "docLinks": [{ "title": "What is Azure File Sync?", "url": "https://learn.microsoft.com/azure/storage/file-sync/file-sync-introduction" }]
+  }
+]
