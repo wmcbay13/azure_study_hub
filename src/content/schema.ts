@@ -67,6 +67,8 @@ export const Topic = z.object({
   domain: DomainId,
   objectiveIds: z.array(slug).min(1),
   icon: text,
+  /** Acronyms and alternate names learners search for (e.g. NSG, VMSS). */
+  aliases: z.array(z.string()).default([]),
   summary: text,
   overview: z.array(text).min(1),
   keyConcepts: z.array(z.object({ term: text, definition: text })).min(3),

@@ -259,7 +259,7 @@ export function Stat({ label, value, icon, hint, color = 'blue' }: { label: stri
       </span>
       <div className="min-w-0">
         <div className="text-xl font-bold tabular-nums leading-tight">{value}</div>
-        <div className="truncate text-xs text-muted">{label}</div>
+        <div className="text-xs leading-tight text-muted">{label}</div>
         {hint && <div className="truncate text-xs text-subtle">{hint}</div>}
       </div>
     </Card>

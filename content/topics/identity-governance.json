@@ -3,8 +3,16 @@
     "slug": "entra-users-groups",
     "title": "Microsoft Entra Users, Groups & Administrative Units",
     "domain": "identity-governance",
-    "objectiveIds": ["entra-users-groups"],
+    "objectiveIds": [
+      "entra-users-groups"
+    ],
     "icon": "users",
+    "aliases": [
+      "Azure AD",
+      "AAD",
+      "Entra ID",
+      "AU"
+    ],
     "summary": "Create and manage users and groups in Microsoft Entra ID, use dynamic membership, and delegate administration with administrative units.",
     "overview": [
       "Microsoft Entra ID (formerly Azure Active Directory) is Azure's cloud identity service. Every Azure subscription trusts exactly one Entra tenant, and every user, group, service principal and managed identity that signs in to Azure lives in that tenant.",
@@ -12,13 +20,34 @@
       "Administrative units (AUs) are containers inside a tenant that restrict the scope of an Entra administrative role. They let you, for example, make a regional help desk a User Administrator only for the users in one AU."
     ],
     "keyConcepts": [
-      { "term": "Security group", "definition": "Used to grant access to resources (Azure RBAC, apps, SharePoint). Members can be users, devices, service principals and other groups." },
-      { "term": "Microsoft 365 group", "definition": "Collaboration group that provisions a shared mailbox, calendar, SharePoint site and Teams. Members are users only; it cannot contain devices." },
-      { "term": "Assigned membership", "definition": "Administrators or owners add and remove members manually." },
-      { "term": "Dynamic membership", "definition": "Membership is calculated from a rule on user or device attributes (for example user.department -eq \"Sales\"). A group is either dynamic user or dynamic device, never both. Requires Microsoft Entra ID P1 or higher." },
-      { "term": "Administrative unit", "definition": "A tenant container for users, groups or devices. Roles assigned at AU scope apply only to its members. AUs cannot be nested." },
-      { "term": "Source of authority", "definition": "Synchronized users are managed on-premises; most of their attributes cannot be edited in the Entra admin center." },
-      { "term": "Bulk operations", "definition": "Users can be created, invited or deleted in bulk by uploading a CSV template in the Entra admin center, or scripted with Microsoft Graph PowerShell." }
+      {
+        "term": "Security group",
+        "definition": "Used to grant access to resources (Azure RBAC, apps, SharePoint). Members can be users, devices, service principals and other groups."
+      },
+      {
+        "term": "Microsoft 365 group",
+        "definition": "Collaboration group that provisions a shared mailbox, calendar, SharePoint site and Teams. Members are users only; it cannot contain devices."
+      },
+      {
+        "term": "Assigned membership",
+        "definition": "Administrators or owners add and remove members manually."
+      },
+      {
+        "term": "Dynamic membership",
+        "definition": "Membership is calculated from a rule on user or device attributes (for example user.department -eq \"Sales\"). A group is either dynamic user or dynamic device, never both. Requires Microsoft Entra ID P1 or higher."
+      },
+      {
+        "term": "Administrative unit",
+        "definition": "A tenant container for users, groups or devices. Roles assigned at AU scope apply only to its members. AUs cannot be nested."
+      },
+      {
+        "term": "Source of authority",
+        "definition": "Synchronized users are managed on-premises; most of their attributes cannot be edited in the Entra admin center."
+      },
+      {
+        "term": "Bulk operations",
+        "definition": "Users can be created, invited or deleted in bulk by uploading a CSV template in the Entra admin center, or scripted with Microsoft Graph PowerShell."
+      }
     ],
     "howItWorks": [
       "An administrator creates a user (cloud identity) or the user is synchronized from AD DS. A user principal name (UPN) such as alex@contoso.com uniquely identifies them.",
@@ -47,16 +76,39 @@
       "Assuming nested group membership flows through to every feature — some features (for example group-based licensing and some app assignments) do not support nested groups."
     ],
     "confusedWith": [
-      { "name": "Management groups", "difference": "Management groups organize Azure subscriptions for governance (Policy and RBAC). Administrative units organize Entra users, groups and devices for delegated directory administration." },
-      { "name": "Microsoft Entra roles", "difference": "Groups are collections of identities; roles are sets of permissions. You assign roles to users or role-assignable groups.", "comparison": "entra-roles-vs-rbac-roles" }
+      {
+        "name": "Management groups",
+        "difference": "Management groups organize Azure subscriptions for governance (Policy and RBAC). Administrative units organize Entra users, groups and devices for delegated directory administration."
+      },
+      {
+        "name": "Microsoft Entra roles",
+        "difference": "Groups are collections of identities; roles are sets of permissions. You assign roles to users or role-assignable groups.",
+        "comparison": "entra-roles-vs-rbac-roles"
+      }
     ],
-    "diagrams": ["identity-relationships"],
-    "services": ["entra-id"],
+    "diagrams": [
+      "identity-relationships"
+    ],
+    "services": [
+      "entra-id"
+    ],
     "docLinks": [
-      { "title": "Learn about groups and access rights in Microsoft Entra ID", "url": "https://learn.microsoft.com/entra/fundamentals/concept-learn-about-groups" },
-      { "title": "Dynamic membership rules for groups", "url": "https://learn.microsoft.com/entra/identity/users/groups-dynamic-membership" },
-      { "title": "Administrative units in Microsoft Entra ID", "url": "https://learn.microsoft.com/entra/identity/role-based-access-control/administrative-units" },
-      { "title": "Add or delete users", "url": "https://learn.microsoft.com/entra/fundamentals/how-to-create-delete-users" }
+      {
+        "title": "Learn about groups and access rights in Microsoft Entra ID",
+        "url": "https://learn.microsoft.com/entra/fundamentals/concept-learn-about-groups"
+      },
+      {
+        "title": "Dynamic membership rules for groups",
+        "url": "https://learn.microsoft.com/entra/identity/users/groups-dynamic-membership"
+      },
+      {
+        "title": "Administrative units in Microsoft Entra ID",
+        "url": "https://learn.microsoft.com/entra/identity/role-based-access-control/administrative-units"
+      },
+      {
+        "title": "Add or delete users",
+        "url": "https://learn.microsoft.com/entra/fundamentals/how-to-create-delete-users"
+      }
     ],
     "versionNote": "Microsoft Entra feature licensing (Free vs P1 vs P2) changes over time. Verify which license a feature needs on Microsoft Learn."
   },
@@ -64,8 +116,16 @@
     "slug": "entra-external-sspr",
     "title": "External Users, Licenses & Self-Service Password Reset",
     "domain": "identity-governance",
-    "objectiveIds": ["entra-users-groups"],
+    "objectiveIds": [
+      "entra-users-groups"
+    ],
     "icon": "key-round",
+    "aliases": [
+      "SSPR",
+      "B2B",
+      "guest users",
+      "password writeback"
+    ],
     "summary": "Invite and manage B2B guest users, assign licenses (including group-based licensing), and configure self-service password reset.",
     "overview": [
       "Microsoft Entra B2B collaboration lets you invite users from other organizations as guests. They authenticate with their own identity provider but appear in your directory as users with UserType Guest, so you can grant them access to apps and Azure resources.",
@@ -73,13 +133,34 @@
       "Self-service password reset (SSPR) lets users reset their own forgotten password after verifying their identity with registered authentication methods, cutting help-desk calls."
     ],
     "keyConcepts": [
-      { "term": "Guest (B2B) user", "definition": "An external identity invited to your tenant. UserType is Guest; the user signs in with their home credentials." },
-      { "term": "External collaboration settings", "definition": "Tenant settings that control who can invite guests, what guests can see in the directory, and which domains are allowed or blocked." },
-      { "term": "Group-based licensing", "definition": "Assign a license to a group; members inherit it automatically. Requires a license tier that supports it (Entra ID P1 or certain Microsoft 365 plans)." },
-      { "term": "Usage location", "definition": "A user attribute (country) that must be set before a license can be assigned, because service availability varies by country." },
-      { "term": "SSPR scope", "definition": "SSPR can be enabled for None, Selected (one group) or All users." },
-      { "term": "Authentication methods", "definition": "Methods users register for SSPR: Authenticator app notification or code, email, mobile phone (SMS/call), office phone and security questions. You choose whether one or two are required." },
-      { "term": "Password writeback", "definition": "Writes passwords reset in the cloud back to on-premises AD for synchronized users; configured through Entra Connect or Cloud Sync and requires P1 or higher." }
+      {
+        "term": "Guest (B2B) user",
+        "definition": "An external identity invited to your tenant. UserType is Guest; the user signs in with their home credentials."
+      },
+      {
+        "term": "External collaboration settings",
+        "definition": "Tenant settings that control who can invite guests, what guests can see in the directory, and which domains are allowed or blocked."
+      },
+      {
+        "term": "Group-based licensing",
+        "definition": "Assign a license to a group; members inherit it automatically. Requires a license tier that supports it (Entra ID P1 or certain Microsoft 365 plans)."
+      },
+      {
+        "term": "Usage location",
+        "definition": "A user attribute (country) that must be set before a license can be assigned, because service availability varies by country."
+      },
+      {
+        "term": "SSPR scope",
+        "definition": "SSPR can be enabled for None, Selected (one group) or All users."
+      },
+      {
+        "term": "Authentication methods",
+        "definition": "Methods users register for SSPR: Authenticator app notification or code, email, mobile phone (SMS/call), office phone and security questions. You choose whether one or two are required."
+      },
+      {
+        "term": "Password writeback",
+        "definition": "Writes passwords reset in the cloud back to on-premises AD for synchronized users; configured through Entra Connect or Cloud Sync and requires P1 or higher."
+      }
     ],
     "howItWorks": [
       "An admin (or a user allowed by external collaboration settings) invites a guest by email, individually or in bulk with a CSV upload.",
@@ -108,16 +189,38 @@
       "Creating a new member account for a partner instead of inviting them as a guest, which duplicates identities and credentials."
     ],
     "confusedWith": [
-      { "name": "Microsoft Entra Connect", "difference": "Entra Connect synchronizes on-premises AD identities into Entra ID; B2B invites identities that belong to other organizations." },
-      { "name": "Self-service password change", "difference": "Password change is when a user who knows their current password changes it. SSPR is resetting a forgotten password after verifying identity." }
+      {
+        "name": "Microsoft Entra Connect",
+        "difference": "Entra Connect synchronizes on-premises AD identities into Entra ID; B2B invites identities that belong to other organizations."
+      },
+      {
+        "name": "Self-service password change",
+        "difference": "Password change is when a user who knows their current password changes it. SSPR is resetting a forgotten password after verifying identity."
+      }
     ],
-    "diagrams": ["identity-relationships"],
-    "services": ["entra-id"],
+    "diagrams": [
+      "identity-relationships"
+    ],
+    "services": [
+      "entra-id"
+    ],
     "docLinks": [
-      { "title": "B2B collaboration overview", "url": "https://learn.microsoft.com/entra/external-id/what-is-b2b" },
-      { "title": "How self-service password reset works", "url": "https://learn.microsoft.com/entra/identity/authentication/concept-sspr-howitworks" },
-      { "title": "Assign licenses to a group", "url": "https://learn.microsoft.com/entra/identity/users/licensing-groups-assign" },
-      { "title": "Configure external collaboration settings", "url": "https://learn.microsoft.com/entra/external-id/external-collaboration-settings-configure" }
+      {
+        "title": "B2B collaboration overview",
+        "url": "https://learn.microsoft.com/entra/external-id/what-is-b2b"
+      },
+      {
+        "title": "How self-service password reset works",
+        "url": "https://learn.microsoft.com/entra/identity/authentication/concept-sspr-howitworks"
+      },
+      {
+        "title": "Assign licenses to a group",
+        "url": "https://learn.microsoft.com/entra/identity/users/licensing-groups-assign"
+      },
+      {
+        "title": "Configure external collaboration settings",
+        "url": "https://learn.microsoft.com/entra/external-id/external-collaboration-settings-configure"
+      }
     ],
     "versionNote": "SSPR licensing and the list of available authentication methods are updated periodically; confirm current requirements on Microsoft Learn."
   },
@@ -125,8 +228,15 @@
     "slug": "azure-rbac",
     "title": "Azure Role-Based Access Control (RBAC)",
     "domain": "identity-governance",
-    "objectiveIds": ["access-to-resources"],
+    "objectiveIds": [
+      "access-to-resources"
+    ],
     "icon": "user-cog",
+    "aliases": [
+      "RBAC",
+      "IAM",
+      "role assignment"
+    ],
     "summary": "Authorize who can do what on Azure resources by assigning roles to security principals at a scope, and interpret effective access.",
     "overview": [
       "Azure RBAC is the authorization system for Azure resources. It answers: who (security principal) can perform which actions (role definition) on what (scope)? A role assignment binds those three together.",
@@ -134,16 +244,46 @@
       "Azure RBAC controls the management plane (creating, configuring, deleting resources) and, through data-action roles such as Storage Blob Data Reader, some data planes."
     ],
     "keyConcepts": [
-      { "term": "Security principal", "definition": "The identity receiving access: user, group, service principal or managed identity." },
-      { "term": "Role definition", "definition": "A collection of permissions: Actions, NotActions, DataActions, NotDataActions and AssignableScopes." },
-      { "term": "Scope", "definition": "Where the assignment applies: management group, subscription, resource group or individual resource. Child scopes inherit." },
-      { "term": "Owner", "definition": "Full access to manage everything, including assigning roles to others." },
-      { "term": "Contributor", "definition": "Can create and manage all resources but cannot grant access to others (cannot create role assignments)." },
-      { "term": "Reader", "definition": "View everything but make no changes." },
-      { "term": "User Access Administrator", "definition": "Manages role assignments (who has access) without being able to manage the resources themselves." },
-      { "term": "Role Based Access Control Administrator", "definition": "Can manage role assignments, optionally constrained by conditions that limit which roles and principals they can assign." },
-      { "term": "NotActions", "definition": "Subtracts permissions from Actions in the same role. It is not a deny: another role can still grant the action." },
-      { "term": "Custom role", "definition": "A role you define (JSON) when built-in roles are too broad. AssignableScopes control where it can be used." }
+      {
+        "term": "Security principal",
+        "definition": "The identity receiving access: user, group, service principal or managed identity."
+      },
+      {
+        "term": "Role definition",
+        "definition": "A collection of permissions: Actions, NotActions, DataActions, NotDataActions and AssignableScopes."
+      },
+      {
+        "term": "Scope",
+        "definition": "Where the assignment applies: management group, subscription, resource group or individual resource. Child scopes inherit."
+      },
+      {
+        "term": "Owner",
+        "definition": "Full access to manage everything, including assigning roles to others."
+      },
+      {
+        "term": "Contributor",
+        "definition": "Can create and manage all resources but cannot grant access to others (cannot create role assignments)."
+      },
+      {
+        "term": "Reader",
+        "definition": "View everything but make no changes."
+      },
+      {
+        "term": "User Access Administrator",
+        "definition": "Manages role assignments (who has access) without being able to manage the resources themselves."
+      },
+      {
+        "term": "Role Based Access Control Administrator",
+        "definition": "Can manage role assignments, optionally constrained by conditions that limit which roles and principals they can assign."
+      },
+      {
+        "term": "NotActions",
+        "definition": "Subtracts permissions from Actions in the same role. It is not a deny: another role can still grant the action."
+      },
+      {
+        "term": "Custom role",
+        "definition": "A role you define (JSON) when built-in roles are too broad. AssignableScopes control where it can be used."
+      }
     ],
     "howItWorks": [
       "A user signs in and requests an operation through Azure Resource Manager.",
@@ -172,25 +312,59 @@
       "Forgetting that role assignments can take a few minutes to take effect and that removing a user from a group removes inherited access."
     ],
     "confusedWith": [
-      { "name": "Azure Policy", "difference": "RBAC controls what a user can do; Policy controls what state resources may be in, regardless of who deploys them.", "comparison": "rbac-vs-policy" },
-      { "name": "Microsoft Entra roles", "difference": "Entra roles manage the directory (users, groups, apps). Azure RBAC roles manage Azure resources.", "comparison": "entra-roles-vs-rbac-roles" },
-      { "name": "Resource locks", "difference": "Locks stop deletes or changes for everyone, including Owners, regardless of RBAC permissions." }
+      {
+        "name": "Azure Policy",
+        "difference": "RBAC controls what a user can do; Policy controls what state resources may be in, regardless of who deploys them.",
+        "comparison": "rbac-vs-policy"
+      },
+      {
+        "name": "Microsoft Entra roles",
+        "difference": "Entra roles manage the directory (users, groups, apps). Azure RBAC roles manage Azure resources.",
+        "comparison": "entra-roles-vs-rbac-roles"
+      },
+      {
+        "name": "Resource locks",
+        "difference": "Locks stop deletes or changes for everyone, including Owners, regardless of RBAC permissions."
+      }
     ],
-    "diagrams": ["rbac-scope-inheritance"],
-    "services": ["entra-id"],
+    "diagrams": [
+      "rbac-scope-inheritance"
+    ],
+    "services": [
+      "entra-id"
+    ],
     "docLinks": [
-      { "title": "What is Azure RBAC?", "url": "https://learn.microsoft.com/azure/role-based-access-control/overview" },
-      { "title": "Azure built-in roles", "url": "https://learn.microsoft.com/azure/role-based-access-control/built-in-roles" },
-      { "title": "Understand scope for Azure RBAC", "url": "https://learn.microsoft.com/azure/role-based-access-control/scope-overview" },
-      { "title": "Azure custom roles", "url": "https://learn.microsoft.com/azure/role-based-access-control/custom-roles" }
+      {
+        "title": "What is Azure RBAC?",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/overview"
+      },
+      {
+        "title": "Azure built-in roles",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/built-in-roles"
+      },
+      {
+        "title": "Understand scope for Azure RBAC",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/scope-overview"
+      },
+      {
+        "title": "Azure custom roles",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/custom-roles"
+      }
     ]
   },
   {
     "slug": "entra-roles-vs-rbac",
     "title": "Microsoft Entra Roles vs Azure RBAC Roles",
     "domain": "identity-governance",
-    "objectiveIds": ["access-to-resources", "entra-users-groups"],
+    "objectiveIds": [
+      "access-to-resources",
+      "entra-users-groups"
+    ],
     "icon": "shield",
+    "aliases": [
+      "Global Administrator",
+      "elevate access"
+    ],
     "summary": "Two separate role systems: Entra roles administer the directory; Azure RBAC roles administer Azure resources. Know which to use and how they meet.",
     "overview": [
       "Azure has two role-based systems that are easy to confuse. Microsoft Entra roles (Global Administrator, User Administrator, Helpdesk Administrator…) control directory objects: users, groups, applications, domains and tenant settings. Azure RBAC roles (Owner, Contributor, Reader, Virtual Machine Contributor…) control Azure resources in subscriptions.",
@@ -198,12 +372,30 @@
       "Entra roles are scoped to the tenant, an administrative unit, or an application. Azure RBAC roles are scoped to management groups, subscriptions, resource groups and resources."
     ],
     "keyConcepts": [
-      { "term": "Global Administrator", "definition": "Entra role with full control of directory settings and identities. Not an Azure resource role." },
-      { "term": "User Administrator", "definition": "Entra role to create and manage users and groups and reset passwords for non-admins." },
-      { "term": "Elevate access", "definition": "A Global Administrator toggle that grants User Access Administrator at root scope across all subscriptions in the tenant." },
-      { "term": "Root scope (/)", "definition": "The top of Azure RBAC, above the tenant root management group." },
-      { "term": "Privileged Identity Management (PIM)", "definition": "Provides just-in-time, time-bound activation for both Entra and Azure roles (requires Entra ID P2 or Governance licensing)." },
-      { "term": "Role-assignable group", "definition": "A group created with the 'Microsoft Entra roles can be assigned' option so it can hold Entra role assignments." }
+      {
+        "term": "Global Administrator",
+        "definition": "Entra role with full control of directory settings and identities. Not an Azure resource role."
+      },
+      {
+        "term": "User Administrator",
+        "definition": "Entra role to create and manage users and groups and reset passwords for non-admins."
+      },
+      {
+        "term": "Elevate access",
+        "definition": "A Global Administrator toggle that grants User Access Administrator at root scope across all subscriptions in the tenant."
+      },
+      {
+        "term": "Root scope (/)",
+        "definition": "The top of Azure RBAC, above the tenant root management group."
+      },
+      {
+        "term": "Privileged Identity Management (PIM)",
+        "definition": "Provides just-in-time, time-bound activation for both Entra and Azure roles (requires Entra ID P2 or Governance licensing)."
+      },
+      {
+        "term": "Role-assignable group",
+        "definition": "A group created with the 'Microsoft Entra roles can be assigned' option so it can hold Entra role assignments."
+      }
     ],
     "howItWorks": [
       "Directory operations (create user, register app, reset password) are authorized by Entra roles via Microsoft Graph and the Entra admin center.",
@@ -229,23 +421,51 @@
       "Leaving elevated root-scope access enabled after it was needed."
     ],
     "confusedWith": [
-      { "name": "Azure RBAC", "difference": "Same mechanism (role + principal + scope), different target: Azure resources rather than directory objects.", "comparison": "entra-roles-vs-rbac-roles" },
-      { "name": "Administrative units", "difference": "AUs are a scope for Entra roles, not a role system themselves." }
+      {
+        "name": "Azure RBAC",
+        "difference": "Same mechanism (role + principal + scope), different target: Azure resources rather than directory objects.",
+        "comparison": "entra-roles-vs-rbac-roles"
+      },
+      {
+        "name": "Administrative units",
+        "difference": "AUs are a scope for Entra roles, not a role system themselves."
+      }
     ],
-    "diagrams": ["identity-relationships", "rbac-scope-inheritance"],
-    "services": ["entra-id"],
+    "diagrams": [
+      "identity-relationships",
+      "rbac-scope-inheritance"
+    ],
+    "services": [
+      "entra-id"
+    ],
     "docLinks": [
-      { "title": "Azure roles, Microsoft Entra roles, and classic administrator roles", "url": "https://learn.microsoft.com/azure/role-based-access-control/rbac-and-directory-admin-roles" },
-      { "title": "Elevate access to manage all Azure subscriptions and management groups", "url": "https://learn.microsoft.com/azure/role-based-access-control/elevate-access-global-admin" },
-      { "title": "Microsoft Entra built-in roles", "url": "https://learn.microsoft.com/entra/identity/role-based-access-control/permissions-reference" }
+      {
+        "title": "Azure roles, Microsoft Entra roles, and classic administrator roles",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/rbac-and-directory-admin-roles"
+      },
+      {
+        "title": "Elevate access to manage all Azure subscriptions and management groups",
+        "url": "https://learn.microsoft.com/azure/role-based-access-control/elevate-access-global-admin"
+      },
+      {
+        "title": "Microsoft Entra built-in roles",
+        "url": "https://learn.microsoft.com/entra/identity/role-based-access-control/permissions-reference"
+      }
     ]
   },
   {
     "slug": "management-hierarchy",
     "title": "Management Groups, Subscriptions & Resource Groups",
     "domain": "identity-governance",
-    "objectiveIds": ["subscriptions-governance"],
+    "objectiveIds": [
+      "subscriptions-governance"
+    ],
     "icon": "folder-tree",
+    "aliases": [
+      "management group",
+      "MG",
+      "subscription"
+    ],
     "summary": "The Azure management hierarchy, how governance flows down it, and how to manage subscriptions, resource groups and resource moves.",
     "overview": [
       "Azure organizes resources in a four-level hierarchy: management groups → subscriptions → resource groups → resources. Everything sits under one Microsoft Entra tenant, whose root management group is at the top.",
@@ -253,12 +473,30 @@
       "Governance settings — role assignments and policy assignments — are inherited by every child scope. Tags are not inherited by default."
     ],
     "keyConcepts": [
-      { "term": "Tenant root group", "definition": "The top management group in every tenant. All management groups and subscriptions roll up to it." },
-      { "term": "Management group", "definition": "A container of subscriptions and/or other management groups. Supports up to six levels of depth below the root (not counting the root or subscription level)." },
-      { "term": "Subscription", "definition": "A billing unit and an access/limit boundary. Trusts exactly one Entra tenant; can be moved between management groups." },
-      { "term": "Resource group", "definition": "A logical container. Each resource belongs to exactly one RG. The RG has a location that stores its metadata; resources inside can be in other regions." },
-      { "term": "Single parent rule", "definition": "Each management group and subscription has exactly one parent." },
-      { "term": "Resource move", "definition": "Moving resources between RGs or subscriptions changes their resource ID; both source and target RGs are locked for writes during the move." }
+      {
+        "term": "Tenant root group",
+        "definition": "The top management group in every tenant. All management groups and subscriptions roll up to it."
+      },
+      {
+        "term": "Management group",
+        "definition": "A container of subscriptions and/or other management groups. Supports up to six levels of depth below the root (not counting the root or subscription level)."
+      },
+      {
+        "term": "Subscription",
+        "definition": "A billing unit and an access/limit boundary. Trusts exactly one Entra tenant; can be moved between management groups."
+      },
+      {
+        "term": "Resource group",
+        "definition": "A logical container. Each resource belongs to exactly one RG. The RG has a location that stores its metadata; resources inside can be in other regions."
+      },
+      {
+        "term": "Single parent rule",
+        "definition": "Each management group and subscription has exactly one parent."
+      },
+      {
+        "term": "Resource move",
+        "definition": "Moving resources between RGs or subscriptions changes their resource ID; both source and target RGs are locked for writes during the move."
+      }
     ],
     "howItWorks": [
       "Create management groups that mirror how you govern (e.g., Production / Non-production, or by business unit).",
@@ -287,23 +525,50 @@
       "Moving a VM without its dependent NIC, disks or public IP."
     ],
     "confusedWith": [
-      { "name": "Administrative units", "difference": "AUs group Entra identities for directory admin delegation; management groups group subscriptions for resource governance." },
-      { "name": "Tags", "difference": "Tags add metadata for cost reporting and organization across the hierarchy; they don't create a scope for RBAC or Policy." }
+      {
+        "name": "Administrative units",
+        "difference": "AUs group Entra identities for directory admin delegation; management groups group subscriptions for resource governance."
+      },
+      {
+        "name": "Tags",
+        "difference": "Tags add metadata for cost reporting and organization across the hierarchy; they don't create a scope for RBAC or Policy."
+      }
     ],
-    "diagrams": ["management-hierarchy", "policy-inheritance"],
-    "services": ["management-groups"],
+    "diagrams": [
+      "management-hierarchy",
+      "policy-inheritance"
+    ],
+    "services": [
+      "management-groups"
+    ],
     "docLinks": [
-      { "title": "What are Azure management groups?", "url": "https://learn.microsoft.com/azure/governance/management-groups/overview" },
-      { "title": "Manage resource groups", "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/manage-resource-groups-portal" },
-      { "title": "Move resources to a new resource group or subscription", "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/move-resource-group-and-subscription" }
+      {
+        "title": "What are Azure management groups?",
+        "url": "https://learn.microsoft.com/azure/governance/management-groups/overview"
+      },
+      {
+        "title": "Manage resource groups",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/manage-resource-groups-portal"
+      },
+      {
+        "title": "Move resources to a new resource group or subscription",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/move-resource-group-and-subscription"
+      }
     ]
   },
   {
     "slug": "azure-policy",
     "title": "Azure Policy & Initiatives",
     "domain": "identity-governance",
-    "objectiveIds": ["subscriptions-governance"],
+    "objectiveIds": [
+      "subscriptions-governance"
+    ],
     "icon": "scroll-text",
+    "aliases": [
+      "initiative",
+      "DeployIfNotExists",
+      "DINE"
+    ],
     "summary": "Enforce organizational standards and assess compliance at scale with policy definitions, initiatives, effects and remediation.",
     "overview": [
       "Azure Policy evaluates resources against rules and acts on non-compliance. Where RBAC asks 'is this person allowed to do this?', Policy asks 'is this resource configured the way we require?' — and it applies to everyone, including Owners.",
@@ -311,15 +576,42 @@
       "Policy evaluates new and updated resources at request time and existing resources in periodic compliance scans. Effects like Modify and DeployIfNotExists can fix resources automatically, using a managed identity on the assignment."
     ],
     "keyConcepts": [
-      { "term": "Policy definition", "definition": "JSON rule describing a condition and an effect, e.g., if location not in [eastus, westus] then deny." },
-      { "term": "Initiative", "definition": "A group of policy definitions assigned as one unit and tracked as one compliance result." },
-      { "term": "Assignment", "definition": "Applies a definition or initiative to a scope with parameter values; can have exclusions." },
-      { "term": "Deny", "definition": "Blocks the create/update request that would produce a non-compliant resource." },
-      { "term": "Audit / AuditIfNotExists", "definition": "Allows the request but flags non-compliance in the compliance dashboard and activity log." },
-      { "term": "Append / Modify", "definition": "Add or change properties (commonly tags) on the resource during create/update. Modify can also remediate existing resources." },
-      { "term": "DeployIfNotExists", "definition": "Deploys a related resource or setting (e.g., diagnostic settings, an extension) when it's missing." },
-      { "term": "Remediation task", "definition": "Applies Modify or DeployIfNotExists to resources that already existed before the assignment. Requires a managed identity with the needed RBAC roles." },
-      { "term": "Exemption", "definition": "Excludes a specific resource or scope from evaluation for a reason (waiver or mitigated), optionally with an expiry." }
+      {
+        "term": "Policy definition",
+        "definition": "JSON rule describing a condition and an effect, e.g., if location not in [eastus, westus] then deny."
+      },
+      {
+        "term": "Initiative",
+        "definition": "A group of policy definitions assigned as one unit and tracked as one compliance result."
+      },
+      {
+        "term": "Assignment",
+        "definition": "Applies a definition or initiative to a scope with parameter values; can have exclusions."
+      },
+      {
+        "term": "Deny",
+        "definition": "Blocks the create/update request that would produce a non-compliant resource."
+      },
+      {
+        "term": "Audit / AuditIfNotExists",
+        "definition": "Allows the request but flags non-compliance in the compliance dashboard and activity log."
+      },
+      {
+        "term": "Append / Modify",
+        "definition": "Add or change properties (commonly tags) on the resource during create/update. Modify can also remediate existing resources."
+      },
+      {
+        "term": "DeployIfNotExists",
+        "definition": "Deploys a related resource or setting (e.g., diagnostic settings, an extension) when it's missing."
+      },
+      {
+        "term": "Remediation task",
+        "definition": "Applies Modify or DeployIfNotExists to resources that already existed before the assignment. Requires a managed identity with the needed RBAC roles."
+      },
+      {
+        "term": "Exemption",
+        "definition": "Excludes a specific resource or scope from evaluation for a reason (waiver or mitigated), optionally with an expiry."
+      }
     ],
     "howItWorks": [
       "Choose or author a definition (there are hundreds of built-ins, e.g., Allowed locations, Allowed virtual machine size SKUs, Require a tag on resources).",
@@ -349,24 +641,54 @@
       "Expecting immediate compliance results — evaluation of existing resources can take some time after assignment."
     ],
     "confusedWith": [
-      { "name": "Azure RBAC", "difference": "RBAC = who can act. Policy = what the end state must look like.", "comparison": "rbac-vs-policy" },
-      { "name": "Resource locks", "difference": "Locks prevent deletion or modification of specific existing resources; Policy evaluates resource properties against rules." }
+      {
+        "name": "Azure RBAC",
+        "difference": "RBAC = who can act. Policy = what the end state must look like.",
+        "comparison": "rbac-vs-policy"
+      },
+      {
+        "name": "Resource locks",
+        "difference": "Locks prevent deletion or modification of specific existing resources; Policy evaluates resource properties against rules."
+      }
     ],
-    "diagrams": ["policy-inheritance"],
-    "services": ["azure-policy"],
+    "diagrams": [
+      "policy-inheritance"
+    ],
+    "services": [
+      "azure-policy"
+    ],
     "docLinks": [
-      { "title": "What is Azure Policy?", "url": "https://learn.microsoft.com/azure/governance/policy/overview" },
-      { "title": "Azure Policy definition effects", "url": "https://learn.microsoft.com/azure/governance/policy/concepts/effects" },
-      { "title": "Remediate non-compliant resources", "url": "https://learn.microsoft.com/azure/governance/policy/how-to/remediate-resources" },
-      { "title": "Azure Policy assignment structure (exclusions)", "url": "https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure" }
+      {
+        "title": "What is Azure Policy?",
+        "url": "https://learn.microsoft.com/azure/governance/policy/overview"
+      },
+      {
+        "title": "Azure Policy definition effects",
+        "url": "https://learn.microsoft.com/azure/governance/policy/concepts/effects"
+      },
+      {
+        "title": "Remediate non-compliant resources",
+        "url": "https://learn.microsoft.com/azure/governance/policy/how-to/remediate-resources"
+      },
+      {
+        "title": "Azure Policy assignment structure (exclusions)",
+        "url": "https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure"
+      }
     ]
   },
   {
     "slug": "locks-tags",
     "title": "Resource Locks & Tags",
     "domain": "identity-governance",
-    "objectiveIds": ["subscriptions-governance"],
+    "objectiveIds": [
+      "subscriptions-governance"
+    ],
     "icon": "lock",
+    "aliases": [
+      "resource lock",
+      "CanNotDelete",
+      "ReadOnly"
+    ],
     "summary": "Protect critical resources from accidental deletion or change with locks, and organize and report on resources with tags.",
     "overview": [
       "Resource locks protect resources from accidental changes. A CanNotDelete lock (shown as 'Delete' in the portal) lets users read and modify but not delete. A ReadOnly lock lets users read but not modify or delete. Locks apply to everyone, including Owners, and are inherited by child resources.",
@@ -374,12 +696,30 @@
       "Both features are governance tools that work alongside RBAC and Policy."
     ],
     "keyConcepts": [
-      { "term": "CanNotDelete (Delete) lock", "definition": "Authorized users can read and modify the resource but cannot delete it." },
-      { "term": "ReadOnly lock", "definition": "Authorized users can read but cannot update or delete. Equivalent to restricting everyone to Reader-like behavior on the management plane." },
-      { "term": "Lock inheritance", "definition": "A lock on a subscription or resource group applies to all resources in it, including ones added later. The most restrictive lock wins." },
-      { "term": "Who can manage locks", "definition": "Requires Microsoft.Authorization/locks/* permissions — of the built-in roles, Owner and User Access Administrator." },
-      { "term": "Tag limits", "definition": "Up to 50 tag name/value pairs per resource, resource group or subscription. Not every resource type supports tags." },
-      { "term": "Tag inheritance via Policy", "definition": "Built-in policies such as 'Inherit a tag from the resource group if missing' (Modify effect) copy tags to resources." }
+      {
+        "term": "CanNotDelete (Delete) lock",
+        "definition": "Authorized users can read and modify the resource but cannot delete it."
+      },
+      {
+        "term": "ReadOnly lock",
+        "definition": "Authorized users can read but cannot update or delete. Equivalent to restricting everyone to Reader-like behavior on the management plane."
+      },
+      {
+        "term": "Lock inheritance",
+        "definition": "A lock on a subscription or resource group applies to all resources in it, including ones added later. The most restrictive lock wins."
+      },
+      {
+        "term": "Who can manage locks",
+        "definition": "Requires Microsoft.Authorization/locks/* permissions — of the built-in roles, Owner and User Access Administrator."
+      },
+      {
+        "term": "Tag limits",
+        "definition": "Up to 50 tag name/value pairs per resource, resource group or subscription. Not every resource type supports tags."
+      },
+      {
+        "term": "Tag inheritance via Policy",
+        "definition": "Built-in policies such as 'Inherit a tag from the resource group if missing' (Modify effect) copy tags to resources."
+      }
     ],
     "howItWorks": [
       "Add a lock on a resource, resource group or subscription and choose Delete (CanNotDelete) or ReadOnly.",
@@ -409,23 +749,48 @@
       "Expecting a lock to block data-plane operations such as writing blobs or database rows."
     ],
     "confusedWith": [
-      { "name": "Azure Policy", "difference": "Policy can deny non-compliant configurations at create/update time; locks block delete or change of specific existing resources." },
-      { "name": "Azure RBAC", "difference": "RBAC grants permissions per principal; locks override permissions for everyone." }
+      {
+        "name": "Azure Policy",
+        "difference": "Policy can deny non-compliant configurations at create/update time; locks block delete or change of specific existing resources."
+      },
+      {
+        "name": "Azure RBAC",
+        "difference": "RBAC grants permissions per principal; locks override permissions for everyone."
+      }
     ],
-    "diagrams": ["management-hierarchy"],
-    "services": ["azure-policy"],
+    "diagrams": [
+      "management-hierarchy"
+    ],
+    "services": [
+      "azure-policy"
+    ],
     "docLinks": [
-      { "title": "Lock your resources to protect your infrastructure", "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources" },
-      { "title": "Use tags to organize your Azure resources", "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-resources" },
-      { "title": "Assign policy definitions for tag compliance", "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-policies" }
+      {
+        "title": "Lock your resources to protect your infrastructure",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources"
+      },
+      {
+        "title": "Use tags to organize your Azure resources",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-resources"
+      },
+      {
+        "title": "Assign policy definitions for tag compliance",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-policies"
+      }
     ]
   },
   {
     "slug": "cost-management",
     "title": "Cost Management, Budgets & Azure Advisor",
     "domain": "identity-governance",
-    "objectiveIds": ["subscriptions-governance"],
+    "objectiveIds": [
+      "subscriptions-governance"
+    ],
     "icon": "wallet",
+    "aliases": [
+      "budget",
+      "Advisor"
+    ],
     "summary": "Analyze spending, set budgets with alerts, and act on Azure Advisor cost recommendations.",
     "overview": [
       "Microsoft Cost Management helps you monitor, allocate and optimize Azure spend. Cost analysis shows costs by service, resource group, location or tag over time, with forecasts.",
@@ -433,13 +798,34 @@
       "Azure Advisor analyzes your resources and recommends improvements across five pillars: Cost, Security, Reliability, Operational Excellence and Performance. Cost recommendations include right-sizing or shutting down underused VMs and buying reservations."
     ],
     "keyConcepts": [
-      { "term": "Cost analysis", "definition": "Interactive reporting of accumulated, daily and forecast costs, groupable by tag, resource group, service and more." },
-      { "term": "Budget", "definition": "An amount for a period (monthly, quarterly, annually) at a scope with alert conditions on actual or forecasted cost." },
-      { "term": "Action group", "definition": "Notification/automation target that a budget alert can call (email, SMS, webhook, Logic App, runbook)." },
-      { "term": "Cost alerts", "definition": "Budget alerts, credit alerts and department spending quota alerts surfaced in Cost Management." },
-      { "term": "Azure Advisor", "definition": "Free personalized recommendations for cost, security, reliability, operational excellence and performance." },
-      { "term": "Reservations and savings plans", "definition": "Commit to one- or three-year usage for discounted pricing on eligible compute and services." },
-      { "term": "Tags for cost allocation", "definition": "Group and filter costs by tag values such as CostCenter or Project." }
+      {
+        "term": "Cost analysis",
+        "definition": "Interactive reporting of accumulated, daily and forecast costs, groupable by tag, resource group, service and more."
+      },
+      {
+        "term": "Budget",
+        "definition": "An amount for a period (monthly, quarterly, annually) at a scope with alert conditions on actual or forecasted cost."
+      },
+      {
+        "term": "Action group",
+        "definition": "Notification/automation target that a budget alert can call (email, SMS, webhook, Logic App, runbook)."
+      },
+      {
+        "term": "Cost alerts",
+        "definition": "Budget alerts, credit alerts and department spending quota alerts surfaced in Cost Management."
+      },
+      {
+        "term": "Azure Advisor",
+        "definition": "Free personalized recommendations for cost, security, reliability, operational excellence and performance."
+      },
+      {
+        "term": "Reservations and savings plans",
+        "definition": "Commit to one- or three-year usage for discounted pricing on eligible compute and services."
+      },
+      {
+        "term": "Tags for cost allocation",
+        "definition": "Group and filter costs by tag values such as CostCenter or Project."
+      }
     ],
     "howItWorks": [
       "Usage data from your subscriptions flows into Cost Management (data is typically refreshed within hours, not real time).",
@@ -465,15 +851,33 @@
       "Using Azure Monitor metric alerts for spending instead of Cost Management budgets."
     ],
     "confusedWith": [
-      { "name": "Azure Monitor alerts", "difference": "Monitor alerts fire on resource metrics/logs; budget alerts fire on cost thresholds in Cost Management." },
-      { "name": "Spending limit", "difference": "A spending limit exists only on certain offers (e.g., free trial, some credit-based subscriptions) and disables resources at the limit; budgets only alert." }
+      {
+        "name": "Azure Monitor alerts",
+        "difference": "Monitor alerts fire on resource metrics/logs; budget alerts fire on cost thresholds in Cost Management."
+      },
+      {
+        "name": "Spending limit",
+        "difference": "A spending limit exists only on certain offers (e.g., free trial, some credit-based subscriptions) and disables resources at the limit; budgets only alert."
+      }
     ],
     "diagrams": [],
-    "services": ["cost-management", "azure-advisor"],
+    "services": [
+      "cost-management",
+      "azure-advisor"
+    ],
     "docLinks": [
-      { "title": "Create and manage budgets", "url": "https://learn.microsoft.com/azure/cost-management-billing/costs/tutorial-acm-create-budgets" },
-      { "title": "Quickstart: Explore costs with cost analysis", "url": "https://learn.microsoft.com/azure/cost-management-billing/costs/quick-acm-cost-analysis" },
-      { "title": "Introduction to Azure Advisor", "url": "https://learn.microsoft.com/azure/advisor/advisor-overview" }
+      {
+        "title": "Create and manage budgets",
+        "url": "https://learn.microsoft.com/azure/cost-management-billing/costs/tutorial-acm-create-budgets"
+      },
+      {
+        "title": "Quickstart: Explore costs with cost analysis",
+        "url": "https://learn.microsoft.com/azure/cost-management-billing/costs/quick-acm-cost-analysis"
+      },
+      {
+        "title": "Introduction to Azure Advisor",
+        "url": "https://learn.microsoft.com/azure/advisor/advisor-overview"
+      }
     ]
   }
 ]

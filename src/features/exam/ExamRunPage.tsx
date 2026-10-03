@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Clock, Flag, Send } from 'lucide-react'
 import { content } from '@/content'
@@ -17,10 +17,13 @@ export function ExamRunPage() {
   const navigate = useNavigate()
   const [now, setNow] = useState(Date.now())
   const [confirming, setConfirming] = useState(false)
+  // Set once submitted so clearing the active exam doesn't trigger the "no exam" redirect.
+  const submitted = useRef(false)
 
   const submit = useCallback(() => {
     const e = useProgress.getState().activeExam
-    if (!e) return
+    if (!e || submitted.current) return
+    submitted.current = true
     const result = scoreExam(e, content)
     finish(result)
     navigate(`/exam/results/${result.id}`, { replace: true })
@@ -35,7 +38,7 @@ export function ExamRunPage() {
     if (exam && remaining <= 0) submit()
   }, [exam, remaining, submit])
 
-  if (!exam) return <Navigate to="/exam" replace />
+  if (!exam) return submitted.current ? null : <Navigate to="/exam" replace />
 
   const q = content.questionById.get(exam.questionIds[exam.current])!
   const answeredCount = exam.questionIds.filter((id) => isAnswered(content.questionById.get(id)!, exam.answers[id])).length

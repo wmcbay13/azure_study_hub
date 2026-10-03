@@ -3,8 +3,16 @@
     "slug": "azure-monitor",
     "title": "Azure Monitor: Metrics, Logs & Log Analytics",
     "domain": "monitoring",
-    "objectiveIds": ["monitor-resources"],
+    "objectiveIds": [
+      "monitor-resources"
+    ],
     "icon": "activity",
+    "aliases": [
+      "KQL",
+      "Log Analytics",
+      "diagnostic settings",
+      "AMA"
+    ],
     "summary": "How Azure Monitor collects metrics and logs, how diagnostic settings and agents route data, and how to query it with KQL and Insights.",
     "overview": [
       "Azure Monitor is the unified monitoring platform for Azure, on-premises and other clouds. It stores two fundamental data types: metrics (numeric time series, near real time, lightweight) and logs (rich, structured records queried with Kusto Query Language in a Log Analytics workspace).",
@@ -12,15 +20,42 @@
       "Inside VMs, the Azure Monitor Agent (AMA) collects guest OS performance counters, event logs and syslog according to data collection rules (DCRs). Curated Insights (VM insights, Storage insights, Network insights) provide ready-made workbooks."
     ],
     "keyConcepts": [
-      { "term": "Metrics", "definition": "Numeric values sampled at regular intervals (e.g., CPU %). Explored in Metrics Explorer; platform metrics retained for 93 days." },
-      { "term": "Logs", "definition": "Records with many properties, stored in tables in a Log Analytics workspace and queried with KQL." },
-      { "term": "Log Analytics workspace", "definition": "The data store and query environment for logs; has region, retention and access-control settings." },
-      { "term": "Activity log", "definition": "Subscription-level log of management operations and service health events. Kept 90 days by default; send it to a workspace for longer retention and querying." },
-      { "term": "Diagnostic setting", "definition": "Routes a resource's platform logs and metrics to destinations. Configured per resource (or at scale with Policy)." },
-      { "term": "Azure Monitor Agent (AMA)", "definition": "Current agent for collecting guest data from VMs; replaces the legacy Log Analytics agent (MMA), which was retired in August 2024." },
-      { "term": "Data collection rule (DCR)", "definition": "Defines what data AMA collects and where it's sent." },
-      { "term": "KQL", "definition": "Read-only query language: Table | where … | summarize … by … | render timechart." },
-      { "term": "Insights", "definition": "Curated monitoring experiences such as VM insights (performance and dependency map), Storage insights and Network insights." }
+      {
+        "term": "Metrics",
+        "definition": "Numeric values sampled at regular intervals (e.g., CPU %). Explored in Metrics Explorer; platform metrics retained for 93 days."
+      },
+      {
+        "term": "Logs",
+        "definition": "Records with many properties, stored in tables in a Log Analytics workspace and queried with KQL."
+      },
+      {
+        "term": "Log Analytics workspace",
+        "definition": "The data store and query environment for logs; has region, retention and access-control settings."
+      },
+      {
+        "term": "Activity log",
+        "definition": "Subscription-level log of management operations and service health events. Kept 90 days by default; send it to a workspace for longer retention and querying."
+      },
+      {
+        "term": "Diagnostic setting",
+        "definition": "Routes a resource's platform logs and metrics to destinations. Configured per resource (or at scale with Policy)."
+      },
+      {
+        "term": "Azure Monitor Agent (AMA)",
+        "definition": "Current agent for collecting guest data from VMs; replaces the legacy Log Analytics agent (MMA), which was retired in August 2024."
+      },
+      {
+        "term": "Data collection rule (DCR)",
+        "definition": "Defines what data AMA collects and where it's sent."
+      },
+      {
+        "term": "KQL",
+        "definition": "Read-only query language: Table | where … | summarize … by … | render timechart."
+      },
+      {
+        "term": "Insights",
+        "definition": "Curated monitoring experiences such as VM insights (performance and dependency map), Storage insights and Network insights."
+      }
     ],
     "howItWorks": [
       "Resources emit platform metrics automatically; view them in Metrics Explorer with aggregation (avg, max, min, sum, count) and splitting by dimension.",
@@ -49,25 +84,60 @@
       "Using metrics when the question needs detailed per-request records (logs)."
     ],
     "confusedWith": [
-      { "name": "Metrics vs logs", "difference": "Metrics are numeric time series; logs are structured event records queried with KQL.", "comparison": "metrics-vs-logs" },
-      { "name": "Application Insights", "difference": "Application Insights is the APM feature of Azure Monitor for app telemetry (requests, dependencies, exceptions)." }
+      {
+        "name": "Metrics vs logs",
+        "difference": "Metrics are numeric time series; logs are structured event records queried with KQL.",
+        "comparison": "metrics-vs-logs"
+      },
+      {
+        "name": "Application Insights",
+        "difference": "Application Insights is the APM feature of Azure Monitor for app telemetry (requests, dependencies, exceptions)."
+      }
     ],
-    "diagrams": ["monitor-data-flow"],
-    "services": ["azure-monitor", "log-analytics", "application-insights"],
+    "diagrams": [
+      "monitor-data-flow"
+    ],
+    "services": [
+      "azure-monitor",
+      "log-analytics",
+      "application-insights"
+    ],
     "docLinks": [
-      { "title": "Azure Monitor overview", "url": "https://learn.microsoft.com/azure/azure-monitor/overview" },
-      { "title": "Diagnostic settings in Azure Monitor", "url": "https://learn.microsoft.com/azure/azure-monitor/essentials/diagnostic-settings" },
-      { "title": "Overview of Log Analytics", "url": "https://learn.microsoft.com/azure/azure-monitor/logs/log-analytics-overview" },
-      { "title": "Azure Monitor Agent overview", "url": "https://learn.microsoft.com/azure/azure-monitor/agents/azure-monitor-agent-overview" },
-      { "title": "Kusto Query Language overview", "url": "https://learn.microsoft.com/kusto/query/" }
+      {
+        "title": "Azure Monitor overview",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/overview"
+      },
+      {
+        "title": "Diagnostic settings in Azure Monitor",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/essentials/diagnostic-settings"
+      },
+      {
+        "title": "Overview of Log Analytics",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/logs/log-analytics-overview"
+      },
+      {
+        "title": "Azure Monitor Agent overview",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/agents/azure-monitor-agent-overview"
+      },
+      {
+        "title": "Kusto Query Language overview",
+        "url": "https://learn.microsoft.com/kusto/query/"
+      }
     ]
   },
   {
     "slug": "alerts-action-groups",
     "title": "Alerts, Action Groups & Alert Processing Rules",
     "domain": "monitoring",
-    "objectiveIds": ["monitor-resources"],
+    "objectiveIds": [
+      "monitor-resources"
+    ],
     "icon": "bell",
+    "aliases": [
+      "alert",
+      "action group",
+      "alert processing rule"
+    ],
     "summary": "Create metric, log search and activity log alerts, notify and automate with action groups, and suppress or route alerts with processing rules.",
     "overview": [
       "Azure Monitor alerts proactively notify you when conditions in your monitoring data are met. An alert rule combines a scope (resources), a condition (signal + logic) and actions.",
@@ -75,14 +145,38 @@
       "Alert processing rules modify fired alerts at scale: suppress notifications during a maintenance window, or add an action group to every alert in a subscription — without editing each rule."
     ],
     "keyConcepts": [
-      { "term": "Metric alert", "definition": "Evaluates a metric at a frequency against a static or dynamic threshold. Near real time; stateful (resolves automatically)." },
-      { "term": "Log search alert", "definition": "Runs a KQL query on a schedule and fires on results (e.g., count > 0)." },
-      { "term": "Activity log alert", "definition": "Fires on control-plane events (e.g., a VM deleted, a policy operation) or service health / resource health events." },
-      { "term": "Dynamic threshold", "definition": "Machine-learned threshold based on historical behavior, useful for seasonal patterns." },
-      { "term": "Severity", "definition": "Sev 0 (Critical) to Sev 4 (Verbose)." },
-      { "term": "Action group", "definition": "Notification and action targets; regional or global resource reusable across alert rules." },
-      { "term": "Alert processing rule", "definition": "Applies to fired alerts in a scope to suppress actions (e.g., maintenance windows) or add action groups." },
-      { "term": "Alert states", "definition": "Monitor condition (Fired/Resolved) set by the system; user response (New/Acknowledged/Closed) set by people." }
+      {
+        "term": "Metric alert",
+        "definition": "Evaluates a metric at a frequency against a static or dynamic threshold. Near real time; stateful (resolves automatically)."
+      },
+      {
+        "term": "Log search alert",
+        "definition": "Runs a KQL query on a schedule and fires on results (e.g., count > 0)."
+      },
+      {
+        "term": "Activity log alert",
+        "definition": "Fires on control-plane events (e.g., a VM deleted, a policy operation) or service health / resource health events."
+      },
+      {
+        "term": "Dynamic threshold",
+        "definition": "Machine-learned threshold based on historical behavior, useful for seasonal patterns."
+      },
+      {
+        "term": "Severity",
+        "definition": "Sev 0 (Critical) to Sev 4 (Verbose)."
+      },
+      {
+        "term": "Action group",
+        "definition": "Notification and action targets; regional or global resource reusable across alert rules."
+      },
+      {
+        "term": "Alert processing rule",
+        "definition": "Applies to fired alerts in a scope to suppress actions (e.g., maintenance windows) or add action groups."
+      },
+      {
+        "term": "Alert states",
+        "definition": "Monitor condition (Fired/Resolved) set by the system; user response (New/Acknowledged/Closed) set by people."
+      }
     ],
     "howItWorks": [
       "Create an alert rule: choose scope, signal (metric, log query, activity log), condition and evaluation frequency.",
@@ -110,24 +204,54 @@
       "Using a metric alert for something only visible in logs."
     ],
     "confusedWith": [
-      { "name": "Budget alerts", "difference": "Cost Management budgets alert on spending, not resource telemetry (though they can use action groups)." },
-      { "name": "Service Health", "difference": "Service Health reports Azure platform issues; activity log alerts on Service Health events notify you of them." }
+      {
+        "name": "Budget alerts",
+        "difference": "Cost Management budgets alert on spending, not resource telemetry (though they can use action groups)."
+      },
+      {
+        "name": "Service Health",
+        "difference": "Service Health reports Azure platform issues; activity log alerts on Service Health events notify you of them."
+      }
     ],
-    "diagrams": ["monitor-data-flow"],
-    "services": ["azure-monitor"],
+    "diagrams": [
+      "monitor-data-flow"
+    ],
+    "services": [
+      "azure-monitor"
+    ],
     "docLinks": [
-      { "title": "Overview of Azure Monitor alerts", "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-overview" },
-      { "title": "Action groups", "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/action-groups" },
-      { "title": "Alert processing rules", "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-processing-rules" },
-      { "title": "Types of Azure Monitor alerts", "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-types" }
+      {
+        "title": "Overview of Azure Monitor alerts",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-overview"
+      },
+      {
+        "title": "Action groups",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/action-groups"
+      },
+      {
+        "title": "Alert processing rules",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-processing-rules"
+      },
+      {
+        "title": "Types of Azure Monitor alerts",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-types"
+      }
     ]
   },
   {
     "slug": "network-watcher",
     "title": "Network Watcher & Connection Monitor",
     "domain": "monitoring",
-    "objectiveIds": ["monitor-resources", "vnets"],
+    "objectiveIds": [
+      "monitor-resources",
+      "vnets"
+    ],
     "icon": "radar",
+    "aliases": [
+      "IP flow verify",
+      "next hop",
+      "Connection Monitor"
+    ],
     "summary": "Diagnose and monitor Azure networking with IP flow verify, next hop, connection troubleshoot, packet capture, flow logs and Connection Monitor.",
     "overview": [
       "Azure Network Watcher is a regional set of tools to monitor, diagnose and log IaaS networking. It's enabled automatically per region when you create a VNet.",
@@ -135,15 +259,42 @@
       "Monitoring features track connectivity and traffic over time: Connection Monitor measures reachability and latency between endpoints, and flow logs record IP traffic for analysis with Traffic Analytics."
     ],
     "keyConcepts": [
-      { "term": "IP flow verify", "definition": "Checks whether a packet (5-tuple) to/from a VM is allowed or denied, and names the NSG rule responsible." },
-      { "term": "NSG diagnostics", "definition": "Evaluates traffic against all applicable NSGs and shows the result per NSG and rule." },
-      { "term": "Next hop", "definition": "Shows the next hop type and IP for traffic from a VM to a destination, and the route table responsible." },
-      { "term": "Connection troubleshoot", "definition": "Tests a one-time connection from a VM to a VM, FQDN, URI or IP and reports hops, latency and issues." },
-      { "term": "Connection Monitor", "definition": "Continuous monitoring of connectivity, latency and packet loss between Azure and on-premises endpoints, with alerts." },
-      { "term": "Packet capture", "definition": "Captures traffic on a VM (via the Network Watcher extension) to storage or a local file." },
-      { "term": "Flow logs", "definition": "Log IP traffic. VNet flow logs are the replacement for NSG flow logs, which are being retired." },
-      { "term": "Traffic Analytics", "definition": "Processes flow logs in Log Analytics to visualize traffic patterns and threats." },
-      { "term": "Topology", "definition": "Visual map of resources in a VNet and their relationships." }
+      {
+        "term": "IP flow verify",
+        "definition": "Checks whether a packet (5-tuple) to/from a VM is allowed or denied, and names the NSG rule responsible."
+      },
+      {
+        "term": "NSG diagnostics",
+        "definition": "Evaluates traffic against all applicable NSGs and shows the result per NSG and rule."
+      },
+      {
+        "term": "Next hop",
+        "definition": "Shows the next hop type and IP for traffic from a VM to a destination, and the route table responsible."
+      },
+      {
+        "term": "Connection troubleshoot",
+        "definition": "Tests a one-time connection from a VM to a VM, FQDN, URI or IP and reports hops, latency and issues."
+      },
+      {
+        "term": "Connection Monitor",
+        "definition": "Continuous monitoring of connectivity, latency and packet loss between Azure and on-premises endpoints, with alerts."
+      },
+      {
+        "term": "Packet capture",
+        "definition": "Captures traffic on a VM (via the Network Watcher extension) to storage or a local file."
+      },
+      {
+        "term": "Flow logs",
+        "definition": "Log IP traffic. VNet flow logs are the replacement for NSG flow logs, which are being retired."
+      },
+      {
+        "term": "Traffic Analytics",
+        "definition": "Processes flow logs in Log Analytics to visualize traffic patterns and threats."
+      },
+      {
+        "term": "Topology",
+        "definition": "Visual map of resources in a VNet and their relationships."
+      }
     ],
     "howItWorks": [
       "Network Watcher is enabled per region (in the NetworkWatcherRG resource group by default).",
@@ -171,16 +322,39 @@
       "Forgetting that flow logs need a storage account in the same region."
     ],
     "confusedWith": [
-      { "name": "Azure Monitor metrics", "difference": "Metrics show aggregated resource numbers; Network Watcher tools diagnose specific flows and paths." },
-      { "name": "Effective security rules", "difference": "Shows all NSG rules applied to a NIC; IP flow verify tests a specific flow against them." }
+      {
+        "name": "Azure Monitor metrics",
+        "difference": "Metrics show aggregated resource numbers; Network Watcher tools diagnose specific flows and paths."
+      },
+      {
+        "name": "Effective security rules",
+        "difference": "Shows all NSG rules applied to a NIC; IP flow verify tests a specific flow against them."
+      }
     ],
-    "diagrams": ["nsg-processing"],
-    "services": ["network-watcher", "network-security-groups"],
+    "diagrams": [
+      "nsg-processing"
+    ],
+    "services": [
+      "network-watcher",
+      "network-security-groups"
+    ],
     "docLinks": [
-      { "title": "What is Azure Network Watcher?", "url": "https://learn.microsoft.com/azure/network-watcher/network-watcher-overview" },
-      { "title": "IP flow verify overview", "url": "https://learn.microsoft.com/azure/network-watcher/ip-flow-verify-overview" },
-      { "title": "Connection monitor overview", "url": "https://learn.microsoft.com/azure/network-watcher/connection-monitor-overview" },
-      { "title": "Virtual network flow logs", "url": "https://learn.microsoft.com/azure/network-watcher/vnet-flow-logs-overview" }
+      {
+        "title": "What is Azure Network Watcher?",
+        "url": "https://learn.microsoft.com/azure/network-watcher/network-watcher-overview"
+      },
+      {
+        "title": "IP flow verify overview",
+        "url": "https://learn.microsoft.com/azure/network-watcher/ip-flow-verify-overview"
+      },
+      {
+        "title": "Connection monitor overview",
+        "url": "https://learn.microsoft.com/azure/network-watcher/connection-monitor-overview"
+      },
+      {
+        "title": "Virtual network flow logs",
+        "url": "https://learn.microsoft.com/azure/network-watcher/vnet-flow-logs-overview"
+      }
     ],
     "versionNote": "NSG flow logs are on a retirement path in favor of VNet flow logs; check current dates on Microsoft Learn."
   },
@@ -188,8 +362,16 @@
     "slug": "azure-backup",
     "title": "Azure Backup: Vaults, Policies & Restores",
     "domain": "monitoring",
-    "objectiveIds": ["backup-recovery"],
+    "objectiveIds": [
+      "backup-recovery"
+    ],
     "icon": "database-backup",
+    "aliases": [
+      "backup",
+      "Recovery Services vault",
+      "RSV",
+      "MARS"
+    ],
     "summary": "Protect VMs, file shares, disks, blobs and on-premises data with Recovery Services and Backup vaults, policies, restores, reports and alerts.",
     "overview": [
       "Azure Backup is a managed service for backing up and restoring data in Azure and on-premises. There's no backup infrastructure to deploy for Azure workloads — you create a vault, define a policy and enable protection.",
@@ -197,15 +379,42 @@
       "Backup policies define when backups run and how long recovery points are kept. Soft delete and immutability protect backups from accidental or malicious deletion."
     ],
     "keyConcepts": [
-      { "term": "Recovery Services vault", "definition": "Vault for Azure VMs, SQL/SAP HANA in VMs, Azure Files, MARS agent and MABS/DPM backups." },
-      { "term": "Backup vault", "definition": "Vault for Azure Disks, Blobs, PostgreSQL, AKS and other newer data sources." },
-      { "term": "Backup policy", "definition": "Schedule (daily/hourly for enhanced VM policy) and retention for daily, weekly, monthly and yearly points." },
-      { "term": "Instant restore snapshot", "definition": "Snapshots retained locally for fast restores before/alongside transfer to the vault tier." },
-      { "term": "Vault storage redundancy", "definition": "LRS, ZRS or GRS. Set it before protecting any items — it can't be changed afterwards." },
-      { "term": "Cross Region Restore", "definition": "With a GRS vault, restore data in the paired secondary region." },
-      { "term": "Soft delete", "definition": "Deleted backup data is retained (14 days by default) so it can be recovered." },
-      { "term": "MARS agent", "definition": "Microsoft Azure Recovery Services agent; backs up files, folders and system state from Windows machines directly to a Recovery Services vault." },
-      { "term": "Backup reports", "definition": "Built on Log Analytics; require diagnostic settings on the vault to send data to a workspace." }
+      {
+        "term": "Recovery Services vault",
+        "definition": "Vault for Azure VMs, SQL/SAP HANA in VMs, Azure Files, MARS agent and MABS/DPM backups."
+      },
+      {
+        "term": "Backup vault",
+        "definition": "Vault for Azure Disks, Blobs, PostgreSQL, AKS and other newer data sources."
+      },
+      {
+        "term": "Backup policy",
+        "definition": "Schedule (daily/hourly for enhanced VM policy) and retention for daily, weekly, monthly and yearly points."
+      },
+      {
+        "term": "Instant restore snapshot",
+        "definition": "Snapshots retained locally for fast restores before/alongside transfer to the vault tier."
+      },
+      {
+        "term": "Vault storage redundancy",
+        "definition": "LRS, ZRS or GRS. Set it before protecting any items — it can't be changed afterwards."
+      },
+      {
+        "term": "Cross Region Restore",
+        "definition": "With a GRS vault, restore data in the paired secondary region."
+      },
+      {
+        "term": "Soft delete",
+        "definition": "Deleted backup data is retained (14 days by default) so it can be recovered."
+      },
+      {
+        "term": "MARS agent",
+        "definition": "Microsoft Azure Recovery Services agent; backs up files, folders and system state from Windows machines directly to a Recovery Services vault."
+      },
+      {
+        "term": "Backup reports",
+        "definition": "Built on Log Analytics; require diagnostic settings on the vault to send data to a workspace."
+      }
     ],
     "howItWorks": [
       "Create a vault in the same region as the resources you protect and set its storage redundancy.",
@@ -235,25 +444,59 @@
       "Expecting backup reports to work without configuring diagnostic settings to Log Analytics."
     ],
     "confusedWith": [
-      { "name": "Azure Site Recovery", "difference": "ASR replicates VMs continuously for failover (low RPO/RTO); Backup keeps point-in-time copies for restore.", "comparison": "backup-vs-site-recovery" },
-      { "name": "Storage redundancy", "difference": "GRS on a storage account replicates data (including deletes); Backup keeps historical recovery points." }
+      {
+        "name": "Azure Site Recovery",
+        "difference": "ASR replicates VMs continuously for failover (low RPO/RTO); Backup keeps point-in-time copies for restore.",
+        "comparison": "backup-vs-site-recovery"
+      },
+      {
+        "name": "Storage redundancy",
+        "difference": "GRS on a storage account replicates data (including deletes); Backup keeps historical recovery points."
+      }
     ],
-    "diagrams": ["backup-architecture"],
-    "services": ["azure-backup"],
+    "diagrams": [
+      "backup-architecture"
+    ],
+    "services": [
+      "azure-backup"
+    ],
     "docLinks": [
-      { "title": "What is Azure Backup?", "url": "https://learn.microsoft.com/azure/backup/backup-overview" },
-      { "title": "Recovery Services vaults overview", "url": "https://learn.microsoft.com/azure/backup/backup-azure-recovery-services-vault-overview" },
-      { "title": "Backup vaults overview", "url": "https://learn.microsoft.com/azure/backup/backup-vault-overview" },
-      { "title": "About Azure VM backup", "url": "https://learn.microsoft.com/azure/backup/backup-azure-vms-introduction" },
-      { "title": "Configure Azure Backup reports", "url": "https://learn.microsoft.com/azure/backup/configure-reports" }
+      {
+        "title": "What is Azure Backup?",
+        "url": "https://learn.microsoft.com/azure/backup/backup-overview"
+      },
+      {
+        "title": "Recovery Services vaults overview",
+        "url": "https://learn.microsoft.com/azure/backup/backup-azure-recovery-services-vault-overview"
+      },
+      {
+        "title": "Backup vaults overview",
+        "url": "https://learn.microsoft.com/azure/backup/backup-vault-overview"
+      },
+      {
+        "title": "About Azure VM backup",
+        "url": "https://learn.microsoft.com/azure/backup/backup-azure-vms-introduction"
+      },
+      {
+        "title": "Configure Azure Backup reports",
+        "url": "https://learn.microsoft.com/azure/backup/configure-reports"
+      }
     ]
   },
   {
     "slug": "site-recovery",
     "title": "Azure Site Recovery",
     "domain": "monitoring",
-    "objectiveIds": ["backup-recovery"],
+    "objectiveIds": [
+      "backup-recovery"
+    ],
     "icon": "life-buoy",
+    "aliases": [
+      "ASR",
+      "DR",
+      "disaster recovery",
+      "failover"
+    ],
     "summary": "Replicate VMs to a secondary region, run test failovers, fail over and fail back to keep workloads running during regional outages.",
     "overview": [
       "Azure Site Recovery (ASR) is a disaster recovery (DR) service. It continuously replicates workloads — Azure VMs between regions, or on-premises VMware, Hyper-V and physical servers to Azure — so you can fail over when the primary site goes down.",
@@ -261,14 +504,38 @@
       "Where Azure Backup answers 'restore my data to last Tuesday', Site Recovery answers 'keep my application running in another region within minutes'."
     ],
     "keyConcepts": [
-      { "term": "RPO", "definition": "Recovery point objective — how much data loss is acceptable (time since last recovery point)." },
-      { "term": "RTO", "definition": "Recovery time objective — how quickly the workload must be running again." },
-      { "term": "Replication policy", "definition": "Recovery point retention and app-consistent snapshot frequency." },
-      { "term": "Recovery plan", "definition": "Groups machines and defines failover order, scripts and manual actions." },
-      { "term": "Test failover", "definition": "Creates VMs in an isolated network from a recovery point to validate DR; production keeps running. Clean up afterwards." },
-      { "term": "Failover / commit", "definition": "Starts VMs in the target region; commit finalizes the chosen recovery point." },
-      { "term": "Re-protect and failback", "definition": "After failover, reverse replication and later fail back to the original region." },
-      { "term": "Cache storage account", "definition": "Storage in the source region that temporarily holds changes before they're sent to the target (for Azure-to-Azure)." }
+      {
+        "term": "RPO",
+        "definition": "Recovery point objective — how much data loss is acceptable (time since last recovery point)."
+      },
+      {
+        "term": "RTO",
+        "definition": "Recovery time objective — how quickly the workload must be running again."
+      },
+      {
+        "term": "Replication policy",
+        "definition": "Recovery point retention and app-consistent snapshot frequency."
+      },
+      {
+        "term": "Recovery plan",
+        "definition": "Groups machines and defines failover order, scripts and manual actions."
+      },
+      {
+        "term": "Test failover",
+        "definition": "Creates VMs in an isolated network from a recovery point to validate DR; production keeps running. Clean up afterwards."
+      },
+      {
+        "term": "Failover / commit",
+        "definition": "Starts VMs in the target region; commit finalizes the chosen recovery point."
+      },
+      {
+        "term": "Re-protect and failback",
+        "definition": "After failover, reverse replication and later fail back to the original region."
+      },
+      {
+        "term": "Cache storage account",
+        "definition": "Storage in the source region that temporarily holds changes before they're sent to the target (for Azure-to-Azure)."
+      }
     ],
     "howItWorks": [
       "Create (or let ASR create) a Recovery Services vault in the target region.",
@@ -295,16 +562,39 @@
       "Forgetting to clean up after a test failover."
     ],
     "confusedWith": [
-      { "name": "Azure Backup", "difference": "Backup = point-in-time restore of data; ASR = replication and failover of running workloads.", "comparison": "backup-vs-site-recovery" },
-      { "name": "Availability zones", "difference": "Zones protect within a region; ASR protects against loss of a whole region." }
+      {
+        "name": "Azure Backup",
+        "difference": "Backup = point-in-time restore of data; ASR = replication and failover of running workloads.",
+        "comparison": "backup-vs-site-recovery"
+      },
+      {
+        "name": "Availability zones",
+        "difference": "Zones protect within a region; ASR protects against loss of a whole region."
+      }
     ],
-    "diagrams": ["backup-architecture"],
-    "services": ["site-recovery"],
+    "diagrams": [
+      "backup-architecture"
+    ],
+    "services": [
+      "site-recovery"
+    ],
     "docLinks": [
-      { "title": "About Site Recovery", "url": "https://learn.microsoft.com/azure/site-recovery/site-recovery-overview" },
-      { "title": "Tutorial: Set up disaster recovery for Azure VMs", "url": "https://learn.microsoft.com/azure/site-recovery/azure-to-azure-tutorial-enable-replication" },
-      { "title": "Run a disaster recovery drill (test failover)", "url": "https://learn.microsoft.com/azure/site-recovery/azure-to-azure-tutorial-dr-drill" },
-      { "title": "About recovery plans", "url": "https://learn.microsoft.com/azure/site-recovery/recovery-plan-overview" }
+      {
+        "title": "About Site Recovery",
+        "url": "https://learn.microsoft.com/azure/site-recovery/site-recovery-overview"
+      },
+      {
+        "title": "Tutorial: Set up disaster recovery for Azure VMs",
+        "url": "https://learn.microsoft.com/azure/site-recovery/azure-to-azure-tutorial-enable-replication"
+      },
+      {
+        "title": "Run a disaster recovery drill (test failover)",
+        "url": "https://learn.microsoft.com/azure/site-recovery/azure-to-azure-tutorial-dr-drill"
+      },
+      {
+        "title": "About recovery plans",
+        "url": "https://learn.microsoft.com/azure/site-recovery/recovery-plan-overview"
+      }
     ]
   }
 ]

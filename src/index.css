@@ -188,3 +188,9 @@ body {
     break-inside: avoid;
   }
 }
+
+/* Grid children default to min-width:auto, which lets long content blow out
+   single-column mobile layouts. Allow them to shrink. */
+.grid > * {
+  min-width: 0;
+}

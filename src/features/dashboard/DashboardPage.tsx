@@ -79,7 +79,7 @@ export function DashboardPage() {
         <Stat icon="trophy" color="amber" label="Practice exams" value={progress.exams.length} hint={progress.exams[0] ? `last ${pct(progress.exams[0].score)}` : 'none yet'} />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] [&>*]:min-w-0">
         {/* Domains */}
         <Card>
           <CardHeader title="Progress by exam domain" subtitle="Readiness per AZ-104 skills area" action={<Link to="/progress" className="text-sm text-accent hover:underline">Details</Link>} />
@@ -155,7 +155,7 @@ export function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-3 [&>*]:min-w-0">
         <Card>
           <CardHeader title="Weakest topics" icon={<TrendingDown className="size-4 text-danger" />} />
           <div className="p-5 pt-3">

@@ -61,7 +61,7 @@ export function FlashcardsPage() {
       />
 
       <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside>
+        <aside className="min-w-0">
           <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-subtle">Decks</h2>
           <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">
             {(['all', ...DECKS] as const).map((d) => {

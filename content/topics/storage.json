@@ -3,8 +3,16 @@
     "slug": "storage-accounts",
     "title": "Storage Accounts, Encryption & Data Tools",
     "domain": "storage",
-    "objectiveIds": ["storage-accounts"],
+    "objectiveIds": [
+      "storage-accounts"
+    ],
     "icon": "database",
+    "aliases": [
+      "GPv2",
+      "AzCopy",
+      "CMK",
+      "object replication"
+    ],
     "summary": "Choose the right storage account type and performance tier, configure encryption and object replication, and move data with AzCopy and Storage Explorer.",
     "overview": [
       "A storage account is the top-level namespace for Azure Storage data: blobs, files, queues and tables. Its name is globally unique and forms endpoints such as https://<account>.blob.core.windows.net.",
@@ -12,15 +20,42 @@
       "All data is encrypted at rest automatically with Storage Service Encryption (256-bit AES). You can use Microsoft-managed keys (default) or customer-managed keys in Azure Key Vault or Managed HSM."
     ],
     "keyConcepts": [
-      { "term": "Standard general-purpose v2", "definition": "Supports blobs (including Data Lake Gen2), files, queues and tables with all redundancy options. Recommended for most workloads." },
-      { "term": "Premium block blobs", "definition": "SSD-backed accounts for high transaction rates and low latency with block and append blobs." },
-      { "term": "Premium file shares", "definition": "SSD-backed account (FileStorage) for Azure Files; supports SMB and NFS shares." },
-      { "term": "Premium page blobs", "definition": "SSD-backed page blobs (used for unmanaged disks and some specialized workloads)." },
-      { "term": "Customer-managed keys (CMK)", "definition": "You control the encryption key in Key Vault; the account needs a managed identity with access to the key." },
-      { "term": "Infrastructure encryption", "definition": "Optional second layer of encryption at the infrastructure level; must be enabled when the account is created." },
-      { "term": "Object replication", "definition": "Asynchronously copies block blobs from a source container to a destination container in another account. Requires blob versioning on both accounts and change feed on the source." },
-      { "term": "AzCopy", "definition": "Command-line tool for high-performance copy/sync to and from Azure Storage, authenticating with Entra ID or SAS." },
-      { "term": "Azure Storage Explorer", "definition": "Free desktop GUI for managing blobs, files, queues and tables across accounts." }
+      {
+        "term": "Standard general-purpose v2",
+        "definition": "Supports blobs (including Data Lake Gen2), files, queues and tables with all redundancy options. Recommended for most workloads."
+      },
+      {
+        "term": "Premium block blobs",
+        "definition": "SSD-backed accounts for high transaction rates and low latency with block and append blobs."
+      },
+      {
+        "term": "Premium file shares",
+        "definition": "SSD-backed account (FileStorage) for Azure Files; supports SMB and NFS shares."
+      },
+      {
+        "term": "Premium page blobs",
+        "definition": "SSD-backed page blobs (used for unmanaged disks and some specialized workloads)."
+      },
+      {
+        "term": "Customer-managed keys (CMK)",
+        "definition": "You control the encryption key in Key Vault; the account needs a managed identity with access to the key."
+      },
+      {
+        "term": "Infrastructure encryption",
+        "definition": "Optional second layer of encryption at the infrastructure level; must be enabled when the account is created."
+      },
+      {
+        "term": "Object replication",
+        "definition": "Asynchronously copies block blobs from a source container to a destination container in another account. Requires blob versioning on both accounts and change feed on the source."
+      },
+      {
+        "term": "AzCopy",
+        "definition": "Command-line tool for high-performance copy/sync to and from Azure Storage, authenticating with Entra ID or SAS."
+      },
+      {
+        "term": "Azure Storage Explorer",
+        "definition": "Free desktop GUI for managing blobs, files, queues and tables across accounts."
+      }
     ],
     "howItWorks": [
       "Create the account in a resource group, pick a region, performance (Standard/Premium), redundancy and, for Premium, the account type.",
@@ -48,24 +83,58 @@
       "Forgetting to grant the account's managed identity access to the Key Vault key when enabling CMK."
     ],
     "confusedWith": [
-      { "name": "Managed disks", "difference": "VM disks are managed disks — you don't place them in a storage account you manage." },
-      { "name": "Azure Files vs Blob storage", "difference": "Both live in a storage account; Files offers SMB/NFS shares, Blob offers object storage over HTTPS.", "comparison": "files-vs-blob" }
+      {
+        "name": "Managed disks",
+        "difference": "VM disks are managed disks — you don't place them in a storage account you manage."
+      },
+      {
+        "name": "Azure Files vs Blob storage",
+        "difference": "Both live in a storage account; Files offers SMB/NFS shares, Blob offers object storage over HTTPS.",
+        "comparison": "files-vs-blob"
+      }
     ],
-    "diagrams": ["storage-redundancy"],
-    "services": ["storage-accounts", "key-vault"],
+    "diagrams": [
+      "storage-redundancy"
+    ],
+    "services": [
+      "storage-accounts",
+      "key-vault"
+    ],
     "docLinks": [
-      { "title": "Storage account overview", "url": "https://learn.microsoft.com/azure/storage/common/storage-account-overview" },
-      { "title": "Azure Storage encryption for data at rest", "url": "https://learn.microsoft.com/azure/storage/common/storage-service-encryption" },
-      { "title": "Object replication for block blobs", "url": "https://learn.microsoft.com/azure/storage/blobs/object-replication-overview" },
-      { "title": "Get started with AzCopy", "url": "https://learn.microsoft.com/azure/storage/common/storage-use-azcopy-v10" }
+      {
+        "title": "Storage account overview",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-account-overview"
+      },
+      {
+        "title": "Azure Storage encryption for data at rest",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-service-encryption"
+      },
+      {
+        "title": "Object replication for block blobs",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/object-replication-overview"
+      },
+      {
+        "title": "Get started with AzCopy",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-use-azcopy-v10"
+      }
     ]
   },
   {
     "slug": "storage-redundancy",
     "title": "Storage Redundancy: LRS, ZRS, GRS, GZRS",
     "domain": "storage",
-    "objectiveIds": ["storage-accounts"],
+    "objectiveIds": [
+      "storage-accounts"
+    ],
     "icon": "layers",
+    "aliases": [
+      "LRS",
+      "ZRS",
+      "GRS",
+      "GZRS",
+      "RA-GRS",
+      "RA-GZRS"
+    ],
     "summary": "How Azure Storage keeps copies of your data within a datacenter, across zones, and across regions — and what each option protects against.",
     "overview": [
       "Azure Storage always stores multiple copies of your data. The redundancy option decides where those copies live, which determines what failures you survive.",
@@ -73,13 +142,34 @@
       "By default, the secondary copy is not readable. Read-access variants (RA-GRS, RA-GZRS) expose a secondary endpoint (<account>-secondary) so applications can read during a primary outage. If the primary region is lost, a failover makes the secondary the new primary."
     ],
     "keyConcepts": [
-      { "term": "LRS (locally redundant)", "definition": "Three synchronous copies within one datacenter in the primary region. Protects against drive/rack failure; not against a datacenter or zone outage." },
-      { "term": "ZRS (zone-redundant)", "definition": "Three synchronous copies across three availability zones in the primary region. Data stays available if a zone fails." },
-      { "term": "GRS (geo-redundant)", "definition": "LRS in the primary region plus asynchronous copy to the secondary region (also LRS there)." },
-      { "term": "GZRS (geo-zone-redundant)", "definition": "ZRS in the primary region plus asynchronous copy to the secondary region (LRS there). Highest durability and availability." },
-      { "term": "RA-GRS / RA-GZRS", "definition": "Adds read access to the secondary region's endpoint at all times." },
-      { "term": "Customer-managed failover", "definition": "You can initiate failover of a geo-redundant account to the secondary region. Because replication is asynchronous, recent writes may be lost (RPO > 0)." },
-      { "term": "Last Sync Time", "definition": "Property indicating the most recent time data is guaranteed to be on the secondary — helps estimate potential data loss." }
+      {
+        "term": "LRS (locally redundant)",
+        "definition": "Three synchronous copies within one datacenter in the primary region. Protects against drive/rack failure; not against a datacenter or zone outage."
+      },
+      {
+        "term": "ZRS (zone-redundant)",
+        "definition": "Three synchronous copies across three availability zones in the primary region. Data stays available if a zone fails."
+      },
+      {
+        "term": "GRS (geo-redundant)",
+        "definition": "LRS in the primary region plus asynchronous copy to the secondary region (also LRS there)."
+      },
+      {
+        "term": "GZRS (geo-zone-redundant)",
+        "definition": "ZRS in the primary region plus asynchronous copy to the secondary region (LRS there). Highest durability and availability."
+      },
+      {
+        "term": "RA-GRS / RA-GZRS",
+        "definition": "Adds read access to the secondary region's endpoint at all times."
+      },
+      {
+        "term": "Customer-managed failover",
+        "definition": "You can initiate failover of a geo-redundant account to the secondary region. Because replication is asynchronous, recent writes may be lost (RPO > 0)."
+      },
+      {
+        "term": "Last Sync Time",
+        "definition": "Property indicating the most recent time data is guaranteed to be on the secondary — helps estimate potential data loss."
+      }
     ],
     "howItWorks": [
       "Writes are committed synchronously to the three primary copies (LRS or ZRS) before success is returned.",
@@ -106,15 +196,35 @@
       "Choosing ZRS when the requirement is to survive the loss of an entire region."
     ],
     "confusedWith": [
-      { "name": "Azure Backup", "difference": "Redundancy protects against hardware and site failures; it faithfully replicates deletions and corruption. Backups (and soft delete/versioning) protect against accidental deletion.", "comparison": "storage-redundancy-options" },
-      { "name": "Object replication", "difference": "Object replication copies selected containers to another account you choose; geo-redundancy replicates the whole account to the paired region automatically." }
+      {
+        "name": "Azure Backup",
+        "difference": "Redundancy protects against hardware and site failures; it faithfully replicates deletions and corruption. Backups (and soft delete/versioning) protect against accidental deletion.",
+        "comparison": "storage-redundancy-options"
+      },
+      {
+        "name": "Object replication",
+        "difference": "Object replication copies selected containers to another account you choose; geo-redundancy replicates the whole account to the paired region automatically."
+      }
     ],
-    "diagrams": ["storage-redundancy"],
-    "services": ["storage-accounts"],
+    "diagrams": [
+      "storage-redundancy"
+    ],
+    "services": [
+      "storage-accounts"
+    ],
     "docLinks": [
-      { "title": "Azure Storage redundancy", "url": "https://learn.microsoft.com/azure/storage/common/storage-redundancy" },
-      { "title": "Azure storage disaster recovery planning and failover", "url": "https://learn.microsoft.com/azure/storage/common/storage-disaster-recovery-guidance" },
-      { "title": "Change how a storage account is replicated", "url": "https://learn.microsoft.com/azure/storage/common/redundancy-migration" }
+      {
+        "title": "Azure Storage redundancy",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-redundancy"
+      },
+      {
+        "title": "Azure storage disaster recovery planning and failover",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-disaster-recovery-guidance"
+      },
+      {
+        "title": "Change how a storage account is replicated",
+        "url": "https://learn.microsoft.com/azure/storage/common/redundancy-migration"
+      }
     ],
     "versionNote": "Feature support by redundancy type (for example, archive tier and conversion options) has changed over time. Check the redundancy documentation for current support."
   },
@@ -122,8 +232,15 @@
     "slug": "blob-storage",
     "title": "Blob Storage, Access Tiers & Lifecycle Management",
     "domain": "storage",
-    "objectiveIds": ["files-blobs"],
+    "objectiveIds": [
+      "files-blobs"
+    ],
     "icon": "archive",
+    "aliases": [
+      "access tier",
+      "archive",
+      "lifecycle"
+    ],
     "summary": "Containers and blob types, Hot/Cool/Cold/Archive tiers, lifecycle rules, versioning and soft delete.",
     "overview": [
       "Azure Blob Storage is object storage for unstructured data — documents, images, video, backups, logs. Data is stored as blobs inside containers in a storage account and accessed over HTTPS.",
@@ -131,17 +248,50 @@
       "Lifecycle management policies automatically move blobs to cooler tiers or delete them based on age or last access, and data protection features (soft delete, versioning, point-in-time restore) guard against accidental deletion and overwrite."
     ],
     "keyConcepts": [
-      { "term": "Block blob", "definition": "For text and binary objects up to very large sizes; the default for most files." },
-      { "term": "Append blob", "definition": "Optimized for append operations such as logging." },
-      { "term": "Page blob", "definition": "Random read/write 512-byte pages; backs VHDs." },
-      { "term": "Container public access level", "definition": "Private (default), Blob (anonymous read of blobs) or Container (anonymous read and list). Can be blocked account-wide by disallowing anonymous access." },
-      { "term": "Hot tier", "definition": "Frequently accessed data. Highest storage cost, lowest access cost." },
-      { "term": "Cool tier", "definition": "Infrequently accessed data kept at least 30 days; early-deletion charge applies before then." },
-      { "term": "Cold tier", "definition": "Rarely accessed data kept at least 90 days, still online." },
-      { "term": "Archive tier", "definition": "Offline storage for data kept at least 180 days. Reads require rehydration to an online tier, which can take hours (standard priority up to ~15 hours)." },
-      { "term": "Lifecycle management", "definition": "JSON rules with filters (prefix, blob type, index tags) and actions (tier to cool/cold/archive, delete) based on days since modification, creation or last access." },
-      { "term": "Blob versioning", "definition": "Automatically keeps previous versions when a blob is overwritten or deleted." },
-      { "term": "Soft delete", "definition": "Retains deleted blobs or containers for a retention period (1–365 days) so they can be restored." }
+      {
+        "term": "Block blob",
+        "definition": "For text and binary objects up to very large sizes; the default for most files."
+      },
+      {
+        "term": "Append blob",
+        "definition": "Optimized for append operations such as logging."
+      },
+      {
+        "term": "Page blob",
+        "definition": "Random read/write 512-byte pages; backs VHDs."
+      },
+      {
+        "term": "Container public access level",
+        "definition": "Private (default), Blob (anonymous read of blobs) or Container (anonymous read and list). Can be blocked account-wide by disallowing anonymous access."
+      },
+      {
+        "term": "Hot tier",
+        "definition": "Frequently accessed data. Highest storage cost, lowest access cost."
+      },
+      {
+        "term": "Cool tier",
+        "definition": "Infrequently accessed data kept at least 30 days; early-deletion charge applies before then."
+      },
+      {
+        "term": "Cold tier",
+        "definition": "Rarely accessed data kept at least 90 days, still online."
+      },
+      {
+        "term": "Archive tier",
+        "definition": "Offline storage for data kept at least 180 days. Reads require rehydration to an online tier, which can take hours (standard priority up to ~15 hours)."
+      },
+      {
+        "term": "Lifecycle management",
+        "definition": "JSON rules with filters (prefix, blob type, index tags) and actions (tier to cool/cold/archive, delete) based on days since modification, creation or last access."
+      },
+      {
+        "term": "Blob versioning",
+        "definition": "Automatically keeps previous versions when a blob is overwritten or deleted."
+      },
+      {
+        "term": "Soft delete",
+        "definition": "Retains deleted blobs or containers for a retention period (1–365 days) so they can be restored."
+      }
     ],
     "howItWorks": [
       "Create a container, set its access level, and upload blobs. The account default access tier (Hot or Cool; newer accounts may also allow Cold) applies to blobs without an explicit tier.",
@@ -171,17 +321,42 @@
       "Confusing container soft delete with blob soft delete — they're separate settings."
     ],
     "confusedWith": [
-      { "name": "Azure Files", "difference": "Blob storage is object storage over HTTPS/REST; Azure Files provides SMB/NFS file shares you can mount.", "comparison": "files-vs-blob" },
-      { "name": "Storage redundancy", "difference": "Tiers decide cost vs access latency; redundancy decides how many copies and where." }
+      {
+        "name": "Azure Files",
+        "difference": "Blob storage is object storage over HTTPS/REST; Azure Files provides SMB/NFS file shares you can mount.",
+        "comparison": "files-vs-blob"
+      },
+      {
+        "name": "Storage redundancy",
+        "difference": "Tiers decide cost vs access latency; redundancy decides how many copies and where."
+      }
     ],
     "diagrams": [],
-    "services": ["blob-storage", "storage-accounts"],
+    "services": [
+      "blob-storage",
+      "storage-accounts"
+    ],
     "docLinks": [
-      { "title": "Access tiers for blob data", "url": "https://learn.microsoft.com/azure/storage/blobs/access-tiers-overview" },
-      { "title": "Lifecycle management overview", "url": "https://learn.microsoft.com/azure/storage/blobs/lifecycle-management-overview" },
-      { "title": "Blob versioning", "url": "https://learn.microsoft.com/azure/storage/blobs/versioning-overview" },
-      { "title": "Soft delete for blobs", "url": "https://learn.microsoft.com/azure/storage/blobs/soft-delete-blob-overview" },
-      { "title": "Rehydrate an archived blob", "url": "https://learn.microsoft.com/azure/storage/blobs/archive-rehydrate-overview" }
+      {
+        "title": "Access tiers for blob data",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/access-tiers-overview"
+      },
+      {
+        "title": "Lifecycle management overview",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/lifecycle-management-overview"
+      },
+      {
+        "title": "Blob versioning",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/versioning-overview"
+      },
+      {
+        "title": "Soft delete for blobs",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/soft-delete-blob-overview"
+      },
+      {
+        "title": "Rehydrate an archived blob",
+        "url": "https://learn.microsoft.com/azure/storage/blobs/archive-rehydrate-overview"
+      }
     ],
     "versionNote": "Tier minimum retention periods, rehydration times and tier availability can change; confirm on Microsoft Learn."
   },
@@ -189,8 +364,16 @@
     "slug": "azure-files",
     "title": "Azure Files & Azure File Sync",
     "domain": "storage",
-    "objectiveIds": ["files-blobs", "storage-access"],
+    "objectiveIds": [
+      "files-blobs",
+      "storage-access"
+    ],
     "icon": "folder",
+    "aliases": [
+      "SMB",
+      "File Sync",
+      "NFS"
+    ],
     "summary": "Fully managed SMB/NFS file shares, identity-based access, snapshots and soft delete, and syncing on-premises file servers with Azure File Sync.",
     "overview": [
       "Azure Files offers fully managed file shares that can be mounted over SMB (Windows, Linux, macOS) or NFS (Linux, premium shares). Shares replace or extend on-premises file servers and support lift-and-shift apps that expect a file system.",
@@ -198,14 +381,38 @@
       "Azure File Sync caches Azure file shares on Windows Servers. Cloud tiering keeps frequently accessed files local and replaces cold files with pointers, so a small server can front a large share."
     ],
     "keyConcepts": [
-      { "term": "SMB port 445", "definition": "SMB mounts require outbound TCP 445, which many ISPs and corporate networks block — use VPN, ExpressRoute or Azure File Sync instead." },
-      { "term": "Share-level RBAC roles", "definition": "Storage File Data SMB Share Reader, Contributor and Elevated Contributor grant share access to identities." },
-      { "term": "Share snapshot", "definition": "Read-only, point-in-time, incremental copy of a share; up to 200 per share. Users can restore files via Previous Versions." },
-      { "term": "Share soft delete", "definition": "Deleted shares are retained for a configurable period (1–365 days) and can be undeleted." },
-      { "term": "Storage Sync Service", "definition": "The top-level Azure resource for Azure File Sync." },
-      { "term": "Sync group", "definition": "Defines the sync topology: exactly one cloud endpoint (an Azure file share) and one or more server endpoints." },
-      { "term": "Server endpoint", "definition": "A path on a registered Windows Server (e.g., D:\\Shares\\Sales). A server can have endpoints in multiple sync groups but must be registered to only one Storage Sync Service." },
-      { "term": "Cloud tiering", "definition": "Optional per server endpoint. Volume free space policy and date policy decide which files are tiered to Azure." }
+      {
+        "term": "SMB port 445",
+        "definition": "SMB mounts require outbound TCP 445, which many ISPs and corporate networks block — use VPN, ExpressRoute or Azure File Sync instead."
+      },
+      {
+        "term": "Share-level RBAC roles",
+        "definition": "Storage File Data SMB Share Reader, Contributor and Elevated Contributor grant share access to identities."
+      },
+      {
+        "term": "Share snapshot",
+        "definition": "Read-only, point-in-time, incremental copy of a share; up to 200 per share. Users can restore files via Previous Versions."
+      },
+      {
+        "term": "Share soft delete",
+        "definition": "Deleted shares are retained for a configurable period (1–365 days) and can be undeleted."
+      },
+      {
+        "term": "Storage Sync Service",
+        "definition": "The top-level Azure resource for Azure File Sync."
+      },
+      {
+        "term": "Sync group",
+        "definition": "Defines the sync topology: exactly one cloud endpoint (an Azure file share) and one or more server endpoints."
+      },
+      {
+        "term": "Server endpoint",
+        "definition": "A path on a registered Windows Server (e.g., D:\\Shares\\Sales). A server can have endpoints in multiple sync groups but must be registered to only one Storage Sync Service."
+      },
+      {
+        "term": "Cloud tiering",
+        "definition": "Optional per server endpoint. Volume free space policy and date policy decide which files are tiered to Azure."
+      }
     ],
     "howItWorks": [
       "Create a file share in a storage account and choose its tier (premium SSD, or standard transaction optimized / hot / cool).",
@@ -233,25 +440,59 @@
       "Relying only on NTFS ACLs without assigning a share-level RBAC role (or default share permission), which blocks access."
     ],
     "confusedWith": [
-      { "name": "Blob storage", "difference": "Blob is object storage accessed via REST; Files is a mountable SMB/NFS file system.", "comparison": "files-vs-blob" },
-      { "name": "Azure Backup for Azure Files", "difference": "Backup automates and retains share snapshots on a schedule with policies; File Sync is about syncing and caching." }
+      {
+        "name": "Blob storage",
+        "difference": "Blob is object storage accessed via REST; Files is a mountable SMB/NFS file system.",
+        "comparison": "files-vs-blob"
+      },
+      {
+        "name": "Azure Backup for Azure Files",
+        "difference": "Backup automates and retains share snapshots on a schedule with policies; File Sync is about syncing and caching."
+      }
     ],
     "diagrams": [],
-    "services": ["azure-files", "azure-file-sync", "storage-accounts"],
+    "services": [
+      "azure-files",
+      "azure-file-sync",
+      "storage-accounts"
+    ],
     "docLinks": [
-      { "title": "What is Azure Files?", "url": "https://learn.microsoft.com/azure/storage/files/storage-files-introduction" },
-      { "title": "Identity-based authentication for Azure Files", "url": "https://learn.microsoft.com/azure/storage/files/storage-files-active-directory-overview" },
-      { "title": "Share snapshots", "url": "https://learn.microsoft.com/azure/storage/files/storage-snapshots-files" },
-      { "title": "What is Azure File Sync?", "url": "https://learn.microsoft.com/azure/storage/file-sync/file-sync-introduction" },
-      { "title": "Cloud tiering overview", "url": "https://learn.microsoft.com/azure/storage/file-sync/file-sync-cloud-tiering-overview" }
+      {
+        "title": "What is Azure Files?",
+        "url": "https://learn.microsoft.com/azure/storage/files/storage-files-introduction"
+      },
+      {
+        "title": "Identity-based authentication for Azure Files",
+        "url": "https://learn.microsoft.com/azure/storage/files/storage-files-active-directory-overview"
+      },
+      {
+        "title": "Share snapshots",
+        "url": "https://learn.microsoft.com/azure/storage/files/storage-snapshots-files"
+      },
+      {
+        "title": "What is Azure File Sync?",
+        "url": "https://learn.microsoft.com/azure/storage/file-sync/file-sync-introduction"
+      },
+      {
+        "title": "Cloud tiering overview",
+        "url": "https://learn.microsoft.com/azure/storage/file-sync/file-sync-cloud-tiering-overview"
+      }
     ]
   },
   {
     "slug": "storage-security",
     "title": "Storage Access: Keys, SAS, Stored Access Policies & Firewalls",
     "domain": "storage",
-    "objectiveIds": ["storage-access"],
+    "objectiveIds": [
+      "storage-access"
+    ],
     "icon": "file-key",
+    "aliases": [
+      "SAS",
+      "stored access policy",
+      "account key",
+      "storage firewall"
+    ],
     "summary": "Authorize access to storage with Entra ID, account keys or shared access signatures, and restrict network access with firewalls, service endpoints and private endpoints.",
     "overview": [
       "Every request to Azure Storage must be authorized. The options, from most to least preferred: Microsoft Entra ID with RBAC data roles, user delegation SAS (signed with Entra credentials), service or account SAS signed with an account key, and the account key itself (full access).",
@@ -259,13 +500,34 @@
       "Network rules (the storage firewall) decide which networks can reach the account's public endpoint: selected virtual networks (via service endpoints), public IP ranges, specific resource instances and trusted Microsoft services. Private endpoints give the account a private IP in your VNet."
     ],
     "keyConcepts": [
-      { "term": "Account keys", "definition": "Two 512-bit keys with full access to the account. Two keys enable rotation without downtime. Manage and rotate them with Key Vault or a key expiration policy." },
-      { "term": "User delegation SAS", "definition": "Signed with a user delegation key obtained via Entra ID. Blob/Data Lake only. Recommended SAS type." },
-      { "term": "Service SAS", "definition": "Signed with an account key; grants access to resources in one service (blob, file, queue or table). Can be tied to a stored access policy." },
-      { "term": "Account SAS", "definition": "Signed with an account key; can grant access across multiple services and to service-level operations." },
-      { "term": "Stored access policy", "definition": "Defined on a container/share/queue/table. Up to five per resource. Changing or deleting it immediately affects every service SAS that references it." },
-      { "term": "Storage firewall default action", "definition": "When set to deny, only allowed VNets, IP ranges, resource instances and trusted services can reach the public endpoint." },
-      { "term": "Disable shared key access", "definition": "Blocks requests authorized with account keys, including account and service SAS; only Entra ID (and user delegation SAS) work." }
+      {
+        "term": "Account keys",
+        "definition": "Two 512-bit keys with full access to the account. Two keys enable rotation without downtime. Manage and rotate them with Key Vault or a key expiration policy."
+      },
+      {
+        "term": "User delegation SAS",
+        "definition": "Signed with a user delegation key obtained via Entra ID. Blob/Data Lake only. Recommended SAS type."
+      },
+      {
+        "term": "Service SAS",
+        "definition": "Signed with an account key; grants access to resources in one service (blob, file, queue or table). Can be tied to a stored access policy."
+      },
+      {
+        "term": "Account SAS",
+        "definition": "Signed with an account key; can grant access across multiple services and to service-level operations."
+      },
+      {
+        "term": "Stored access policy",
+        "definition": "Defined on a container/share/queue/table. Up to five per resource. Changing or deleting it immediately affects every service SAS that references it."
+      },
+      {
+        "term": "Storage firewall default action",
+        "definition": "When set to deny, only allowed VNets, IP ranges, resource instances and trusted services can reach the public endpoint."
+      },
+      {
+        "term": "Disable shared key access",
+        "definition": "Blocks requests authorized with account keys, including account and service SAS; only Entra ID (and user delegation SAS) work."
+      }
     ],
     "howItWorks": [
       "Prefer Entra ID: assign data roles such as Storage Blob Data Contributor to users, groups or managed identities.",
@@ -295,16 +557,41 @@
       "Issuing long-lived SAS tokens without a stored access policy."
     ],
     "confusedWith": [
-      { "name": "Service endpoint vs private endpoint", "difference": "Service endpoints secure the public endpoint to selected subnets; private endpoints give the account a private IP in your VNet.", "comparison": "service-vs-private-endpoint" },
-      { "name": "Azure RBAC control-plane roles", "difference": "Contributor manages the account (and can list keys); data roles like Storage Blob Data Reader grant data access via Entra ID." }
+      {
+        "name": "Service endpoint vs private endpoint",
+        "difference": "Service endpoints secure the public endpoint to selected subnets; private endpoints give the account a private IP in your VNet.",
+        "comparison": "service-vs-private-endpoint"
+      },
+      {
+        "name": "Azure RBAC control-plane roles",
+        "difference": "Contributor manages the account (and can list keys); data roles like Storage Blob Data Reader grant data access via Entra ID."
+      }
     ],
-    "diagrams": ["private-vs-service-endpoint"],
-    "services": ["storage-accounts", "blob-storage", "private-link"],
+    "diagrams": [
+      "private-vs-service-endpoint"
+    ],
+    "services": [
+      "storage-accounts",
+      "blob-storage",
+      "private-link"
+    ],
     "docLinks": [
-      { "title": "Grant limited access with shared access signatures", "url": "https://learn.microsoft.com/azure/storage/common/storage-sas-overview" },
-      { "title": "Define a stored access policy", "url": "https://learn.microsoft.com/rest/api/storageservices/define-stored-access-policy" },
-      { "title": "Manage storage account access keys", "url": "https://learn.microsoft.com/azure/storage/common/storage-account-keys-manage" },
-      { "title": "Azure Storage firewall and virtual network rules", "url": "https://learn.microsoft.com/azure/storage/common/storage-network-security" }
+      {
+        "title": "Grant limited access with shared access signatures",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-sas-overview"
+      },
+      {
+        "title": "Define a stored access policy",
+        "url": "https://learn.microsoft.com/rest/api/storageservices/define-stored-access-policy"
+      },
+      {
+        "title": "Manage storage account access keys",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-account-keys-manage"
+      },
+      {
+        "title": "Azure Storage firewall and virtual network rules",
+        "url": "https://learn.microsoft.com/azure/storage/common/storage-network-security"
+      }
     ]
   }
 ]

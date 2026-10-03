@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Flame, Menu, Monitor, Moon, PanelLeft, Search, Sun, X } from 'lucide-react'
 import { NAV } from '@/lib/nav'
@@ -232,7 +232,9 @@ export function Layout() {
           </div>
         </header>
         <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-          <Outlet />
+          <Suspense fallback={<div className="py-20 text-center text-sm text-muted">Loading…</div>}>
+            <Outlet />
+          </Suspense>
         </main>
         <Footer />
       </div>

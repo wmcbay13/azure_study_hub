@@ -12,6 +12,8 @@ export interface SearchDoc {
   /** Extra searchable text, not displayed. */
   body: string
   keywords: string
+  /** Acronyms/alternate names, matched with high weight. */
+  aliases?: string
   href: string
 }
 
@@ -45,6 +47,7 @@ export function buildSearchDocs(c: ContentIndex): SearchDoc[] {
       snippet: t.summary,
       body: [...t.overview, ...t.keyConcepts.map((k) => `${k.term} ${k.definition}`), ...t.examTips].join(' '),
       keywords: [...t.keyConcepts.map((k) => k.term), ...t.confusedWith.map((x) => x.name)].join(' '),
+      aliases: t.aliases.join(' '),
       href: `/topics/${t.slug}`,
     })
   for (const s of c.services)
@@ -112,10 +115,25 @@ export function buildSearchDocs(c: ContentIndex): SearchDoc[] {
   return docs
 }
 
+/**
+ * Offset added to Fuse scores (0 = perfect, lower is better). Additive so that a
+ * near-exact flashcard title doesn't outrank the topic that teaches the concept.
+ */
+const KIND_OFFSET: Record<SearchKind, number> = {
+  topic: 0,
+  service: 0.02,
+  comparison: 0.03,
+  diagram: 0.04,
+  reference: 0.05,
+  flashcard: 0.12,
+  question: 0.15,
+}
+
 export function createSearch(docs: SearchDoc[]) {
   const fuse = new Fuse(docs, {
     keys: [
       { name: 'title', weight: 3 },
+      { name: 'aliases', weight: 3 },
       { name: 'keywords', weight: 2 },
       { name: 'snippet', weight: 1 },
       { name: 'body', weight: 0.5 },
@@ -125,7 +143,16 @@ export function createSearch(docs: SearchDoc[]) {
     minMatchCharLength: 2,
     includeScore: true,
   })
-  return (query: string, limit = 50) => (query.trim().length < 2 ? [] : fuse.search(query.trim(), { limit }).map((r) => r.item))
+  return (query: string, limit = 50) => {
+    if (query.trim().length < 2) return []
+    // Prefer learning content over individual cards/questions when relevance is similar.
+    return fuse
+      .search(query.trim(), { limit: limit * 2 })
+      .map((r) => ({ item: r.item, score: (r.score ?? 1) + KIND_OFFSET[r.item.kind] }))
+      .sort((a, b) => a.score - b.score)
+      .slice(0, limit)
+      .map((r) => r.item)
+  }
 }
 
 /** Results grouped by kind, preserving relevance order within each group. */
