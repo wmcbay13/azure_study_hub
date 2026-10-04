@@ -1,0 +1,12 @@
+These icons are official Microsoft Azure and Microsoft Entra architecture icons.
+
+Source: https://learn.microsoft.com/azure/architecture/icons/
+        https://learn.microsoft.com/entra/architecture/architecture-icons
+
+Microsoft permits the use of these icons in architectural diagrams, training materials,
+or documentation. You may copy, distribute, and display the icons only for the permitted
+use unless granted explicit permission by Microsoft. Microsoft reserves all other rights.
+
+Usage rules followed by this project: icons are not cropped, flipped, rotated, recolored or
+distorted; each icon represents only the Microsoft product it was designed for and is shown
+with that product's name; no Microsoft icon is used to represent Azure Study Hub itself.

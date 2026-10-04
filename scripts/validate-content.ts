@@ -6,6 +6,8 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { buildContent, ContentError } from '../src/content/build'
+import { ICONS } from '../src/components/Icon'
+import { AZURE_ICONS } from '../src/content/azureIcons'
 
 const root = join(import.meta.dirname, '..', 'content')
 
@@ -67,6 +69,19 @@ try {
   console.log('questions by domain', byDomain)
   console.log('questions by type', byType)
   console.log('questions by difficulty', byDiff)
+
+  // Every icon name must resolve to a generic icon or an official Azure icon.
+  const iconOk = (name?: string) => !name || name in ICONS || (name.startsWith('azure:') && name.slice(6) in AZURE_ICONS)
+  const iconRefs: [string, string | undefined][] = [
+    ...content.topics.map((t) => [`topic ${t.slug}`, t.icon] as [string, string]),
+    ...content.services.map((s) => [`service ${s.id}`, s.icon] as [string, string]),
+    ...content.quickref.map((q) => [`quickref ${q.id}`, q.icon] as [string, string]),
+    ...content.diagrams.flatMap((d) => d.nodes.map((n) => [`diagram ${d.id} node ${n.id}`, n.icon] as [string, string | undefined])),
+    ...content.objectives.domains.map((d) => [`domain ${d.id}`, d.icon] as [string, string]),
+  ]
+  for (const [where, name] of iconRefs) if (!iconOk(name)) problems.push(`${where}: unknown icon "${name}"`)
+  // Official Azure icons represent Microsoft products only — never study topics or domains.
+  for (const t of content.topics) if (t.icon.startsWith('azure:')) problems.push(`topic ${t.slug}: Azure product icons can't represent study topics`)
 
   if (process.argv.includes('--min')) {
     const mins = { topics: 20, questions: 150, flashcards: 100, diagrams: 10, comparisons: 10, quickref: 10, services: 25 }

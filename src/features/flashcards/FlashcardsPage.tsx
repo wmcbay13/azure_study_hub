@@ -78,7 +78,7 @@ export function FlashcardsPage() {
                     }}
                     aria-pressed={deck === d}
                     className={cn(
-                      'w-56 rounded-xl border p-3 text-left transition-colors lg:w-full',
+                      'w-56 rounded-md border p-3 text-left transition-colors lg:w-full',
                       deck === d ? 'border-accent bg-accent-soft' : 'border-border bg-surface hover:bg-surface-2',
                     )}
                   >
@@ -114,7 +114,7 @@ export function FlashcardsPage() {
                 <select
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
-                  className="h-9 appearance-none rounded-xl border border-border bg-surface pr-8 pl-3 text-sm"
+                  className="h-9 appearance-none rounded-md border border-border bg-surface pr-8 pl-3 text-sm"
                 >
                   <option value="all">All topics</option>
                   {topicsInDeck.map((t) => (

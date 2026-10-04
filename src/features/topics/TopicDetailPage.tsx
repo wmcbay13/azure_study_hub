@@ -117,8 +117,8 @@ export function TopicDetailPage() {
               <Badge key={o}>{objectiveTitle(o)}</Badge>
             ))}
           </div>
-          <h1 className="flex items-center gap-3 text-2xl font-bold tracking-tight sm:text-3xl">
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl" style={tone(domain.color, ['fg', 'bg'])}>
+          <h1 className="flex items-center gap-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+            <span className="grid size-11 shrink-0 place-items-center rounded-md" style={tone(domain.color, ['fg', 'bg'])}>
               <Icon name={topic.icon} className="size-6" />
             </span>
             {topic.title}
@@ -132,7 +132,7 @@ export function TopicDetailPage() {
       </div>
 
       {/* Learning flow */}
-      <ol className="no-print mb-8 grid grid-cols-5 gap-1 rounded-2xl border border-border bg-surface p-1.5 shadow-card" aria-label="Learning flow">
+      <ol className="no-print mb-8 grid grid-cols-5 gap-1 rounded-lg border border-border bg-surface p-1.5 shadow-card" aria-label="Learning flow">
         {PHASES.map((p, i) => (
           <li key={p.id}>
             <a
@@ -142,7 +142,7 @@ export function TopicDetailPage() {
                 document.getElementById(p.anchor)?.scrollIntoView({ behavior: 'smooth' })
               }}
               className={cn(
-                'flex flex-col items-center gap-1 rounded-xl px-1 py-2 text-xs font-medium transition-colors sm:flex-row sm:justify-center sm:gap-2 sm:text-sm',
+                'flex flex-col items-center gap-1 rounded-md px-1 py-2 text-xs font-medium transition-colors sm:flex-row sm:justify-center sm:gap-2 sm:text-sm',
                 activePhase === p.id ? 'bg-accent-soft text-accent' : 'text-muted hover:bg-surface-2',
               )}
             >
@@ -186,7 +186,7 @@ export function TopicDetailPage() {
             <ol className="space-y-3">
               {topic.howItWorks.map((s, i) => (
                 <li key={i} className="flex gap-3">
-                  <span className="grid size-7 shrink-0 place-items-center rounded-full bg-accent text-xs font-bold text-accent-fg">{i + 1}</span>
+                  <span className="grid size-7 shrink-0 place-items-center rounded-full bg-accent-solid text-xs font-semibold text-accent-fg">{i + 1}</span>
                   <p className="pt-0.5 text-[15px] leading-relaxed">{s}</p>
                 </li>
               ))}
@@ -197,7 +197,7 @@ export function TopicDetailPage() {
             <SectionTitle id="when">When to Use It</SectionTitle>
             <ul className="grid gap-2 sm:grid-cols-2">
               {topic.whenToUse.map((s, i) => (
-                <li key={i} className="flex gap-2 rounded-xl border border-border bg-surface p-3 text-sm leading-relaxed">
+                <li key={i} className="flex gap-2 rounded-md border border-border bg-surface p-3 text-sm leading-relaxed">
                   <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-success" aria-hidden />
                   {s}
                 </li>
@@ -207,7 +207,7 @@ export function TopicDetailPage() {
 
           <section>
             <SectionTitle id="tips">Exam Tips</SectionTitle>
-            <div className="rounded-2xl border p-4" style={tone('purple', ['bg', 'bd'])}>
+            <div className="rounded-lg border p-4" style={tone('purple', ['bg', 'bd'])}>
               <ul className="space-y-2.5">
                 {topic.examTips.map((s, i) => (
                   <li key={i} className="flex gap-2 text-[15px] leading-relaxed">
@@ -223,7 +223,7 @@ export function TopicDetailPage() {
             <SectionTitle id="mistakes">Common Mistakes</SectionTitle>
             <ul className="space-y-2">
               {topic.commonMistakes.map((s, i) => (
-                <li key={i} className="flex gap-2 rounded-xl border border-danger/25 bg-danger-soft p-3 text-sm leading-relaxed">
+                <li key={i} className="flex gap-2 rounded-md border border-danger/25 bg-danger-soft p-3 text-sm leading-relaxed">
                   <AlertTriangle className="mt-0.5 size-4 shrink-0 text-danger" aria-hidden />
                   {s}
                 </li>
@@ -284,7 +284,7 @@ export function TopicDetailPage() {
                 {diagrams[diagramIdx] && (
                   <>
                     <DiagramCanvas key={diagrams[diagramIdx].id} diagram={diagrams[diagramIdx]} />
-                    <div className="mt-3 rounded-2xl border border-border bg-surface p-4">
+                    <div className="mt-3 rounded-lg border border-border bg-surface p-4">
                       <p className="mb-1.5 text-sm font-semibold">What the exam expects you to understand</p>
                       <ul className="list-disc space-y-1 pl-5 text-sm leading-relaxed">
                         {diagrams[diagramIdx].examExpects.map((x, i) => (
@@ -341,7 +341,7 @@ export function TopicDetailPage() {
             <Card className="grid gap-6 p-5 sm:grid-cols-[auto_1fr] sm:items-center">
               <ProgressRing value={acc.pct ?? 0} color={scoreColor(acc.pct)} label="Topic accuracy">
                 <div>
-                  <div className="text-2xl font-bold">{pct(acc.pct)}</div>
+                  <div className="text-2xl font-semibold">{pct(acc.pct)}</div>
                   <div className="text-xs text-muted">accuracy</div>
                 </div>
               </ProgressRing>

@@ -16,7 +16,7 @@ export function ExplanationPanel({ question: q, correct }: { question: Question;
       {correct !== null && (
         <div
           className={cn(
-            'flex items-center gap-2 rounded-xl px-4 py-3 font-semibold',
+            'flex items-center gap-2 rounded-md px-4 py-3 font-semibold',
             correct ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger',
           )}
         >
@@ -49,7 +49,7 @@ export function ExplanationPanel({ question: q, correct }: { question: Question;
           </h3>
           <ul className="space-y-2">
             {others.map((o) => (
-              <li key={o.id} className="rounded-xl border border-border bg-surface-2 px-4 py-3">
+              <li key={o.id} className="rounded-md border border-border bg-surface-2 px-4 py-3">
                 <p className="text-sm font-semibold">
                   {!arranged && <XCircle className="mr-1.5 inline size-4 align-[-3px] text-danger" aria-hidden />}
                   {o.text}

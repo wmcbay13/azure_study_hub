@@ -54,7 +54,7 @@ export function ExamResultsPage() {
         <Card className="flex flex-col items-center justify-center p-6">
           <ProgressRing value={exam.score} size={160} stroke={14} color={scoreColor(exam.score)} label="Overall score">
             <div>
-              <div className="text-4xl font-extrabold tabular-nums" style={{ color: scoreColor(exam.score) }}>
+              <div className="text-4xl font-semibold tabular-nums" style={{ color: scoreColor(exam.score) }}>
                 {pct(exam.score)}
               </div>
               <div className="text-xs text-muted">overall</div>
@@ -117,7 +117,7 @@ export function ExamResultsPage() {
                 <p className="text-sm text-muted">These topics scored under 70%. Re-study them, then drill with targeted questions:</p>
                 <ul className="space-y-2">
                   {weak.slice(0, 6).map((t) => (
-                    <li key={t.slug} className="flex items-center justify-between gap-2 rounded-xl border border-border p-3 text-sm">
+                    <li key={t.slug} className="flex items-center justify-between gap-2 rounded-md border border-border p-3 text-sm">
                       <Link to={`/topics/${t.slug}`} className="font-medium hover:text-accent">
                         {content.topicBySlug.get(t.slug)?.title}
                       </Link>

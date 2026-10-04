@@ -80,7 +80,7 @@ export function FlashcardPlayer({ cards, startId, compact = false }: { cards: Fl
           className={cn('flip-card relative grid w-full text-left', compact ? 'min-h-56' : 'min-h-72 sm:min-h-80', flipped && 'is-flipped')}
           aria-label={flipped ? 'Show question' : 'Show answer'}
         >
-          <div className="flip-face col-start-1 row-start-1 flex flex-col rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-8">
+          <div className="flip-face col-start-1 row-start-1 flex flex-col rounded-lg border border-border bg-surface p-6 shadow-card sm:p-8">
             <div className="flex flex-wrap items-center gap-2">
               <Badge color={card.type === 'scenario' ? 'purple' : 'blue'}>{card.type === 'scenario' ? 'Scenario' : 'Definition'}</Badge>
               {st && <Badge color={st === 'know' ? 'green' : 'amber'}>{st === 'know' ? 'Known' : 'Needs review'}</Badge>}
@@ -88,7 +88,7 @@ export function FlashcardPlayer({ cards, startId, compact = false }: { cards: Fl
             <p className={cn('my-auto py-6 text-center font-semibold leading-snug', compact ? 'text-lg' : 'text-xl sm:text-2xl')}>{card.front}</p>
             <p className="text-center text-xs text-subtle">Click or press Space to flip</p>
           </div>
-          <div className="flip-face flip-back col-start-1 row-start-1 flex flex-col rounded-2xl border border-accent/40 bg-accent-soft p-6 shadow-card sm:p-8">
+          <div className="flip-face flip-back col-start-1 row-start-1 flex flex-col rounded-lg border border-accent/40 bg-accent-soft p-6 shadow-card sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-wide text-accent">Answer</p>
             <p className={cn('my-auto py-4 leading-relaxed', compact ? 'text-base' : 'text-lg')}>{card.back}</p>
             {card.versionNote && <p className="text-xs text-warning">Note: {card.versionNote}</p>}

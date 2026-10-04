@@ -3,323 +3,768 @@
     "id": "virtual-network",
     "name": "Azure Virtual Network",
     "category": "Networking",
-    "icon": "network",
+    "icon": "azure:virtual-networks",
     "tagline": "Your private network in Azure.",
     "whatItIs": "An isolated network with address spaces and subnets where Azure resources communicate privately, connect to other VNets and to on-premises.",
     "primaryPurpose": "Private networking foundation for IaaS and many PaaS services.",
-    "useCases": ["Hosting VMs and scale sets", "Hub-and-spoke topologies", "Hybrid connectivity", "Network segmentation"],
-    "keyFeatures": ["Subnets", "Peering (regional and global)", "Service endpoints", "User-defined routes", "Custom DNS settings"],
-    "security": ["Segment with NSGs/ASGs", "Inspect with Azure Firewall/NVAs", "DDoS Protection plans"],
-    "networking": ["Regional resource; 5 reserved IPs per subnet; non-overlapping spaces required for peering/hybrid"],
+    "useCases": [
+      "Hosting VMs and scale sets",
+      "Hub-and-spoke topologies",
+      "Hybrid connectivity",
+      "Network segmentation"
+    ],
+    "keyFeatures": [
+      "Subnets",
+      "Peering (regional and global)",
+      "Service endpoints",
+      "User-defined routes",
+      "Custom DNS settings"
+    ],
+    "security": [
+      "Segment with NSGs/ASGs",
+      "Inspect with Azure Firewall/NVAs",
+      "DDoS Protection plans"
+    ],
+    "networking": [
+      "Regional resource; 5 reserved IPs per subnet; non-overlapping spaces required for peering/hybrid"
+    ],
     "pricing": "VNets are free; pay for peering data transfer, public IPs, gateways and other attached services.",
-    "relatedServices": ["network-security-groups", "vpn-gateway", "private-link", "nat-gateway", "azure-bastion"],
+    "relatedServices": [
+      "network-security-groups",
+      "vpn-gateway",
+      "private-link",
+      "nat-gateway",
+      "azure-bastion"
+    ],
     "confusedWith": [
-      { "name": "Subnet", "difference": "A subnet is a range inside a VNet; NSGs and route tables attach to subnets." }
+      {
+        "name": "Subnet",
+        "difference": "A subnet is a range inside a VNet; NSGs and route tables attach to subnets."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "VNets, subnets, peering, public IPs and routes are core networking skills.",
-    "examTips": ["Usable IPs = subnet size − 5", "Peering isn't transitive"],
-    "topics": ["vnets-subnets", "vnet-peering", "routing-udr"],
-    "docLinks": [{ "title": "What is Azure Virtual Network?", "url": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-overview" }]
+    "examTips": [
+      "Usable IPs = subnet size − 5",
+      "Peering isn't transitive"
+    ],
+    "topics": [
+      "vnets-subnets",
+      "vnet-peering",
+      "routing-udr"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Virtual Network?",
+        "url": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-overview"
+      }
+    ]
   },
   {
     "id": "network-security-groups",
     "name": "Network Security Groups",
     "category": "Networking",
-    "icon": "shield",
+    "icon": "azure:network-security-groups",
     "tagline": "Stateful L3/L4 traffic filtering for subnets and NICs.",
     "whatItIs": "A set of prioritized allow/deny rules evaluated against a packet's 5-tuple, associated with subnets and/or network interfaces.",
     "primaryPurpose": "Control which traffic may reach or leave Azure resources.",
-    "useCases": ["Tier segmentation", "Restricting management ports", "Allowing only load balancer and app traffic"],
-    "keyFeatures": ["Priorities 100–4096", "Default rules", "Service tags and ASGs", "Augmented rules (multiple IPs/ports)", "Flow logging via Network Watcher"],
-    "security": ["Stateful", "Applies to everyone/everything in the subnet/NIC", "Review effective rules regularly"],
-    "networking": ["Regional; associate with subnets and NICs in the same region"],
+    "useCases": [
+      "Tier segmentation",
+      "Restricting management ports",
+      "Allowing only load balancer and app traffic"
+    ],
+    "keyFeatures": [
+      "Priorities 100–4096",
+      "Default rules",
+      "Service tags and ASGs",
+      "Augmented rules (multiple IPs/ports)",
+      "Flow logging via Network Watcher"
+    ],
+    "security": [
+      "Stateful",
+      "Applies to everyone/everything in the subnet/NIC",
+      "Review effective rules regularly"
+    ],
+    "networking": [
+      "Regional; associate with subnets and NICs in the same region"
+    ],
     "pricing": "No charge (flow logs and Traffic Analytics are billed separately).",
-    "relatedServices": ["virtual-network", "azure-firewall", "network-watcher"],
+    "relatedServices": [
+      "virtual-network",
+      "azure-firewall",
+      "network-watcher"
+    ],
     "confusedWith": [
-      { "name": "Azure Firewall", "difference": "Central L3–L7 firewall with FQDN filtering; NSGs are distributed L3/L4 filters." }
+      {
+        "name": "Azure Firewall",
+        "difference": "Central L3–L7 firewall with FQDN filtering; NSGs are distributed L3/L4 filters."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Creating NSGs/ASGs and evaluating effective rules are explicit skills.",
-    "examTips": ["Lowest priority number wins", "Inbound: subnet NSG then NIC NSG"],
-    "topics": ["nsg-asg"],
-    "docLinks": [{ "title": "Network security groups", "url": "https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview" }]
+    "examTips": [
+      "Lowest priority number wins",
+      "Inbound: subnet NSG then NIC NSG"
+    ],
+    "topics": [
+      "nsg-asg"
+    ],
+    "docLinks": [
+      {
+        "title": "Network security groups",
+        "url": "https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview"
+      }
+    ]
   },
   {
     "id": "azure-firewall",
     "name": "Azure Firewall",
     "category": "Security",
-    "icon": "shield-alert",
+    "icon": "azure:firewalls",
     "tagline": "Managed, stateful, centralized network firewall.",
     "whatItIs": "A cloud-native firewall service with built-in high availability, autoscaling, threat intelligence and L3–L7 filtering.",
     "primaryPurpose": "Centrally inspect and control traffic between networks and to the internet.",
-    "useCases": ["Hub firewall in hub-and-spoke", "Outbound FQDN allowlisting", "DNAT for inbound services", "Logging network traffic decisions"],
-    "keyFeatures": ["Network, application and DNAT rules", "Firewall Policy", "Threat intelligence", "Premium: TLS inspection, IDPS, URL filtering"],
-    "security": ["Combine with UDRs to force traffic through it", "Use Firewall Policy for central management"],
-    "networking": ["Requires AzureFirewallSubnet (/26); typically in a hub VNet"],
+    "useCases": [
+      "Hub firewall in hub-and-spoke",
+      "Outbound FQDN allowlisting",
+      "DNAT for inbound services",
+      "Logging network traffic decisions"
+    ],
+    "keyFeatures": [
+      "Network, application and DNAT rules",
+      "Firewall Policy",
+      "Threat intelligence",
+      "Premium: TLS inspection, IDPS, URL filtering"
+    ],
+    "security": [
+      "Combine with UDRs to force traffic through it",
+      "Use Firewall Policy for central management"
+    ],
+    "networking": [
+      "Requires AzureFirewallSubnet (/26); typically in a hub VNet"
+    ],
     "pricing": "Hourly deployment charge by SKU (Basic, Standard, Premium) plus per-GB processed.",
-    "relatedServices": ["network-security-groups", "virtual-network", "nat-gateway"],
+    "relatedServices": [
+      "network-security-groups",
+      "virtual-network",
+      "nat-gateway"
+    ],
     "confusedWith": [
-      { "name": "NSG", "difference": "Free, distributed L3/L4 filtering without FQDN rules." },
-      { "name": "Application Gateway WAF", "difference": "WAF protects inbound web apps at L7; Firewall controls general network traffic." }
+      {
+        "name": "NSG",
+        "difference": "Free, distributed L3/L4 filtering without FQDN rules."
+      },
+      {
+        "name": "Application Gateway WAF",
+        "difference": "WAF protects inbound web apps at L7; Firewall controls general network traffic."
+      }
     ],
     "relevance": "awareness",
     "relevanceNote": "Not a named AZ-104 skill but frequently used in routing and security scenarios.",
-    "examTips": ["UDR 0.0.0.0/0 → firewall private IP to force tunnel through it"],
-    "topics": ["routing-udr", "nsg-asg"],
-    "docLinks": [{ "title": "What is Azure Firewall?", "url": "https://learn.microsoft.com/azure/firewall/overview" }]
+    "examTips": [
+      "UDR 0.0.0.0/0 → firewall private IP to force tunnel through it"
+    ],
+    "topics": [
+      "routing-udr",
+      "nsg-asg"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Firewall?",
+        "url": "https://learn.microsoft.com/azure/firewall/overview"
+      }
+    ]
   },
   {
     "id": "load-balancer",
     "name": "Azure Load Balancer",
     "category": "Networking",
-    "icon": "split",
+    "icon": "azure:load-balancers",
     "tagline": "High-performance Layer 4 load balancing.",
     "whatItIs": "A regional TCP/UDP load balancer with public or internal frontends, health probes and rules.",
     "primaryPurpose": "Distribute network flows across healthy backend instances.",
-    "useCases": ["Load-balancing VMs and scale sets", "Internal tiers", "HA for NVAs (HA ports)", "Outbound SNAT rules"],
-    "keyFeatures": ["Public and internal", "Health probes", "Inbound NAT rules", "Outbound rules", "Zone redundancy (Standard)"],
-    "security": ["Standard SKU is closed by default; use NSGs", "No inspection — pair with WAF/Firewall where needed"],
-    "networking": ["Backends must be in one VNet; probes from 168.63.129.16"],
+    "useCases": [
+      "Load-balancing VMs and scale sets",
+      "Internal tiers",
+      "HA for NVAs (HA ports)",
+      "Outbound SNAT rules"
+    ],
+    "keyFeatures": [
+      "Public and internal",
+      "Health probes",
+      "Inbound NAT rules",
+      "Outbound rules",
+      "Zone redundancy (Standard)"
+    ],
+    "security": [
+      "Standard SKU is closed by default; use NSGs",
+      "No inspection — pair with WAF/Firewall where needed"
+    ],
+    "networking": [
+      "Backends must be in one VNet; probes from 168.63.129.16"
+    ],
     "pricing": "Standard: per rule-hour and per GB processed.",
-    "relatedServices": ["application-gateway", "vm-scale-sets", "virtual-machines"],
+    "relatedServices": [
+      "application-gateway",
+      "vm-scale-sets",
+      "virtual-machines"
+    ],
     "confusedWith": [
-      { "name": "Application Gateway", "difference": "L7 HTTP routing with WAF and TLS termination." }
+      {
+        "name": "Application Gateway",
+        "difference": "L7 HTTP routing with WAF and TLS termination."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Configuring and troubleshooting internal/public load balancers is an explicit skill.",
-    "examTips": ["Health probe and NSG are the first things to check"],
-    "topics": ["load-balancer"],
-    "docLinks": [{ "title": "What is Azure Load Balancer?", "url": "https://learn.microsoft.com/azure/load-balancer/load-balancer-overview" }]
+    "examTips": [
+      "Health probe and NSG are the first things to check"
+    ],
+    "topics": [
+      "load-balancer"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Load Balancer?",
+        "url": "https://learn.microsoft.com/azure/load-balancer/load-balancer-overview"
+      }
+    ]
   },
   {
     "id": "application-gateway",
     "name": "Azure Application Gateway",
     "category": "Networking",
-    "icon": "router",
+    "icon": "azure:application-gateways",
     "tagline": "Regional Layer 7 load balancer with WAF.",
     "whatItIs": "A web traffic load balancer that routes on host name and URL path, terminates TLS and can include a Web Application Firewall.",
     "primaryPurpose": "Secure and route HTTP(S) traffic to web backends in a region.",
-    "useCases": ["Path-based routing", "Multi-site hosting", "TLS offload", "WAF protection"],
-    "keyFeatures": ["Listeners, rules, backend settings, probes", "Autoscaling and zone redundancy (v2)", "Rewrites and redirects", "WAF_v2"],
-    "security": ["WAF in Prevention mode", "End-to-end TLS", "Key Vault certificates via managed identity"],
-    "networking": ["Dedicated subnet; public and/or private frontend"],
+    "useCases": [
+      "Path-based routing",
+      "Multi-site hosting",
+      "TLS offload",
+      "WAF protection"
+    ],
+    "keyFeatures": [
+      "Listeners, rules, backend settings, probes",
+      "Autoscaling and zone redundancy (v2)",
+      "Rewrites and redirects",
+      "WAF_v2"
+    ],
+    "security": [
+      "WAF in Prevention mode",
+      "End-to-end TLS",
+      "Key Vault certificates via managed identity"
+    ],
+    "networking": [
+      "Dedicated subnet; public and/or private frontend"
+    ],
     "pricing": "Fixed hourly charge plus capacity units (v2).",
-    "relatedServices": ["load-balancer", "front-door", "app-service"],
+    "relatedServices": [
+      "load-balancer",
+      "front-door",
+      "app-service"
+    ],
     "confusedWith": [
-      { "name": "Front Door", "difference": "Global edge L7 service; Application Gateway is regional." }
+      {
+        "name": "Front Door",
+        "difference": "Global edge L7 service; Application Gateway is regional."
+      }
     ],
     "relevance": "important",
     "relevanceNote": "Common in load-balancing scenarios and comparisons.",
-    "examTips": ["URL path routing → Application Gateway"],
-    "topics": ["application-gateway"],
-    "docLinks": [{ "title": "What is Azure Application Gateway?", "url": "https://learn.microsoft.com/azure/application-gateway/overview" }]
+    "examTips": [
+      "URL path routing → Application Gateway"
+    ],
+    "topics": [
+      "application-gateway"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Application Gateway?",
+        "url": "https://learn.microsoft.com/azure/application-gateway/overview"
+      }
+    ]
   },
   {
     "id": "front-door",
     "name": "Azure Front Door",
     "category": "Networking",
-    "icon": "globe",
+    "icon": "azure:front-door",
     "tagline": "Global edge entry point with CDN, L7 load balancing and WAF.",
     "whatItIs": "A global service on Microsoft's edge network that accelerates and load-balances HTTP(S) traffic across regions, with caching and WAF.",
     "primaryPurpose": "Global web application delivery and failover.",
-    "useCases": ["Multi-region web apps", "Static content acceleration", "Global WAF"],
-    "keyFeatures": ["Anycast edge", "Path-based routing", "Caching", "WAF", "Private Link origins (Premium)"],
-    "security": ["Edge WAF and DDoS protection", "Lock origins to accept only Front Door traffic"],
-    "networking": ["Global; origins can be public or (Premium) private via Private Link"],
+    "useCases": [
+      "Multi-region web apps",
+      "Static content acceleration",
+      "Global WAF"
+    ],
+    "keyFeatures": [
+      "Anycast edge",
+      "Path-based routing",
+      "Caching",
+      "WAF",
+      "Private Link origins (Premium)"
+    ],
+    "security": [
+      "Edge WAF and DDoS protection",
+      "Lock origins to accept only Front Door traffic"
+    ],
+    "networking": [
+      "Global; origins can be public or (Premium) private via Private Link"
+    ],
     "pricing": "Base fee by tier plus requests and data transfer.",
-    "relatedServices": ["application-gateway", "traffic-manager", "app-service"],
+    "relatedServices": [
+      "application-gateway",
+      "traffic-manager",
+      "app-service"
+    ],
     "confusedWith": [
-      { "name": "Traffic Manager", "difference": "DNS-based global routing for any protocol; Front Door proxies HTTP(S) traffic." }
+      {
+        "name": "Traffic Manager",
+        "difference": "DNS-based global routing for any protocol; Front Door proxies HTTP(S) traffic."
+      }
     ],
     "relevance": "awareness",
     "relevanceNote": "Mostly appears as a distractor in load-balancing questions.",
-    "examTips": ["Global + HTTP + WAF → Front Door; regional + HTTP → Application Gateway"],
-    "topics": ["application-gateway"],
-    "docLinks": [{ "title": "What is Azure Front Door?", "url": "https://learn.microsoft.com/azure/frontdoor/front-door-overview" }]
+    "examTips": [
+      "Global + HTTP + WAF → Front Door; regional + HTTP → Application Gateway"
+    ],
+    "topics": [
+      "application-gateway"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Front Door?",
+        "url": "https://learn.microsoft.com/azure/frontdoor/front-door-overview"
+      }
+    ]
   },
   {
     "id": "traffic-manager",
     "name": "Azure Traffic Manager",
     "category": "Networking",
-    "icon": "signpost",
+    "icon": "azure:traffic-manager",
     "tagline": "DNS-based global traffic routing.",
     "whatItIs": "A DNS-based service that directs clients to endpoints in different regions using routing methods such as priority, weighted, performance and geographic.",
     "primaryPurpose": "Global failover and distribution for any internet-facing endpoint.",
-    "useCases": ["Active/passive regional failover", "Routing users to the closest region", "Geofencing content"],
-    "keyFeatures": ["Routing methods: priority, weighted, performance, geographic, multivalue, subnet", "Endpoint health monitoring", "Nested profiles"],
-    "security": ["Doesn't inspect traffic — clients connect directly to endpoints"],
-    "networking": ["Works at DNS level; any protocol"],
+    "useCases": [
+      "Active/passive regional failover",
+      "Routing users to the closest region",
+      "Geofencing content"
+    ],
+    "keyFeatures": [
+      "Routing methods: priority, weighted, performance, geographic, multivalue, subnet",
+      "Endpoint health monitoring",
+      "Nested profiles"
+    ],
+    "security": [
+      "Doesn't inspect traffic — clients connect directly to endpoints"
+    ],
+    "networking": [
+      "Works at DNS level; any protocol"
+    ],
     "pricing": "Per DNS query and per health-checked endpoint.",
-    "relatedServices": ["front-door", "azure-dns", "load-balancer"],
+    "relatedServices": [
+      "front-door",
+      "azure-dns",
+      "load-balancer"
+    ],
     "confusedWith": [
-      { "name": "Load Balancer", "difference": "Regional L4 data-path balancing vs global DNS steering." }
+      {
+        "name": "Load Balancer",
+        "difference": "Regional L4 data-path balancing vs global DNS steering."
+      }
     ],
     "relevance": "awareness",
     "relevanceNote": "Distractor in load-balancing and DNS questions.",
-    "examTips": ["DNS-based → clients cache answers; failover depends on TTL"],
-    "topics": ["azure-dns"],
-    "docLinks": [{ "title": "What is Traffic Manager?", "url": "https://learn.microsoft.com/azure/traffic-manager/traffic-manager-overview" }]
+    "examTips": [
+      "DNS-based → clients cache answers; failover depends on TTL"
+    ],
+    "topics": [
+      "azure-dns"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Traffic Manager?",
+        "url": "https://learn.microsoft.com/azure/traffic-manager/traffic-manager-overview"
+      }
+    ]
   },
   {
     "id": "azure-dns",
     "name": "Azure DNS",
     "category": "Networking",
-    "icon": "globe",
+    "icon": "azure:dns-zones",
     "tagline": "Host public and private DNS zones in Azure.",
     "whatItIs": "DNS hosting on Microsoft's global name servers for public domains, plus private DNS zones for name resolution within VNets.",
     "primaryPurpose": "Manage DNS records alongside your Azure resources.",
-    "useCases": ["Hosting public domains", "Alias records for apex domains", "Internal names across VNets", "Private endpoint resolution"],
-    "keyFeatures": ["Public zones and record sets", "Alias records", "Private zones with VNet links and auto-registration", "DNS Private Resolver for hybrid"],
-    "security": ["RBAC on zones/record sets", "Resource locks to protect zones"],
-    "networking": ["Azure-provided DNS at 168.63.129.16; private zones are global resources linked to VNets"],
+    "useCases": [
+      "Hosting public domains",
+      "Alias records for apex domains",
+      "Internal names across VNets",
+      "Private endpoint resolution"
+    ],
+    "keyFeatures": [
+      "Public zones and record sets",
+      "Alias records",
+      "Private zones with VNet links and auto-registration",
+      "DNS Private Resolver for hybrid"
+    ],
+    "security": [
+      "RBAC on zones/record sets",
+      "Resource locks to protect zones"
+    ],
+    "networking": [
+      "Azure-provided DNS at 168.63.129.16; private zones are global resources linked to VNets"
+    ],
     "pricing": "Per hosted zone per month and per million queries; Private Resolver endpoints billed hourly.",
-    "relatedServices": ["private-link", "traffic-manager", "virtual-network"],
+    "relatedServices": [
+      "private-link",
+      "traffic-manager",
+      "virtual-network"
+    ],
     "confusedWith": [
-      { "name": "Domain registrar", "difference": "Azure DNS hosts zones; you still register domains elsewhere (or via App Service Domains)." }
+      {
+        "name": "Domain registrar",
+        "difference": "Azure DNS hosts zones; you still register domains elsewhere (or via App Service Domains)."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Configuring Azure DNS is an explicit skill.",
-    "examTips": ["Delegate by updating NS records at the registrar", "Auto-registration via VNet link"],
-    "topics": ["azure-dns"],
-    "docLinks": [{ "title": "What is Azure DNS?", "url": "https://learn.microsoft.com/azure/dns/dns-overview" }]
+    "examTips": [
+      "Delegate by updating NS records at the registrar",
+      "Auto-registration via VNet link"
+    ],
+    "topics": [
+      "azure-dns"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure DNS?",
+        "url": "https://learn.microsoft.com/azure/dns/dns-overview"
+      }
+    ]
   },
   {
     "id": "vpn-gateway",
     "name": "Azure VPN Gateway",
     "category": "Networking",
-    "icon": "cable",
+    "icon": "azure:virtual-network-gateways",
     "tagline": "Encrypted hybrid connectivity over the internet.",
     "whatItIs": "A virtual network gateway that terminates site-to-site, point-to-site and VNet-to-VNet IPsec/IKE and SSL VPN connections.",
     "primaryPurpose": "Securely connect on-premises networks and clients to Azure VNets.",
-    "useCases": ["Branch office connectivity", "Remote user access", "Backup path for ExpressRoute"],
-    "keyFeatures": ["Route-based and policy-based", "Active-active", "BGP", "Zone-redundant (AZ) SKUs", "P2S with Entra ID auth"],
-    "security": ["IPsec/IKE encryption; custom IPsec policies", "Certificate or Entra ID authentication for P2S"],
-    "networking": ["Deployed in GatewaySubnet (/27+ recommended); needs a public IP"],
+    "useCases": [
+      "Branch office connectivity",
+      "Remote user access",
+      "Backup path for ExpressRoute"
+    ],
+    "keyFeatures": [
+      "Route-based and policy-based",
+      "Active-active",
+      "BGP",
+      "Zone-redundant (AZ) SKUs",
+      "P2S with Entra ID auth"
+    ],
+    "security": [
+      "IPsec/IKE encryption; custom IPsec policies",
+      "Certificate or Entra ID authentication for P2S"
+    ],
+    "networking": [
+      "Deployed in GatewaySubnet (/27+ recommended); needs a public IP"
+    ],
     "pricing": "Hourly by gateway SKU plus outbound data transfer; some P2S connection counts are SKU-limited.",
-    "relatedServices": ["expressroute", "virtual-network"],
+    "relatedServices": [
+      "expressroute",
+      "virtual-network"
+    ],
     "confusedWith": [
-      { "name": "ExpressRoute", "difference": "Private provider circuit, not internet-based." }
+      {
+        "name": "ExpressRoute",
+        "difference": "Private provider circuit, not internet-based."
+      }
     ],
     "relevance": "important",
     "relevanceNote": "Hybrid connectivity concepts appear frequently in networking scenarios.",
-    "examTips": ["Local network gateway = on-prem public IP + prefixes"],
-    "topics": ["vpn-expressroute", "vnet-peering"],
-    "docLinks": [{ "title": "What is VPN Gateway?", "url": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpngateways" }]
+    "examTips": [
+      "Local network gateway = on-prem public IP + prefixes"
+    ],
+    "topics": [
+      "vpn-expressroute",
+      "vnet-peering"
+    ],
+    "docLinks": [
+      {
+        "title": "What is VPN Gateway?",
+        "url": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpngateways"
+      }
+    ]
   },
   {
     "id": "expressroute",
     "name": "Azure ExpressRoute",
     "category": "Networking",
-    "icon": "zap",
+    "icon": "azure:expressroute-circuits",
     "tagline": "Private connections to Microsoft's network.",
     "whatItIs": "Dedicated private connectivity between your network and Microsoft cloud services through a connectivity provider.",
     "primaryPurpose": "Reliable, high-bandwidth, low-latency hybrid connectivity without the public internet.",
-    "useCases": ["Data center extension", "Large data migrations", "Regulated workloads"],
-    "keyFeatures": ["Private and Microsoft peering", "Global Reach", "FastPath", "Local/Standard/Premium SKUs", "ExpressRoute Direct"],
-    "security": ["Private but not encrypted by default — add MACsec (Direct) or IPsec over ER"],
-    "networking": ["ExpressRoute gateway in GatewaySubnet; BGP routing"],
+    "useCases": [
+      "Data center extension",
+      "Large data migrations",
+      "Regulated workloads"
+    ],
+    "keyFeatures": [
+      "Private and Microsoft peering",
+      "Global Reach",
+      "FastPath",
+      "Local/Standard/Premium SKUs",
+      "ExpressRoute Direct"
+    ],
+    "security": [
+      "Private but not encrypted by default — add MACsec (Direct) or IPsec over ER"
+    ],
+    "networking": [
+      "ExpressRoute gateway in GatewaySubnet; BGP routing"
+    ],
     "pricing": "Circuit charge by bandwidth and plan (metered or unlimited data), plus gateway hours and provider fees.",
-    "relatedServices": ["vpn-gateway", "virtual-network"],
+    "relatedServices": [
+      "vpn-gateway",
+      "virtual-network"
+    ],
     "confusedWith": [
-      { "name": "Site-to-site VPN", "difference": "Encrypted over the internet with variable performance." }
+      {
+        "name": "Site-to-site VPN",
+        "difference": "Encrypted over the internet with variable performance."
+      }
     ],
     "relevance": "awareness",
     "relevanceNote": "Conceptual understanding is expected; detailed configuration is beyond AZ-104.",
-    "examTips": ["'Must not use the internet' → ExpressRoute"],
-    "topics": ["vpn-expressroute"],
-    "docLinks": [{ "title": "What is ExpressRoute?", "url": "https://learn.microsoft.com/azure/expressroute/expressroute-introduction" }]
+    "examTips": [
+      "'Must not use the internet' → ExpressRoute"
+    ],
+    "topics": [
+      "vpn-expressroute"
+    ],
+    "docLinks": [
+      {
+        "title": "What is ExpressRoute?",
+        "url": "https://learn.microsoft.com/azure/expressroute/expressroute-introduction"
+      }
+    ]
   },
   {
     "id": "azure-bastion",
     "name": "Azure Bastion",
     "category": "Security",
-    "icon": "lock-keyhole",
+    "icon": "azure:bastions",
     "tagline": "Browser-based RDP/SSH without public IPs.",
     "whatItIs": "A managed jump-host service that provides secure RDP/SSH over TLS to VMs in a VNet and peered VNets.",
     "primaryPurpose": "Secure VM administration without exposing management ports.",
-    "useCases": ["Admin access to private VMs", "Replacing jump boxes", "Hub-based access for many spokes"],
-    "keyFeatures": ["Developer, Basic, Standard, Premium SKUs", "Native client support (Standard+)", "Shareable links (Standard+)", "Session recording (Premium)"],
-    "security": ["No public IPs on VMs", "Protects against port scanning on 3389/22"],
-    "networking": ["AzureBastionSubnet /26 or larger; Standard public IP (except Developer SKU)"],
+    "useCases": [
+      "Admin access to private VMs",
+      "Replacing jump boxes",
+      "Hub-based access for many spokes"
+    ],
+    "keyFeatures": [
+      "Developer, Basic, Standard, Premium SKUs",
+      "Native client support (Standard+)",
+      "Shareable links (Standard+)",
+      "Session recording (Premium)"
+    ],
+    "security": [
+      "No public IPs on VMs",
+      "Protects against port scanning on 3389/22"
+    ],
+    "networking": [
+      "AzureBastionSubnet /26 or larger; Standard public IP (except Developer SKU)"
+    ],
     "pricing": "Hourly by SKU and scale units plus outbound data; Developer SKU is free.",
-    "relatedServices": ["virtual-network", "virtual-machines", "network-security-groups"],
+    "relatedServices": [
+      "virtual-network",
+      "virtual-machines",
+      "network-security-groups"
+    ],
     "confusedWith": [
-      { "name": "Point-to-site VPN", "difference": "Gives network-level access; Bastion gives per-VM sessions." }
+      {
+        "name": "Point-to-site VPN",
+        "difference": "Gives network-level access; Bastion gives per-VM sessions."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Implementing Azure Bastion is an explicit skill.",
-    "examTips": ["Subnet name must be AzureBastionSubnet"],
-    "topics": ["azure-bastion"],
-    "docLinks": [{ "title": "What is Azure Bastion?", "url": "https://learn.microsoft.com/azure/bastion/bastion-overview" }]
+    "examTips": [
+      "Subnet name must be AzureBastionSubnet"
+    ],
+    "topics": [
+      "azure-bastion"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Bastion?",
+        "url": "https://learn.microsoft.com/azure/bastion/bastion-overview"
+      }
+    ]
   },
   {
     "id": "nat-gateway",
     "name": "Azure NAT Gateway",
     "category": "Networking",
-    "icon": "route",
+    "icon": "azure:nat",
     "tagline": "Scalable outbound internet connectivity for subnets.",
     "whatItIs": "A fully managed network address translation service that gives subnets outbound-only internet access through static public IPs.",
     "primaryPurpose": "Predictable, scalable egress without SNAT port exhaustion.",
-    "useCases": ["Outbound access for private VMs", "Allowlisting by a fixed egress IP", "Replacing LB outbound rules"],
-    "keyFeatures": ["Up to many public IPs/prefixes", "Subnet association", "Zonal resource", "Idle timeout configuration"],
-    "security": ["No unsolicited inbound connections"],
-    "networking": ["Takes precedence over other outbound methods for its subnets"],
+    "useCases": [
+      "Outbound access for private VMs",
+      "Allowlisting by a fixed egress IP",
+      "Replacing LB outbound rules"
+    ],
+    "keyFeatures": [
+      "Up to many public IPs/prefixes",
+      "Subnet association",
+      "Zonal resource",
+      "Idle timeout configuration"
+    ],
+    "security": [
+      "No unsolicited inbound connections"
+    ],
+    "networking": [
+      "Takes precedence over other outbound methods for its subnets"
+    ],
     "pricing": "Hourly resource charge plus per-GB processed (and public IPs).",
-    "relatedServices": ["virtual-network", "load-balancer", "azure-firewall"],
+    "relatedServices": [
+      "virtual-network",
+      "load-balancer",
+      "azure-firewall"
+    ],
     "confusedWith": [
-      { "name": "Load balancer outbound rules", "difference": "Also SNAT, but NAT Gateway is simpler, scales better and takes precedence." }
+      {
+        "name": "Load balancer outbound rules",
+        "difference": "Also SNAT, but NAT Gateway is simpler, scales better and takes precedence."
+      }
     ],
     "relevance": "important",
     "relevanceNote": "Appears in routing and outbound connectivity scenarios.",
-    "examTips": ["Outbound only"],
-    "topics": ["routing-udr"],
-    "docLinks": [{ "title": "What is Azure NAT Gateway?", "url": "https://learn.microsoft.com/azure/nat-gateway/nat-overview" }]
+    "examTips": [
+      "Outbound only"
+    ],
+    "topics": [
+      "routing-udr"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure NAT Gateway?",
+        "url": "https://learn.microsoft.com/azure/nat-gateway/nat-overview"
+      }
+    ]
   },
   {
     "id": "private-link",
     "name": "Azure Private Link (Private Endpoints)",
     "category": "Networking",
-    "icon": "plug-zap",
+    "icon": "azure:private-link",
     "tagline": "Access PaaS services over a private IP in your VNet.",
     "whatItIs": "Private Link powers private endpoints — network interfaces with private IPs that connect privately to a specific Azure service resource or your own Private Link service.",
     "primaryPurpose": "Keep traffic to PaaS services private and disable public exposure.",
-    "useCases": ["Private access to Storage, SQL, Key Vault, App Service", "On-premises access to PaaS via ExpressRoute/VPN", "Data exfiltration protection"],
-    "keyFeatures": ["Resource-specific mapping", "Private DNS zone integration", "Approval workflow", "Private Link service for your own apps"],
-    "security": ["Disable public network access on the target", "Approve connections across tenants explicitly"],
-    "networking": ["Needs DNS so service FQDNs resolve to the private IP"],
+    "useCases": [
+      "Private access to Storage, SQL, Key Vault, App Service",
+      "On-premises access to PaaS via ExpressRoute/VPN",
+      "Data exfiltration protection"
+    ],
+    "keyFeatures": [
+      "Resource-specific mapping",
+      "Private DNS zone integration",
+      "Approval workflow",
+      "Private Link service for your own apps"
+    ],
+    "security": [
+      "Disable public network access on the target",
+      "Approve connections across tenants explicitly"
+    ],
+    "networking": [
+      "Needs DNS so service FQDNs resolve to the private IP"
+    ],
     "pricing": "Per endpoint-hour and per GB inbound/outbound processed.",
-    "relatedServices": ["azure-dns", "storage-accounts", "virtual-network"],
+    "relatedServices": [
+      "azure-dns",
+      "storage-accounts",
+      "virtual-network"
+    ],
     "confusedWith": [
-      { "name": "Service endpoints", "difference": "Free subnet-level access to the service's public endpoint; no private IP." }
+      {
+        "name": "Service endpoints",
+        "difference": "Free subnet-level access to the service's public endpoint; no private IP."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Configuring private endpoints for PaaS is explicitly listed.",
-    "examTips": ["Check DNS first when a private endpoint 'doesn't work'"],
-    "topics": ["private-service-endpoints", "storage-security"],
-    "docLinks": [{ "title": "What is a private endpoint?", "url": "https://learn.microsoft.com/azure/private-link/private-endpoint-overview" }]
+    "examTips": [
+      "Check DNS first when a private endpoint 'doesn't work'"
+    ],
+    "topics": [
+      "private-service-endpoints",
+      "storage-security"
+    ],
+    "docLinks": [
+      {
+        "title": "What is a private endpoint?",
+        "url": "https://learn.microsoft.com/azure/private-link/private-endpoint-overview"
+      }
+    ]
   },
   {
     "id": "network-watcher",
     "name": "Azure Network Watcher",
     "category": "Monitoring",
-    "icon": "radar",
+    "icon": "azure:network-watcher",
     "tagline": "Diagnose and monitor IaaS networking.",
     "whatItIs": "Regional tools for connectivity diagnostics, packet capture, flow logging and connection monitoring.",
     "primaryPurpose": "Find out why traffic does or doesn't flow.",
-    "useCases": ["Diagnosing NSG blocks", "Checking routing", "Monitoring hybrid latency", "Auditing traffic with flow logs"],
-    "keyFeatures": ["IP flow verify", "NSG diagnostics", "Next hop", "Connection troubleshoot", "Connection Monitor", "Packet capture", "VNet flow logs and Traffic Analytics"],
-    "security": ["Flow logs support security investigations"],
-    "networking": ["Enabled per region automatically with VNets"],
+    "useCases": [
+      "Diagnosing NSG blocks",
+      "Checking routing",
+      "Monitoring hybrid latency",
+      "Auditing traffic with flow logs"
+    ],
+    "keyFeatures": [
+      "IP flow verify",
+      "NSG diagnostics",
+      "Next hop",
+      "Connection troubleshoot",
+      "Connection Monitor",
+      "Packet capture",
+      "VNet flow logs and Traffic Analytics"
+    ],
+    "security": [
+      "Flow logs support security investigations"
+    ],
+    "networking": [
+      "Enabled per region automatically with VNets"
+    ],
     "pricing": "Some tools free; charges for diagnostic checks beyond free amounts, Connection Monitor tests, flow logs and Traffic Analytics processing.",
-    "relatedServices": ["network-security-groups", "azure-monitor", "log-analytics"],
+    "relatedServices": [
+      "network-security-groups",
+      "azure-monitor",
+      "log-analytics"
+    ],
     "confusedWith": [
-      { "name": "Azure Monitor metrics", "difference": "Aggregate metrics vs path- and flow-level diagnostics." }
+      {
+        "name": "Azure Monitor metrics",
+        "difference": "Aggregate metrics vs path- and flow-level diagnostics."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Using Network Watcher and Connection Monitor is an explicit skill.",
-    "examTips": ["Blocked → IP flow verify; misrouted → next hop"],
-    "topics": ["network-watcher", "nsg-asg"],
-    "docLinks": [{ "title": "What is Azure Network Watcher?", "url": "https://learn.microsoft.com/azure/network-watcher/network-watcher-overview" }]
+    "examTips": [
+      "Blocked → IP flow verify; misrouted → next hop"
+    ],
+    "topics": [
+      "network-watcher",
+      "nsg-asg"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Network Watcher?",
+        "url": "https://learn.microsoft.com/azure/network-watcher/network-watcher-overview"
+      }
+    ]
   }
 ]

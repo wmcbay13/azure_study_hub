@@ -69,7 +69,7 @@ export function ProgressPage() {
           </>
         }
       />
-      {msg && <p className="rounded-xl bg-accent-soft px-4 py-2 text-sm text-accent">{msg}</p>}
+      {msg && <p className="rounded-md bg-accent-soft px-4 py-2 text-sm text-accent">{msg}</p>}
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Stat icon="circle-check" color="green" label="Correct answers" value={t.totalCorrect} />
@@ -141,16 +141,16 @@ export function ProgressPage() {
               <div className="border-l-2 border-surface" style={{ width: `${(t.cardsReview / content.flashcards.length) * 100}%`, background: 'var(--warning)' }} />
             </div>
             <ul className="grid grid-cols-3 gap-2 text-center text-sm">
-              <li className="rounded-xl bg-success-soft p-3">
-                <div className="text-xl font-bold tabular-nums">{t.cardsKnown}</div>
+              <li className="rounded-md bg-success-soft p-3">
+                <div className="text-xl font-semibold tabular-nums">{t.cardsKnown}</div>
                 <div className="text-xs text-muted">Known</div>
               </li>
-              <li className="rounded-xl bg-warning-soft p-3">
-                <div className="text-xl font-bold tabular-nums">{t.cardsReview}</div>
+              <li className="rounded-md bg-warning-soft p-3">
+                <div className="text-xl font-semibold tabular-nums">{t.cardsReview}</div>
                 <div className="text-xs text-muted">Needs review</div>
               </li>
-              <li className="rounded-xl bg-surface-2 p-3">
-                <div className="text-xl font-bold tabular-nums">{unseen}</div>
+              <li className="rounded-md bg-surface-2 p-3">
+                <div className="text-xl font-semibold tabular-nums">{unseen}</div>
                 <div className="text-xs text-muted">Not seen</div>
               </li>
             </ul>

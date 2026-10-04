@@ -11,8 +11,8 @@ import { SearchDialog } from './SearchDialog'
 
 function Logo({ compact }: { compact?: boolean }) {
   return (
-    <NavLink to="/" className="flex items-center gap-2.5 font-bold tracking-tight">
-      <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#0b5cd5] to-[#36a3ff] text-white shadow-card">
+    <NavLink to="/" className="flex items-center gap-2.5 font-semibold tracking-tight">
+      <span className="grid size-9 shrink-0 place-items-center rounded-md bg-accent-solid text-white shadow-card">
         <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden>
           <path d="M6.5 19h11a4.5 4.5 0 0 0 .6-8.96A6 6 0 0 0 6.7 9.1 5 5 0 0 0 6.5 19z" />
         </svg>
@@ -39,7 +39,7 @@ function NavItems({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?:
           title={collapsed ? n.label : undefined}
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors',
+              'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
               collapsed && 'justify-center px-0',
               isActive ? 'bg-accent-soft text-accent' : 'text-muted hover:bg-surface-2 hover:text-text',
             )
@@ -62,7 +62,7 @@ const THEMES: { id: ThemePref; icon: typeof Sun; label: string }[] = [
 function ThemeToggle() {
   const [pref, setPref] = useTheme()
   return (
-    <div className="flex rounded-xl border border-border bg-surface-2 p-0.5" role="radiogroup" aria-label="Color theme">
+    <div className="flex rounded-md border border-border bg-surface-2 p-0.5" role="radiogroup" aria-label="Color theme">
       {THEMES.map(({ id, icon: I, label }) => (
         <button
           key={id}
@@ -213,7 +213,7 @@ export function Layout() {
           </div>
           <button
             onClick={() => setSearchOpen(true)}
-            className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-sm text-subtle shadow-card hover:border-border-strong sm:max-w-md"
+            className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-md border border-border bg-surface px-3 text-sm text-subtle shadow-card hover:border-border-strong sm:max-w-md"
           >
             <Search className="size-4 shrink-0" aria-hidden />
             <span className="truncate">Search Azure topics…</span>

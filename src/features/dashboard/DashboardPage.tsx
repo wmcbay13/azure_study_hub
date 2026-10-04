@@ -36,13 +36,13 @@ export function DashboardPage() {
         <div className="relative flex flex-col gap-6 md:flex-row md:items-center">
           <ProgressRing value={readiness} size={148} stroke={13} label={`AZ-104 readiness ${readiness}%`}>
             <div>
-              <div className="text-4xl font-extrabold tabular-nums">{readiness}%</div>
+              <div className="text-4xl font-semibold tabular-nums">{readiness}%</div>
               <div className="text-xs font-medium text-muted">readiness</div>
             </div>
           </ProgressRing>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-accent">AZ-104 · Microsoft Azure Administrator</p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">{isNew ? 'Welcome to Azure Study Hub' : 'Welcome back — keep the momentum going'}</h1>
+            <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">{isNew ? 'Welcome to Azure Study Hub' : 'Welcome back — keep the momentum going'}</h1>
             <p className="mt-2 max-w-2xl text-[15px] text-muted">
               {isNew
                 ? 'Learn each concept, see it in a diagram, review with flashcards, then prove it with practice questions. Your readiness score grows as you go.'
@@ -116,7 +116,7 @@ export function DashboardPage() {
               <Card className="p-5 transition-all group-hover:border-accent/50 group-hover:shadow-pop">
                 <p className="text-xs font-semibold uppercase tracking-wide text-accent">Recommended next</p>
                 <div className="mt-3 flex items-start gap-3">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-md bg-accent-soft text-accent">
                     <Icon name={rec.topic.icon} className="size-5" />
                   </span>
                   <div className="min-w-0">

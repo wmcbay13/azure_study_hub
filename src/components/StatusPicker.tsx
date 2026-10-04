@@ -19,7 +19,7 @@ export function StatusPicker({ slug, title }: { slug: string; title: string }) {
   const status = useProgress((s) => s.topicStatus[slug] ?? 'notStarted')
   const set = useProgress((s) => s.setTopicStatus)
   return (
-    <div role="radiogroup" aria-label="Topic status" className="inline-flex flex-wrap gap-1 rounded-xl border border-border bg-surface p-1">
+    <div role="radiogroup" aria-label="Topic status" className="inline-flex flex-wrap gap-1 rounded-md border border-border bg-surface p-1">
       {TOPIC_STATUSES.map((s) => (
         <button
           key={s}

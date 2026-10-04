@@ -70,7 +70,7 @@ export function PracticePage() {
           return (
             <button key={p.title} onClick={() => start(p.filters)} disabled={!n} className="group text-left disabled:opacity-50">
               <Card className="flex h-full items-start gap-3 p-4 transition-all group-hover:-translate-y-0.5 group-hover:border-accent/50 group-hover:shadow-pop">
-                <span className="grid size-10 shrink-0 place-items-center rounded-xl" style={tone(p.color, ['fg', 'bg'])}>
+                <span className="grid size-10 shrink-0 place-items-center rounded-md" style={tone(p.color, ['fg', 'bg'])}>
                   <Icon name={p.icon} className="size-5" />
                 </span>
                 <span>
@@ -171,7 +171,7 @@ function MultiSelect({
       <select
         value=""
         onChange={(e) => e.target.value && onChange([...value, e.target.value])}
-        className="h-10 w-full max-w-md rounded-xl border border-border bg-surface px-3 text-sm"
+        className="h-10 w-full max-w-md rounded-md border border-border bg-surface px-3 text-sm"
         aria-label={placeholder}
       >
         <option value="">{value.length ? 'Add another…' : placeholder}</option>

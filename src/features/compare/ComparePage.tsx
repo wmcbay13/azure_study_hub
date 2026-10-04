@@ -31,7 +31,7 @@ export function ComparePage() {
               <div className="mb-3 flex flex-wrap items-center gap-1.5">
                 {c.items.map((it, i) => (
                   <span key={it.name} className="flex items-center gap-1.5">
-                    {i > 0 && <span className="text-xs font-bold text-subtle">vs</span>}
+                    {i > 0 && <span className="text-xs font-semibold text-subtle">vs</span>}
                     <span className="rounded-lg border px-2 py-0.5 text-xs font-semibold" style={tone(it.color)}>
                       {it.name}
                     </span>

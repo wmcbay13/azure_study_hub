@@ -31,8 +31,8 @@ export function StudySession({ questions, onRestart, compact = false }: { questi
     return (
       <Card className="p-6 text-center">
         <Trophy className="mx-auto size-10" style={{ color: scoreColor(score) }} aria-hidden />
-        <h3 className="mt-2 text-xl font-bold">Session complete</h3>
-        <p className="mt-1 text-3xl font-extrabold tabular-nums" style={{ color: scoreColor(score) }}>
+        <h3 className="mt-2 text-xl font-semibold">Session complete</h3>
+        <p className="mt-1 text-3xl font-semibold tabular-nums" style={{ color: scoreColor(score) }}>
           {correctCount} / {questions.length} <span className="text-lg">({pct(score)})</span>
         </p>
         {missedTopics.length > 0 && (
