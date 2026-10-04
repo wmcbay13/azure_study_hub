@@ -102,6 +102,16 @@ scripts/validate-content.ts
 
 `correctAnswer` is an option id (single/scenario), an array of ids (multi), ids in order (ordering) or an `{ optionId: targetId }` map with `matchTargets` (matching). After adding several choice questions, `node scripts/rebalance-options.mjs` reshuffles option order so correct answers stay evenly spread across A–D.
 
+### Beyond-exam content
+
+Topics outside the AZ-104 outline (currently **Azure Kubernetes Service**) set `"examScope": "beyond"` on the topic. Its questions, flashcards and diagrams inherit that scope from the topic (`src/content/scope.ts`), so they are:
+
+- labelled **Beyond AZ-104** everywhere they appear and grouped under *Beyond the exam* on the topics page;
+- excluded from readiness scores, domain stats and practice exams;
+- excluded from practice sessions unless the learner picks the topic, uses the *AKS Explorer* preset, or opts in with *Include beyond-exam topics*.
+
+Services outside the outline use `"relevance": "beyond"`.
+
 ### Accuracy guidelines
 
 - Write original questions that test the skills in Microsoft's published outline. Never copy exam dumps or real exam items.

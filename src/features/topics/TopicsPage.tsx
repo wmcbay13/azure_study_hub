@@ -1,11 +1,14 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Search } from 'lucide-react'
-import { content, domains } from '@/content'
+import { content, domains, examTopics } from '@/content'
 import { useProgress } from '@/progress/store'
 import { accuracyFor } from '@/progress/analytics'
 import { TOPIC_STATUSES, TOPIC_STATUS_LABEL, type TopicStatus } from '@/progress/types'
-import { Card, Chip, PageHeader, pct, tone, EmptyState } from '@/components/ui'
+import { Badge, Card, Chip, PageHeader, pct, tone, EmptyState } from '@/components/ui'
+import type { ColorToken, Topic } from '@/content/schema'
+import type { UserProgress } from '@/progress/types'
+import { BEYOND_LABEL } from '@/content/scope'
 import { StatusBadge } from '@/components/StatusPicker'
 import { Icon } from '@/components/Icon'
 
@@ -23,12 +26,14 @@ export function TopicsPage() {
     )
   }, [q, status, progress.topicStatus])
 
+  const beyond = filtered.filter((t) => t.examScope === 'beyond')
+
   return (
     <div>
       <PageHeader
         icon="book-open"
         title="Study Topics"
-        description={`${content.topics.length} topics organized by the AZ-104 skills-measured outline. Each topic walks you through Learn → Visualize → Review → Practice.`}
+        description={`${examTopics.length} topics organized by the AZ-104 skills-measured outline, plus ${content.topics.length - examTopics.length} beyond-exam topic(s) for wider context. Each topic walks you through Learn → Visualize → Review → Practice.`}
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -58,7 +63,7 @@ export function TopicsPage() {
 
       <div className="space-y-10">
         {domains.map((d) => {
-          const topics = filtered.filter((t) => t.domain === d.id)
+          const topics = filtered.filter((t) => t.domain === d.id && t.examScope === 'in')
           if (!topics.length) return null
           return (
             <section key={d.id} aria-labelledby={`dom-${d.id}`}>
@@ -72,41 +77,66 @@ export function TopicsPage() {
                 <span className="text-sm text-muted">{d.weight} of exam</span>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {topics.map((t) => {
-                  const st = progress.topicStatus[t.slug] ?? 'notStarted'
-                  const acc = accuracyFor(progress, content.questions.filter((x) => x.topic === t.slug).map((x) => x.id))
-                  const qCount = content.questions.filter((x) => x.topic === t.slug).length
-                  return (
-                    <Link key={t.slug} to={`/topics/${t.slug}`} className="group">
-                      <Card className="flex h-full flex-col p-5 transition-all group-hover:-translate-y-0.5 group-hover:border-accent/50 group-hover:shadow-pop">
-                        <div className="flex items-start justify-between gap-3">
-                          <span className="grid size-10 place-items-center rounded-md" style={tone(d.color, ['fg', 'bg'])}>
-                            <Icon name={t.icon} className="size-5" />
-                          </span>
-                          <StatusBadge status={st} />
-                        </div>
-                        <h3 className="mt-3 font-semibold leading-snug group-hover:text-accent">{t.title}</h3>
-                        <p className="mt-1 line-clamp-2 flex-1 text-sm text-muted">{t.summary}</p>
-                        <div className="mt-4 flex items-center gap-3 text-xs text-subtle">
-                          <span>{qCount} questions</span>
-                          <span>·</span>
-                          <span>{t.keyConcepts.length} key concepts</span>
-                          {acc.pct !== null && (
-                            <>
-                              <span>·</span>
-                              <span className="font-semibold text-text">{pct(acc.pct)} accuracy</span>
-                            </>
-                          )}
-                        </div>
-                      </Card>
-                    </Link>
-                  )
-                })}
+                {topics.map((t) => (
+                  <TopicCard key={t.slug} topic={t} color={d.color} progress={progress} />
+                ))}
               </div>
             </section>
           )
         })}
+        {beyond.length > 0 && (
+          <section aria-labelledby="dom-beyond">
+            <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h2 id="dom-beyond" className="flex items-center gap-2 text-lg font-semibold">
+                <span className="grid size-8 place-items-center rounded-lg" style={tone('amber', ['fg', 'bg'])}>
+                  <Icon name="compass" className="size-4" />
+                </span>
+                Beyond the exam
+              </h2>
+              <span className="text-sm text-muted">Related Azure services for wider context — not in the AZ-104 skills outline and not counted toward readiness</span>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {beyond.map((t) => (
+                <TopicCard key={t.slug} topic={t} color="amber" progress={progress} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
+  )
+}
+
+function TopicCard({ topic: t, color, progress }: { topic: Topic; color: ColorToken; progress: UserProgress }) {
+  const st = progress.topicStatus[t.slug] ?? 'notStarted'
+  const ids = content.questions.filter((x) => x.topic === t.slug).map((x) => x.id)
+  const acc = accuracyFor(progress, ids)
+  return (
+    <Link to={`/topics/${t.slug}`} className="group">
+      <Card className="flex h-full flex-col p-5 transition-all group-hover:-translate-y-0.5 group-hover:border-accent/50 group-hover:shadow-pop">
+        <div className="flex items-start justify-between gap-3">
+          <span className="grid size-10 place-items-center rounded-md" style={tone(color, ['fg', 'bg'])}>
+            <Icon name={t.icon} className="size-5" />
+          </span>
+          <div className="flex flex-wrap justify-end gap-1">
+            {t.examScope === 'beyond' && <Badge color="amber">{BEYOND_LABEL}</Badge>}
+            <StatusBadge status={st} />
+          </div>
+        </div>
+        <h3 className="mt-3 font-semibold leading-snug group-hover:text-accent">{t.title}</h3>
+        <p className="mt-1 line-clamp-2 flex-1 text-sm text-muted">{t.summary}</p>
+        <div className="mt-4 flex items-center gap-3 text-xs text-subtle">
+          <span>{ids.length} questions</span>
+          <span>·</span>
+          <span>{t.keyConcepts.length} key concepts</span>
+          {acc.pct !== null && (
+            <>
+              <span>·</span>
+              <span className="font-semibold text-text">{pct(acc.pct)} accuracy</span>
+            </>
+          )}
+        </div>
+      </Card>
+    </Link>
   )
 }

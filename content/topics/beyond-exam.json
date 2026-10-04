@@ -1,0 +1,73 @@
+[
+  {
+    "slug": "aks",
+    "title": "Azure Kubernetes Service (AKS)",
+    "domain": "compute",
+    "objectiveIds": ["containers"],
+    "icon": "boxes",
+    "aliases": ["AKS", "Kubernetes", "k8s", "node pool", "kubectl", "pod"],
+    "examScope": "beyond",
+    "summary": "Azure's managed Kubernetes service: what Azure runs for you, node pools, networking, identity, scaling, upgrades, and when to choose AKS over simpler container services.",
+    "overview": [
+      "Kubernetes is an open-source platform for running containerized applications at scale. It schedules containers (grouped into pods) onto machines (nodes), restarts them when they fail, scales them, and connects them with service discovery and load balancing. Its API is declarative: you describe the desired state in YAML manifests and Kubernetes keeps reality matching it.",
+      "Azure Kubernetes Service (AKS) is Azure's managed Kubernetes offering. Azure runs and maintains the Kubernetes control plane (API server, scheduler, etcd) for you; you run your workloads on node pools — groups of VMs in a Virtual Machine Scale Set inside your subscription — and choose their size, count, OS and scaling behavior.",
+      "AKS integrates Kubernetes with Azure building blocks you already know from AZ-104: Microsoft Entra ID and Azure RBAC for access, virtual networks and load balancers for networking, managed disks and Azure Files for persistent storage, Azure Container Registry for images, and Azure Monitor for observability. That makes it a natural next step after the AZ-104 container services (ACI and Container Apps)."
+    ],
+    "keyConcepts": [
+      { "term": "Control plane", "definition": "The Kubernetes API server, scheduler, controller manager and etcd. In AKS, Azure hosts and patches it; you don't see or manage those VMs." },
+      { "term": "Node pool", "definition": "A group of identically configured nodes backed by a Virtual Machine Scale Set. A cluster can have several pools with different VM sizes, OS (Linux or Windows), Spot pricing or availability zones." },
+      { "term": "System vs user node pool", "definition": "System pools host critical cluster components such as CoreDNS and metrics-server (every cluster needs at least one, and it runs Linux). User pools host your application workloads." },
+      { "term": "Pod", "definition": "The smallest deployable unit in Kubernetes: one or more containers that share networking and storage, scheduled together onto a node." },
+      { "term": "Deployment", "definition": "A Kubernetes object that declares how many replicas of a pod should run and rolls out new versions gradually." },
+      { "term": "Service", "definition": "A stable network endpoint for a set of pods. ClusterIP is internal to the cluster; LoadBalancer provisions an Azure Load Balancer frontend (public, or internal with an annotation)." },
+      { "term": "Ingress", "definition": "HTTP(S) routing into the cluster by host and path, implemented by an ingress controller such as the AKS application routing add-on (managed NGINX) or Application Gateway for Containers." },
+      { "term": "Node resource group", "definition": "A separate resource group (by default named MC_<resourceGroup>_<cluster>_<region>) that AKS creates to hold the cluster's infrastructure: scale sets, disks, load balancers and public IPs." },
+      { "term": "Cluster autoscaler vs HPA", "definition": "The Horizontal Pod Autoscaler adds or removes pod replicas based on metrics; the cluster autoscaler adds or removes nodes when pods can't be scheduled or nodes sit underused." },
+      { "term": "Microsoft Entra Workload ID", "definition": "Lets pods authenticate to Azure services (Key Vault, Storage) as a managed identity via federated credentials — no secrets stored in the cluster." }
+    ],
+    "howItWorks": [
+      "Create a cluster (az aks create or the portal), choosing a Kubernetes version, tier, networking model, a system node pool size and identity settings. Azure provisions the managed control plane and your node pool VMs.",
+      "Connect with kubectl: run az aks get-credentials to download a kubeconfig. With Microsoft Entra integration, you sign in with your Entra identity and are authorized by Kubernetes RBAC or Azure RBAC for Kubernetes.",
+      "Deploy workloads by applying manifests (Deployments, Services, Ingress) or Helm charts. The scheduler places pods on nodes that have enough CPU and memory.",
+      "Images are pulled from Azure Container Registry; attaching the registry to the cluster grants the nodes' kubelet identity the AcrPull role.",
+      "Expose apps with a Service of type LoadBalancer (AKS configures an Azure Standard Load Balancer) or an ingress controller for HTTP routing and TLS.",
+      "Scale with the Horizontal Pod Autoscaler (pods), the cluster autoscaler (nodes) and optionally KEDA for event-driven scaling. Keep the cluster current with Kubernetes version upgrades and node image upgrades, ideally on auto-upgrade channels within planned maintenance windows."
+    ],
+    "whenToUse": [
+      "You need the full Kubernetes API — custom resources, operators, Helm charts, service meshes or portability across clouds and on-premises.",
+      "Many microservices with complex networking, scheduling or multi-tenant requirements that simpler platforms can't express.",
+      "Teams that already run Kubernetes and want Azure to manage the control plane, upgrades and integrations.",
+      "Prefer Azure Container Apps when you want serverless containers without operating Kubernetes, and Azure Container Instances for simple, single-container jobs."
+    ],
+    "examTips": [
+      "AKS isn't in the AZ-104 skills outline, but AZ-104 container questions sometimes list it as a distractor: if the requirement is 'minimize administrative effort' for a simple container or microservice, ACI or Container Apps usually beats AKS.",
+      "Know the split of responsibility: Azure manages the control plane; you choose and pay for the node VMs and are responsible for your workloads and keeping versions current.",
+      "Pods pending because nodes are full → cluster autoscaler (more nodes). High CPU on running pods → Horizontal Pod Autoscaler (more pods).",
+      "Pull from a private registry without secrets → attach ACR (AcrPull on the kubelet identity). Pods calling Azure services without secrets → Microsoft Entra Workload ID.",
+      "Deeper AKS administration is covered by Kubernetes certifications and Azure's container-focused learning paths."
+    ],
+    "commonMistakes": [
+      "Choosing AKS for a single container or small app where Container Apps or App Service would need far less operational work.",
+      "Treating the node resource group (MC_…) as something to edit by hand — changes there can be overwritten or break the cluster; manage it through AKS.",
+      "Confusing the two autoscalers: HPA can't add capacity when nodes are full, and the cluster autoscaler doesn't react to CPU on running pods.",
+      "Storing Azure credentials as Kubernetes secrets instead of using managed identities and Workload ID.",
+      "Letting clusters fall behind on Kubernetes versions until they're out of support."
+    ],
+    "confusedWith": [
+      { "name": "Azure Container Apps", "difference": "Container Apps runs on Kubernetes but hides it — no cluster, nodes or Kubernetes API to manage. AKS gives you the full Kubernetes API and the operational responsibility that comes with it.", "comparison": "container-hosting-options" },
+      { "name": "Azure Container Instances", "difference": "ACI runs individual container groups on demand with no orchestration; AKS orchestrates many containers across a fleet of nodes. AKS can burst onto ACI with virtual nodes." },
+      { "name": "Virtual Machine Scale Sets", "difference": "AKS node pools are scale sets under the hood, but AKS manages them for you — you scale node pools through AKS, not the scale set directly." }
+    ],
+    "diagrams": ["aks-architecture", "aks-scaling"],
+    "services": ["aks", "container-registry", "container-apps", "container-instances"],
+    "docLinks": [
+      { "title": "What is Azure Kubernetes Service (AKS)?", "url": "https://learn.microsoft.com/azure/aks/what-is-aks" },
+      { "title": "Core Kubernetes concepts for AKS", "url": "https://learn.microsoft.com/azure/aks/core-aks-concepts" },
+      { "title": "Networking concepts for applications in AKS", "url": "https://learn.microsoft.com/azure/aks/concepts-network" },
+      { "title": "Scaling options for applications in AKS", "url": "https://learn.microsoft.com/azure/aks/concepts-scale" },
+      { "title": "Access and identity options for AKS", "url": "https://learn.microsoft.com/azure/aks/concepts-identity" },
+      { "title": "AKS baseline architecture", "url": "https://learn.microsoft.com/azure/architecture/reference-architectures/containers/aks/baseline-aks" }
+    ],
+    "versionNote": "AKS evolves quickly: pricing tiers, the AKS Automatic SKU, networking options (kubenet is being retired in favor of Azure CNI Overlay) and supported Kubernetes versions change regularly. Check the AKS documentation for current details."
+  }
+]

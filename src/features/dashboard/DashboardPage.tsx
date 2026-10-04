@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, BookOpen, Clock, Layers, Target, TrendingDown, TrendingUp } from 'lucide-react'
-import { content, domains } from '@/content'
+import { content, domains, examTopics } from '@/content'
 import { useProgress } from '@/progress/store'
 import { domainStats, overallReadiness, recommendedTopic, streak, strongTopics, topicStats, totals, weakTopics } from '@/progress/analytics'
 import { timeAgo } from '@/lib/date'
@@ -17,6 +17,9 @@ export function DashboardPage() {
   const dstats = useMemo(() => domainStats(progress, content), [progress])
   const readiness = overallReadiness(dstats, content)
   const t = totals(progress)
+  const examStatus = examTopics.map((x) => progress.topicStatus[x.slug] ?? 'notStarted')
+  const examStudied = examStatus.filter((s) => s !== 'notStarted').length
+  const examMastered = examStatus.filter((s) => s === 'mastered').length
   const { current, longest } = streak(progress.studyDays)
   const tstats = useMemo(() => topicStats(progress, content), [progress])
   const weak = weakTopics(tstats, 5)
@@ -71,7 +74,7 @@ export function DashboardPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
-        <Stat icon="book-open" color="blue" label="Topics studied" value={`${t.topicsStudied}/${content.topics.length}`} hint={`${t.topicsMastered} mastered`} />
+        <Stat icon="book-open" color="blue" label="Topics studied" value={`${examStudied}/${examTopics.length}`} hint={`${examMastered} mastered`} />
         <Stat icon="square-stack" color="purple" label="Flashcards reviewed" value={t.cardsReviewed} hint={`${t.cardsKnown} known`} />
         <Stat icon="target" color="teal" label="Questions answered" value={t.questionsAnswered} hint={`of ${content.questions.length}`} />
         <Stat icon="badge-check" color="green" label="Accuracy" value={pct(t.accuracy)} hint={`${t.totalAttempts} attempts`} />

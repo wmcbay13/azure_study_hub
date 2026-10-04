@@ -10,6 +10,7 @@ export const RELEVANCE = {
   core: { label: 'Core AZ-104', color: 'green' },
   important: { label: 'Important', color: 'blue' },
   awareness: { label: 'Awareness', color: 'gray' },
+  beyond: { label: 'Beyond AZ-104', color: 'amber' },
 } as const
 
 export function ServicesPage() {

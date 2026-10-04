@@ -5,6 +5,7 @@
 import type { ContentIndex } from '@/content/build'
 import type { DomainId, Flashcard, Topic } from '@/content/schema'
 import { dayKey } from '@/lib/date'
+import { isBeyondFlashcard, isBeyondQuestion } from '@/content/scope'
 import type { TopicStatus, UserProgress } from './types'
 
 export interface Accuracy {
@@ -60,9 +61,10 @@ export interface DomainStats {
 
 export function domainStats(progress: UserProgress, content: ContentIndex): DomainStats[] {
   return content.objectives.domains.map((d) => {
-    const qs = content.questions.filter((q) => q.domain === d.id)
-    const topics = content.topics.filter((t) => t.domain === d.id)
-    const cards = content.flashcards.filter((c) => flashcardDomain(c, content) === d.id)
+    // Beyond-exam content (e.g. AKS) never counts toward AZ-104 readiness.
+    const qs = content.questions.filter((q) => q.domain === d.id && !isBeyondQuestion(content, q))
+    const topics = content.topics.filter((t) => t.domain === d.id && t.examScope === 'in')
+    const cards = content.flashcards.filter((c) => flashcardDomain(c, content) === d.id && !isBeyondFlashcard(content, c))
     const accuracy = accuracyFor(progress, qs.map((q) => q.id))
     const cardsKnown = cards.filter((c) => progress.flashcards[c.id]?.status === 'know').length
     const topicScore = topics.length
@@ -140,7 +142,7 @@ export function recommendedTopic(progress: UserProgress, content: ContentIndex):
   // Untouched topics, heaviest exam domain first.
   const order = [...content.objectives.domains].sort((a, b) => b.weightValue - a.weightValue).map((d) => d.id)
   const next = stats
-    .filter((s) => s.status === 'notStarted')
+    .filter((s) => s.status === 'notStarted' && s.topic.examScope === 'in')
     .sort((a, b) => order.indexOf(a.topic.domain) - order.indexOf(b.topic.domain))[0]
   if (next) return { topic: next.topic, reason: 'Not started yet — and in a heavily weighted domain.' }
   return stats[0] ? { topic: stats[0].topic, reason: 'Everything is mastered — keep it fresh.' } : null

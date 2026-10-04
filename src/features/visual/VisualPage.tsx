@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { content, domains } from '@/content'
 import type { Diagram, DomainId } from '@/content/schema'
-import { Card, Chip, DomainBadge, PageHeader, toneVar } from '@/components/ui'
+import { Badge, Card, Chip, DomainBadge, PageHeader, toneVar } from '@/components/ui'
+import { BEYOND_LABEL, isBeyondDiagram } from '@/content/scope'
 
 /** Tiny static preview of a diagram's layout for gallery cards. */
 function Thumb({ d }: { d: Diagram }) {
@@ -52,7 +53,7 @@ export function VisualPage() {
               </div>
               <div className="flex flex-1 flex-col p-4">
                 <div className="mb-2 flex items-center gap-2">
-                  <DomainBadge domain={d.domain} />
+                  {isBeyondDiagram(content, d) ? <Badge color="amber">{BEYOND_LABEL}</Badge> : <DomainBadge domain={d.domain} />}
                   {d.steps.length > 0 && <span className="text-xs text-subtle">{d.steps.length}-step walkthrough</span>}
                 </div>
                 <h2 className="font-semibold group-hover:text-accent">{d.title}</h2>

@@ -16,13 +16,14 @@ import { useProgress } from '@/progress/store'
 import { accuracyFor } from '@/progress/analytics'
 import { pickQuestions } from '@/lib/session'
 import { cn } from '@/lib/cn'
-import { Badge, Button, ButtonLink, Card, DocLinks, DomainBadge, EmptyState, pct, ProgressRing, scoreColor, SectionTitle, tone, VersionNote } from '@/components/ui'
+import { Callout, Badge, Button, ButtonLink, Card, DocLinks, DomainBadge, EmptyState, pct, ProgressRing, scoreColor, SectionTitle, tone, VersionNote } from '@/components/ui'
 import { StatusPicker } from '@/components/StatusPicker'
 import { DiagramCanvas } from '@/components/diagram/DiagramCanvas'
 import { FlashcardPlayer } from '@/components/flashcards/FlashcardPlayer'
 import { StudySession } from '@/components/question/StudySession'
 import { Icon } from '@/components/Icon'
 import { NotFoundPage } from '../NotFoundPage'
+import { BEYOND_LABEL } from '@/content/scope'
 
 const SECTIONS = [
   { id: 'overview', label: 'Overview', phase: 'learn' },
@@ -112,9 +113,15 @@ export function TopicDetailPage() {
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="mb-3 flex flex-wrap gap-2">
-            <DomainBadge domain={topic.domain} />
+            {topic.examScope === 'beyond' ? (
+              <Badge color="amber" icon="compass">
+                {BEYOND_LABEL}
+              </Badge>
+            ) : (
+              <DomainBadge domain={topic.domain} />
+            )}
             {topic.objectiveIds.map((o) => (
-              <Badge key={o}>{objectiveTitle(o)}</Badge>
+              <Badge key={o}>{topic.examScope === 'beyond' ? `Related: ${objectiveTitle(o)}` : objectiveTitle(o)}</Badge>
             ))}
           </div>
           <h1 className="flex items-center gap-3 text-2xl font-semibold tracking-tight sm:text-3xl">
@@ -158,6 +165,12 @@ export function TopicDetailPage() {
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_220px]">
         <div className="min-w-0 space-y-10">
+          {topic.examScope === 'beyond' && (
+            <Callout color="amber" icon="compass" title="Beyond the AZ-104 exam">
+              This topic isn't in the AZ-104 skills-measured outline. It's here to build wider context about related Azure offerings. Its
+              questions and flashcards don't count toward your readiness score and never appear in practice exams.
+            </Callout>
+          )}
           {topic.versionNote && <VersionNote>{topic.versionNote}</VersionNote>}
 
           <section>
