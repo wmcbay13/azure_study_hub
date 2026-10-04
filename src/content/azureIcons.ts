@@ -30,6 +30,7 @@ export const AZURE_ICONS = {
   'app-service-plans': "App Service plans",
   'container-registries': "Container registries",
   'container-instances': "Container instances",
+  'kubernetes-services': "Kubernetes services",
   'container-apps-environments': "Container Apps environments",
   'virtual-networks': "Virtual networks",
   'subnet': "Subnet",

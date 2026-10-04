@@ -26,6 +26,8 @@ export const content: ContentIndex = buildContent(
 ).content
 
 export const domains = content.objectives.domains
+/** Topics in the AZ-104 outline (excludes beyond-exam topics such as AKS). */
+export const examTopics = content.topics.filter((t) => t.examScope === 'in')
 export const domainById = new Map(domains.map((d) => [d.id, d]))
 export const getDomain = (id: DomainId) => domainById.get(id)!
 

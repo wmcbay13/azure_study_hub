@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Check, ChevronLeft, ChevronRight, RotateCcw, Shuffle } from 'lucide-react'
 import type { Flashcard } from '@/content/schema'
 import { content } from '@/content'
+import { BEYOND_LABEL, isBeyondFlashcard } from '@/content/scope'
 import { useProgress } from '@/progress/store'
 import { shuffle as shuffleArr } from '@/lib/random'
 import { cn } from '@/lib/cn'
@@ -83,6 +84,7 @@ export function FlashcardPlayer({ cards, startId, compact = false }: { cards: Fl
           <div className="flip-face col-start-1 row-start-1 flex flex-col rounded-lg border border-border bg-surface p-6 shadow-card sm:p-8">
             <div className="flex flex-wrap items-center gap-2">
               <Badge color={card.type === 'scenario' ? 'purple' : 'blue'}>{card.type === 'scenario' ? 'Scenario' : 'Definition'}</Badge>
+              {isBeyondFlashcard(content, card) && <Badge color="amber">{BEYOND_LABEL}</Badge>}
               {st && <Badge color={st === 'know' ? 'green' : 'amber'}>{st === 'know' ? 'Known' : 'Needs review'}</Badge>}
             </div>
             <p className={cn('my-auto py-6 text-center font-semibold leading-snug', compact ? 'text-lg' : 'text-xl sm:text-2xl')}>{card.front}</p>

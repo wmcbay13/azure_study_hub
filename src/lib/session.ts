@@ -4,6 +4,7 @@ import type { Difficulty, DomainId, Question, QuestionType } from '@/content/sch
 import type { UserProgress } from '@/progress/types'
 import { topicStats, weakTopics } from '@/progress/analytics'
 import { shuffle } from './random'
+import { isBeyondQuestion, isBeyondTopic } from '@/content/scope'
 
 export type SessionSource = 'all' | 'unanswered' | 'incorrect' | 'weak'
 
@@ -14,12 +15,16 @@ export interface SessionFilters {
   difficulties?: Difficulty[]
   types?: QuestionType[]
   source?: SessionSource
+  /** Include beyond-exam content (e.g. AKS). Implied when filtering by a beyond-exam topic. */
+  includeBeyond?: boolean
   count: number
 }
 
 export function filterQuestions(content: ContentIndex, progress: UserProgress, f: SessionFilters): Question[] {
   const weak = f.source === 'weak' ? new Set(weakTopics(topicStats(progress, content), 8).map((s) => s.topic.slug)) : null
+  const beyondTopicChosen = f.topics?.some((t) => isBeyondTopic(content, t)) ?? false
   return content.questions.filter((q) => {
+    if (!f.includeBeyond && !beyondTopicChosen && isBeyondQuestion(content, q)) return false
     if (f.domains?.length && !f.domains.includes(q.domain)) return false
     if (f.topics?.length && !f.topics.includes(q.topic)) return false
     if (f.services?.length && !q.services.some((s) => f.services!.includes(s))) return false
@@ -52,7 +57,9 @@ export function pickQuestions(pool: Question[], count: number, rand: () => numbe
  * Exam selection weighted by domain weight, so an exam mirrors the outline.
  * Includes at most one case study block.
  */
-export function pickExamQuestions(content: ContentIndex, count: number, rand: () => number = Math.random): Question[] {
+export function pickExamQuestions(all: ContentIndex, count: number, rand: () => number = Math.random): Question[] {
+  // Practice exams mirror the AZ-104 outline only.
+  const content = { ...all, questions: all.questions.filter((q) => !isBeyondQuestion(all, q)) }
   const domains = content.objectives.domains
   const totalWeight = domains.reduce((s, d) => s + d.weightValue, 0)
   const caseStudies = shuffle(content.caseStudies, rand)

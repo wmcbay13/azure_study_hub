@@ -1,0 +1,267 @@
+[
+  {
+    "id": "aks-001", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks"],
+    "difficulty": "beginner", "questionType": "single",
+    "question": "In Azure Kubernetes Service, which components does Azure manage for you?",
+    "options": [
+      { "id": "a", "text": "The worker node VMs' application containers" },
+      { "id": "b", "text": "Nothing — AKS is a set of templates for deploying Kubernetes on your own VMs" },
+      { "id": "c", "text": "The Kubernetes control plane: API server, scheduler, controller manager and etcd" },
+      { "id": "d", "text": "Your Kubernetes manifests and Helm charts" }
+    ],
+    "correctAnswer": "c",
+    "explanation": "AKS is a managed Kubernetes service. Azure hosts, patches and scales the control plane, which you never see as VMs. You choose and pay for the node pools that run your workloads, and you're responsible for the applications and keeping versions current.",
+    "incorrectAnswerExplanations": {
+      "a": "Your containers and pods are your responsibility; Azure doesn't manage application workloads.",
+      "b": "AKS provides a managed control plane — it's not just deployment templates.",
+      "d": "Manifests and charts describe your applications; you author and apply them."
+    },
+    "examTakeaway": "AKS = managed control plane; you own node pools and workloads.",
+    "relatedTopics": ["aks"],
+    "documentationLinks": [{ "title": "Core Kubernetes concepts for AKS", "url": "https://learn.microsoft.com/azure/aks/core-aks-concepts" }]
+  },
+  {
+    "id": "aks-002", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks"],
+    "difficulty": "intermediate", "questionType": "scenario",
+    "scenario": "An AKS cluster runs a web API with a Horizontal Pod Autoscaler. During a traffic spike, the HPA raises replicas from 4 to 12, but 6 new pods stay in the Pending state with the event 'Insufficient cpu'.",
+    "question": "What should you configure so the new pods can run automatically?",
+    "options": [
+      { "id": "a", "text": "Enable the cluster autoscaler on the node pool with an appropriate maximum node count" },
+      { "id": "b", "text": "Increase the HPA's maximum replicas" },
+      { "id": "c", "text": "Change the Service type to LoadBalancer" },
+      { "id": "d", "text": "Upgrade the cluster to a newer Kubernetes version" }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Pending pods with 'Insufficient cpu' mean the nodes are full. The HPA scales pods, not nodes. The cluster autoscaler watches for unschedulable pods and adds nodes to the pool, within its min/max bounds, so the pods can be scheduled.",
+    "incorrectAnswerExplanations": {
+      "b": "More replicas would only create more Pending pods; capacity is the problem.",
+      "c": "The Service type affects how traffic reaches pods, not scheduling capacity.",
+      "d": "Upgrading versions doesn't add node capacity."
+    },
+    "examTakeaway": "HPA scales pods; the cluster autoscaler scales nodes.",
+    "relatedTopics": ["aks", "vm-scale-sets"],
+    "documentationLinks": [{ "title": "Use the cluster autoscaler in AKS", "url": "https://learn.microsoft.com/azure/aks/cluster-autoscaler" }]
+  },
+  {
+    "id": "aks-003", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks"],
+    "difficulty": "intermediate", "questionType": "scenario",
+    "scenario": "A Deployment's pods run at high CPU during business hours. You want Kubernetes to add replicas when average CPU exceeds 70% and remove them when load drops. The node pool has plenty of spare capacity.",
+    "question": "What should you configure?",
+    "options": [
+      { "id": "a", "text": "The cluster autoscaler" },
+      { "id": "b", "text": "A Horizontal Pod Autoscaler targeting 70% CPU utilization" },
+      { "id": "c", "text": "A larger VM size for the node pool" },
+      { "id": "d", "text": "A Spot node pool" }
+    ],
+    "correctAnswer": "b",
+    "explanation": "The Horizontal Pod Autoscaler adjusts a Deployment's replica count based on observed metrics such as CPU utilization. With spare node capacity, new replicas start immediately.",
+    "incorrectAnswerExplanations": {
+      "a": "The cluster autoscaler adds nodes when pods can't be scheduled; it doesn't change replica counts.",
+      "c": "Bigger nodes don't create more replicas of the app.",
+      "d": "Spot pools lower cost for interruptible work; they don't scale replicas."
+    },
+    "examTakeaway": "Metric-driven replica scaling = Horizontal Pod Autoscaler.",
+    "relatedTopics": ["aks"],
+    "documentationLinks": [{ "title": "Scaling options for applications in AKS", "url": "https://learn.microsoft.com/azure/aks/concepts-scale" }]
+  },
+  {
+    "id": "aks-004", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks", "container-registry"],
+    "difficulty": "exam", "questionType": "scenario",
+    "scenario": "Pods in AKS cluster aks-prod fail with ErrImagePull when pulling images from the private registry acrprod. You must fix this without storing registry credentials in the cluster.",
+    "question": "What should you do?",
+    "options": [
+      { "id": "a", "text": "Enable the ACR admin user and create a Kubernetes image pull secret with its password" },
+      { "id": "b", "text": "Make acrprod allow anonymous pull" },
+      { "id": "c", "text": "Grant the developers the AcrPush role" },
+      { "id": "d", "text": "Attach the registry to the cluster (az aks update --attach-acr acrprod), which grants the kubelet identity the AcrPull role" }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Attaching ACR assigns the AcrPull role to the cluster's kubelet managed identity, which nodes use to authenticate to the registry. No passwords or pull secrets are stored.",
+    "incorrectAnswerExplanations": {
+      "a": "This stores a shared credential in the cluster, which the requirement rules out, and the admin account isn't recommended for production.",
+      "b": "Anonymous pull would expose images publicly.",
+      "c": "Developer push rights don't help nodes authenticate to pull."
+    },
+    "examTakeaway": "AKS + private ACR → attach ACR (AcrPull for the kubelet identity).",
+    "relatedTopics": ["aks", "containers"],
+    "documentationLinks": [{ "title": "Authenticate with ACR from AKS", "url": "https://learn.microsoft.com/azure/aks/cluster-container-registry-integration" }]
+  },
+  {
+    "id": "aks-005", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks", "key-vault"],
+    "difficulty": "challenging", "questionType": "scenario",
+    "scenario": "An application running in AKS needs to read secrets from Azure Key Vault. Security forbids storing client secrets or certificates in the cluster or in container images.",
+    "question": "Which approach meets the requirement?",
+    "options": [
+      { "id": "a", "text": "Use Microsoft Entra Workload ID: create a user-assigned managed identity, add a federated credential for the pod's Kubernetes service account, and grant the identity a Key Vault role" },
+      { "id": "b", "text": "Create an app registration with a client secret and store it as a Kubernetes Secret" },
+      { "id": "c", "text": "Bake the Key Vault access key into the container image at build time" },
+      { "id": "d", "text": "Grant the developers' user accounts the Key Vault Secrets User role" }
+    ],
+    "correctAnswer": "a",
+    "explanation": "Workload ID uses OpenID Connect federation: the pod's service account token is exchanged for a Microsoft Entra token for the managed identity, with no secret stored anywhere. The managed identity is then authorized on Key Vault through RBAC.",
+    "incorrectAnswerExplanations": {
+      "b": "A client secret stored in the cluster violates the requirement and must be rotated.",
+      "c": "Embedding credentials in images is insecure and also violates the requirement.",
+      "d": "Developer permissions don't give the running pod an identity."
+    },
+    "examTakeaway": "Pods → Azure services without secrets = Microsoft Entra Workload ID.",
+    "relatedTopics": ["aks", "azure-rbac"],
+    "documentationLinks": [{ "title": "Use Microsoft Entra Workload ID with AKS", "url": "https://learn.microsoft.com/azure/aks/workload-identity-overview" }]
+  },
+  {
+    "id": "aks-006", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks"],
+    "difficulty": "intermediate", "questionType": "multi",
+    "question": "Which TWO statements about AKS node pools are correct?",
+    "options": [
+      { "id": "a", "text": "System node pools can run only Windows nodes" },
+      { "id": "b", "text": "Each node pool is backed by a Virtual Machine Scale Set" },
+      { "id": "c", "text": "A cluster needs at least one system node pool, which hosts components such as CoreDNS" },
+      { "id": "d", "text": "All node pools in a cluster must use the same VM size" }
+    ],
+    "correctAnswer": ["b", "c"],
+    "explanation": "Node pools are scale sets of identically configured nodes. Every cluster requires at least one system pool (Linux) for critical add-ons; user pools host applications and can differ in VM size, OS and pricing (for example GPU or Spot).",
+    "incorrectAnswerExplanations": {
+      "a": "System pools run Linux. Windows containers run in user node pools.",
+      "d": "Different pools can use different VM sizes — that's a main reason to have multiple pools."
+    },
+    "examTakeaway": "Pools = scale sets; ≥1 Linux system pool; user pools vary by size/OS/pricing.",
+    "relatedTopics": ["aks", "vm-scale-sets"],
+    "documentationLinks": [{ "title": "Manage system node pools in AKS", "url": "https://learn.microsoft.com/azure/aks/use-system-pools" }]
+  },
+  {
+    "id": "aks-007", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks"],
+    "difficulty": "intermediate", "questionType": "scenario",
+    "scenario": "Your AKS cluster runs Linux workloads. A legacy .NET Framework application must now be containerized and run in the same cluster.",
+    "question": "What should you do?",
+    "options": [
+      { "id": "a", "text": "Change the system node pool's OS to Windows" },
+      { "id": "b", "text": "Create a new cluster, because AKS clusters can't mix operating systems" },
+      { "id": "c", "text": "Run the container in Azure Container Instances and peer it to the cluster" },
+      { "id": "d", "text": "Add a Windows user node pool and schedule the app onto it with a node selector" }
+    ],
+    "correctAnswer": "d",
+    "explanation": "AKS supports Windows Server node pools as user pools alongside Linux pools. Use a node selector (or taints and tolerations) so Windows containers land on Windows nodes and Linux workloads stay on Linux nodes.",
+    "incorrectAnswerExplanations": {
+      "a": "System pools must run Linux, and a pool's OS can't be switched in place.",
+      "b": "Clusters can mix Linux and Windows node pools.",
+      "c": "ACI could run it separately, but the requirement is to run it in the same cluster."
+    },
+    "examTakeaway": "Windows containers in AKS → Windows user node pool + node selector.",
+    "relatedTopics": ["aks"],
+    "documentationLinks": [{ "title": "Windows container considerations in AKS", "url": "https://learn.microsoft.com/azure/aks/windows-vs-linux-containers" }]
+  },
+  {
+    "id": "aks-008", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks", "virtual-network"],
+    "difficulty": "challenging", "questionType": "scenario",
+    "scenario": "You're designing an AKS cluster that may run thousands of pods. The corporate VNet has limited free address space, and pod IPs don't need to be directly reachable from other VNets.",
+    "question": "Which networking model best fits?",
+    "options": [
+      { "id": "a", "text": "Azure CNI with every pod getting an IP from the VNet subnet" },
+      { "id": "b", "text": "Azure CNI Overlay, where nodes get VNet IPs and pods get IPs from a private overlay CIDR" },
+      { "id": "c", "text": "Assigning a public IP to each pod" },
+      { "id": "d", "text": "One subnet per pod" }
+    ],
+    "correctAnswer": "b",
+    "explanation": "Azure CNI Overlay assigns pod IPs from a private CIDR that's separate from the VNet, so only nodes consume VNet addresses. That conserves address space and scales to large pod counts. Pod traffic leaving the cluster is translated to the node IP.",
+    "incorrectAnswerExplanations": {
+      "a": "VNet-routable pod IPs consume a VNet address per pod, quickly exhausting limited space.",
+      "c": "Pods don't get individual public IPs, and it would be insecure and wasteful.",
+      "d": "Not a supported or sensible design."
+    },
+    "examTakeaway": "Conserve VNet IPs at scale → Azure CNI Overlay.",
+    "relatedTopics": ["aks", "vnets-subnets"],
+    "documentationLinks": [{ "title": "Azure CNI Overlay networking in AKS", "url": "https://learn.microsoft.com/azure/aks/concepts-network-azure-cni-overlay" }],
+    "versionNote": "kubenet is being retired; Microsoft recommends Azure CNI Overlay for most new clusters. Check current networking guidance."
+  },
+  {
+    "id": "aks-009", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks", "load-balancer"],
+    "difficulty": "intermediate", "questionType": "matching",
+    "question": "Match each requirement to the Kubernetes networking object you'd use in AKS.",
+    "options": [
+      { "id": "o1", "text": "Only other pods in the cluster call the service" },
+      { "id": "o2", "text": "Expose a TCP service on a public IP through an Azure Load Balancer" },
+      { "id": "o3", "text": "Route contoso.com/api and contoso.com/shop to different services with TLS" }
+    ],
+    "matchTargets": [
+      { "id": "cip", "text": "Service type ClusterIP" },
+      { "id": "lb", "text": "Service type LoadBalancer" },
+      { "id": "ing", "text": "Ingress (with an ingress controller)" }
+    ],
+    "correctAnswer": { "o1": "cip", "o2": "lb", "o3": "ing" },
+    "explanation": "ClusterIP gives an internal virtual IP reachable only inside the cluster. LoadBalancer provisions an Azure Load Balancer frontend for Layer 4 traffic. Ingress provides HTTP host/path routing and TLS through an ingress controller.",
+    "incorrectAnswerExplanations": {
+      "o1": "Internal-only access → ClusterIP (the default Service type).",
+      "o2": "Public Layer 4 exposure → LoadBalancer, which AKS maps to an Azure Standard Load Balancer.",
+      "o3": "HTTP path routing + TLS → Ingress, similar to Application Gateway's role in AZ-104."
+    },
+    "examTakeaway": "ClusterIP internal · LoadBalancer L4 external · Ingress L7 routing.",
+    "relatedTopics": ["aks", "load-balancer", "application-gateway"],
+    "documentationLinks": [{ "title": "Networking concepts for applications in AKS", "url": "https://learn.microsoft.com/azure/aks/concepts-network" }]
+  },
+  {
+    "id": "aks-010", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks"],
+    "difficulty": "exam", "questionType": "ordering",
+    "question": "You need to upgrade an AKS cluster to a newer Kubernetes minor version with minimal disruption. Put the steps in order.",
+    "options": [
+      { "id": "s1", "text": "Check available upgrade versions (az aks get-upgrades) and review release notes" },
+      { "id": "s2", "text": "Upgrade the control plane to the new version" },
+      { "id": "s3", "text": "Upgrade each node pool, using max surge so new nodes are added before old ones are drained" },
+      { "id": "s4", "text": "Verify workloads and node status" }
+    ],
+    "correctAnswer": ["s1", "s2", "s3", "s4"],
+    "explanation": "Confirm which versions you can move to, upgrade the control plane first (nodes can't run a newer version than the control plane), then roll node pools with surge capacity so workloads move to new nodes gracefully, and finally verify.",
+    "incorrectAnswerExplanations": {
+      "s1": "Know your target version and breaking changes before changing anything.",
+      "s2": "The control plane must be upgraded before node pools.",
+      "s3": "Node pools follow, with max surge reducing capacity loss during cordon and drain.",
+      "s4": "Validate after the rollout completes."
+    },
+    "examTakeaway": "Plan → control plane → node pools (surge) → verify.",
+    "relatedTopics": ["aks"],
+    "documentationLinks": [{ "title": "Upgrade an AKS cluster", "url": "https://learn.microsoft.com/azure/aks/upgrade-aks-cluster" }]
+  },
+  {
+    "id": "aks-011", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks", "container-apps"],
+    "difficulty": "exam", "questionType": "scenario",
+    "scenario": "Two teams plan container platforms. Team A needs to run Kubernetes operators with custom resource definitions (CRDs) and a service mesh they already use on-premises. Team B has three HTTP microservices and wants autoscaling, including to zero, with as little platform management as possible.",
+    "question": "Which services should the teams use?",
+    "options": [
+      { "id": "a", "text": "Team A: Azure Container Instances; Team B: AKS" },
+      { "id": "b", "text": "Both teams: AKS" },
+      { "id": "c", "text": "Team A: AKS; Team B: Azure Container Apps" },
+      { "id": "d", "text": "Both teams: Azure Container Apps" }
+    ],
+    "correctAnswer": "c",
+    "explanation": "Custom operators, CRDs and an existing service mesh need direct access to the Kubernetes API, which AKS provides. Container Apps gives Team B serverless autoscaling (including to zero) without managing a cluster.",
+    "incorrectAnswerExplanations": {
+      "a": "ACI has no Kubernetes API, and AKS adds unnecessary operational work for Team B.",
+      "b": "AKS works for Team B but doesn't minimize platform management.",
+      "d": "Container Apps doesn't expose the Kubernetes API for operators and CRDs."
+    },
+    "examTakeaway": "Need the Kubernetes API → AKS. Want serverless containers → Container Apps.",
+    "relatedTopics": ["aks", "containers"],
+    "documentationLinks": [{ "title": "Comparing Container Apps with other Azure container options", "url": "https://learn.microsoft.com/azure/container-apps/compare-options" }]
+  },
+  {
+    "id": "aks-012", "domain": "compute", "objectiveId": "containers", "topic": "aks", "services": ["aks", "azure-files", "managed-disks"],
+    "difficulty": "challenging", "questionType": "scenario",
+    "scenario": "Five pods of a Deployment, spread across several nodes, must read and write the same set of files concurrently, and the data must persist if pods are rescheduled.",
+    "question": "Which storage should the PersistentVolumeClaim use?",
+    "options": [
+      { "id": "a", "text": "An Azure Disk via the Azure Disk CSI driver" },
+      { "id": "b", "text": "The node's temporary disk" },
+      { "id": "c", "text": "The container's writable layer" },
+      { "id": "d", "text": "An Azure file share via the Azure Files CSI driver (ReadWriteMany)" }
+    ],
+    "correctAnswer": "d",
+    "explanation": "Azure Files supports ReadWriteMany access, so pods on different nodes can mount and write the same share concurrently, and data persists independently of pods. Azure Disks are attached to one node at a time (ReadWriteOnce).",
+    "incorrectAnswerExplanations": {
+      "a": "Azure Disks are typically ReadWriteOnce — mounted by pods on a single node.",
+      "b": "Temporary node disks aren't shared or persistent.",
+      "c": "A container's writable layer is lost when the container is recreated and isn't shared."
+    },
+    "examTakeaway": "Shared read/write across pods → Azure Files CSI; single-pod block storage → Azure Disk.",
+    "relatedTopics": ["aks", "azure-files", "managed-disks-images"],
+    "documentationLinks": [{ "title": "Storage options for applications in AKS", "url": "https://learn.microsoft.com/azure/aks/concepts-storage" }]
+  }
+]

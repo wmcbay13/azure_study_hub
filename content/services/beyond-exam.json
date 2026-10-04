@@ -1,0 +1,58 @@
+[
+  {
+    "id": "aks",
+    "name": "Azure Kubernetes Service (AKS)",
+    "category": "Containers",
+    "icon": "azure:kubernetes-services",
+    "tagline": "Managed Kubernetes: Azure runs the control plane, you run the workloads.",
+    "whatItIs": "A managed Kubernetes service. Azure hosts, patches and scales the Kubernetes control plane; your applications run on node pools — Virtual Machine Scale Sets in your subscription — that you size and scale. AKS integrates with Entra ID, Azure networking, storage, Container Registry and Azure Monitor.",
+    "primaryPurpose": "Run containerized applications at scale with the full Kubernetes API and ecosystem, without operating the control plane yourself.",
+    "useCases": [
+      "Microservice platforms with many services, custom scheduling or service meshes",
+      "Teams standardizing on Kubernetes tooling (Helm, GitOps, operators) across environments",
+      "Lift-and-shift of existing Kubernetes workloads from on-premises or other clouds",
+      "Batch, data and AI/ML workloads on GPU or Spot node pools"
+    ],
+    "keyFeatures": [
+      "Managed control plane with Free, Standard (uptime SLA) and Premium (long-term support) tiers",
+      "Multiple node pools: Linux and Windows, GPU, Spot, availability zones",
+      "Cluster autoscaler, Horizontal Pod Autoscaler, KEDA and node auto-provisioning",
+      "Networking models including Azure CNI Overlay and Azure CNI powered by Cilium",
+      "Entra ID integration, Azure RBAC for Kubernetes, Microsoft Entra Workload ID",
+      "Auto-upgrade channels and planned maintenance windows",
+      "AKS Automatic: an opinionated, more fully managed cluster configuration"
+    ],
+    "security": [
+      "Integrate with Microsoft Entra ID, disable local accounts, and use Azure RBAC or Kubernetes RBAC",
+      "Use Workload ID for pod access to Azure resources — no secrets in the cluster",
+      "Restrict the API server with a private cluster or authorized IP ranges",
+      "Enforce guardrails with the Azure Policy add-on; protect with Microsoft Defender for Containers"
+    ],
+    "networking": [
+      "Choose a network model: Azure CNI Overlay (pod IPs from a private overlay range, conserving VNet space), Azure CNI with VNet-routable pod IPs, or Cilium-powered dataplane",
+      "Services of type LoadBalancer configure an Azure Standard Load Balancer (public or internal)",
+      "Ingress via the application routing add-on (managed NGINX) or Application Gateway for Containers",
+      "Network policies (Azure, Calico or Cilium) control pod-to-pod traffic"
+    ],
+    "pricing": "The control plane is free on the Free tier; Standard and Premium tiers add a per-cluster hourly charge. You pay separately for node VMs, disks, load balancers, public IPs, bandwidth and monitoring. Reservations, savings plans and Spot node pools reduce node costs.",
+    "relatedServices": ["container-registry", "container-apps", "container-instances", "vm-scale-sets", "load-balancer", "azure-monitor"],
+    "confusedWith": [
+      { "name": "Azure Container Apps", "difference": "Serverless containers built on Kubernetes with no cluster to manage; AKS exposes the full Kubernetes API and operations." },
+      { "name": "Azure Container Instances", "difference": "Single container groups on demand without orchestration; AKS orchestrates fleets of containers." },
+      { "name": "Azure Red Hat OpenShift", "difference": "A jointly managed OpenShift (Kubernetes distribution) service; AKS is Microsoft's upstream-Kubernetes offering." }
+    ],
+    "relevance": "beyond",
+    "relevanceNote": "Not in the AZ-104 skills outline — included for wider context. On the exam, prefer ACI or Container Apps when they meet the requirement with less administrative effort.",
+    "examTips": [
+      "If an AZ-104 question needs a simple container with minimal management, AKS is usually the distractor",
+      "Azure manages the control plane; you manage node pools, workloads and upgrades"
+    ],
+    "topics": ["aks", "containers"],
+    "docLinks": [
+      { "title": "What is Azure Kubernetes Service?", "url": "https://learn.microsoft.com/azure/aks/what-is-aks" },
+      { "title": "AKS pricing tiers", "url": "https://learn.microsoft.com/azure/aks/free-standard-pricing-tiers" },
+      { "title": "What is AKS Automatic?", "url": "https://learn.microsoft.com/azure/aks/intro-aks-automatic" }
+    ],
+    "versionNote": "Tiers, SKUs and networking options change frequently; confirm on the AKS documentation and pricing pages."
+  }
+]

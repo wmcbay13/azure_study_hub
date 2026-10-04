@@ -1,0 +1,559 @@
+[
+  {
+    "id": "aks-architecture",
+    "title": "AKS Cluster Architecture",
+    "summary": "What Azure manages, what runs in your subscription, and how users, developers, images and telemetry connect to an AKS cluster.",
+    "domain": "compute",
+    "topics": [
+      "aks"
+    ],
+    "width": 1135,
+    "height": 560,
+    "groups": [
+      {
+        "id": "cp",
+        "label": "Control plane (managed by Azure)",
+        "x": 20,
+        "y": 40,
+        "w": 300,
+        "h": 250,
+        "color": "purple"
+      },
+      {
+        "id": "mine",
+        "label": "Your subscription · node resource group (MC_…)",
+        "x": 345,
+        "y": 40,
+        "w": 565,
+        "h": 500,
+        "color": "blue"
+      },
+      {
+        "id": "sys",
+        "label": "System node pool",
+        "x": 365,
+        "y": 80,
+        "w": 290,
+        "h": 150,
+        "color": "teal"
+      },
+      {
+        "id": "user",
+        "label": "User node pool (scale set)",
+        "x": 365,
+        "y": 260,
+        "w": 290,
+        "h": 260,
+        "color": "green"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "api",
+        "label": "API server",
+        "sublabel": "Kubernetes API",
+        "icon": "server-cog",
+        "x": 170,
+        "y": 225,
+        "w": 200,
+        "color": "purple",
+        "detail": "Every kubectl command and pipeline deployment goes through the API server. Azure runs, scales and patches it; with the Standard tier it's backed by an uptime SLA."
+      },
+      {
+        "id": "sched",
+        "label": "Scheduler & etcd",
+        "sublabel": "cluster state",
+        "icon": "database",
+        "x": 170,
+        "y": 115,
+        "w": 200,
+        "color": "purple",
+        "detail": "The scheduler places pods on nodes with enough CPU and memory; etcd stores the desired and current state of every object. Both are managed by Azure."
+      },
+      {
+        "id": "sysnode",
+        "label": "System nodes",
+        "sublabel": "CoreDNS, metrics-server",
+        "icon": "server",
+        "x": 510,
+        "y": 160,
+        "w": 230,
+        "color": "teal",
+        "detail": "System node pools run critical cluster add-ons. Every cluster needs at least one Linux system pool; keep application pods off it with taints if needed."
+      },
+      {
+        "id": "pods",
+        "label": "App pods",
+        "sublabel": "Deployment · 3 replicas",
+        "icon": "boxes",
+        "x": 510,
+        "y": 340,
+        "w": 230,
+        "color": "green",
+        "detail": "Your containers run as pods on user node pools. A Deployment keeps the desired number of replicas running and rolls out new versions gradually."
+      },
+      {
+        "id": "more",
+        "label": "More user pools",
+        "sublabel": "Windows, GPU or Spot",
+        "icon": "layers",
+        "x": 510,
+        "y": 450,
+        "w": 230,
+        "color": "green",
+        "detail": "Add pools for different needs: Windows containers, GPU VMs, Spot VMs for interruptible work, or zone-pinned pools. Each pool is a scale set."
+      },
+      {
+        "id": "lb",
+        "label": "Azure Load Balancer",
+        "sublabel": "Service type LoadBalancer",
+        "icon": "azure:load-balancers",
+        "x": 790,
+        "y": 120,
+        "w": 220,
+        "color": "orange",
+        "detail": "Creating a Kubernetes Service of type LoadBalancer makes AKS configure a Standard Load Balancer frontend (public, or internal with an annotation)."
+      },
+      {
+        "id": "ingress",
+        "label": "Ingress controller",
+        "sublabel": "HTTP routing + TLS",
+        "icon": "router",
+        "x": 790,
+        "y": 240,
+        "w": 220,
+        "color": "orange",
+        "detail": "Routes HTTP(S) requests by host and path to Services. Options include the managed application routing add-on (NGINX) and Application Gateway for Containers."
+      },
+      {
+        "id": "pv",
+        "label": "Persistent volumes",
+        "sublabel": "Azure Disk / Azure Files CSI",
+        "icon": "hard-drive",
+        "x": 790,
+        "y": 480,
+        "w": 220,
+        "color": "teal",
+        "detail": "CSI drivers provision managed disks (single-node read/write) or Azure file shares (shared read/write across pods) through PersistentVolumeClaims."
+      },
+      {
+        "id": "dev",
+        "label": "kubectl / pipelines",
+        "sublabel": "deploy manifests",
+        "icon": "laptop",
+        "x": 170,
+        "y": 370,
+        "w": 200,
+        "color": "gray",
+        "detail": "Developers and CI/CD pipelines run kubectl or Helm against the API server after az aks get-credentials."
+      },
+      {
+        "id": "entra",
+        "label": "Microsoft Entra ID",
+        "sublabel": "sign-in + RBAC",
+        "icon": "azure:entra-id",
+        "x": 170,
+        "y": 480,
+        "w": 200,
+        "color": "purple",
+        "detail": "With Entra integration, users sign in with their Entra identity and are authorized by Kubernetes RBAC or Azure RBAC for Kubernetes. Pods use Workload ID to reach Azure services without secrets."
+      },
+      {
+        "id": "users",
+        "label": "Internet users",
+        "icon": "users",
+        "x": 1040,
+        "y": 120,
+        "w": 170,
+        "color": "gray",
+        "detail": "Client traffic enters through the load balancer and ingress controller."
+      },
+      {
+        "id": "mon",
+        "label": "Azure Monitor",
+        "sublabel": "Container insights",
+        "icon": "azure:monitor",
+        "x": 1040,
+        "y": 260,
+        "w": 170,
+        "color": "purple",
+        "detail": "Container insights, managed Prometheus and Grafana collect node, pod and container metrics and logs; control-plane logs flow through diagnostic settings."
+      },
+      {
+        "id": "acr",
+        "label": "Container registry",
+        "sublabel": "AcrPull",
+        "icon": "azure:container-registries",
+        "x": 1040,
+        "y": 400,
+        "w": 170,
+        "color": "blue",
+        "detail": "Attaching ACR to the cluster grants the nodes' kubelet identity the AcrPull role so images are pulled without stored credentials."
+      }
+    ],
+    "edges": [
+      {
+        "from": "dev",
+        "to": "api",
+        "label": "kubectl",
+        "color": "gray"
+      },
+      {
+        "from": "dev",
+        "to": "entra",
+        "label": "sign in",
+        "style": "dashed",
+        "color": "purple"
+      },
+      {
+        "from": "api",
+        "to": "sysnode",
+        "label": "schedules",
+        "color": "purple"
+      },
+      {
+        "from": "api",
+        "to": "pods",
+        "color": "purple"
+      },
+      {
+        "from": "users",
+        "to": "lb",
+        "label": "HTTPS",
+        "color": "gray"
+      },
+      {
+        "from": "lb",
+        "to": "ingress",
+        "color": "orange"
+      },
+      {
+        "from": "ingress",
+        "to": "pods",
+        "label": "routes",
+        "color": "orange"
+      },
+      {
+        "from": "pods",
+        "to": "pv",
+        "label": "PVC",
+        "style": "dashed",
+        "color": "teal"
+      },
+      {
+        "from": "acr",
+        "to": "pods",
+        "label": "pull images",
+        "style": "dashed",
+        "color": "blue"
+      },
+      {
+        "from": "pods",
+        "to": "mon",
+        "label": "telemetry",
+        "style": "dashed",
+        "color": "purple"
+      }
+    ],
+    "legend": [
+      {
+        "color": "purple",
+        "label": "Azure-managed / identity"
+      },
+      {
+        "color": "teal",
+        "label": "System pool & storage"
+      },
+      {
+        "color": "green",
+        "label": "Your workloads"
+      },
+      {
+        "color": "orange",
+        "label": "Traffic in"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Azure runs the control plane",
+        "text": "The API server, scheduler and etcd are hosted and patched by Azure. You never manage those machines.",
+        "highlight": [
+          "api",
+          "sched"
+        ]
+      },
+      {
+        "title": "You run node pools",
+        "text": "Node pools are scale sets in a node resource group in your subscription. System pools run cluster add-ons; user pools run your apps.",
+        "highlight": [
+          "sysnode",
+          "pods",
+          "more"
+        ]
+      },
+      {
+        "title": "Deploying",
+        "text": "Developers sign in with Entra ID, then kubectl applies manifests to the API server, which schedules pods onto nodes. Nodes pull images from ACR.",
+        "highlight": [
+          "dev",
+          "entra",
+          "api",
+          "pods",
+          "acr"
+        ]
+      },
+      {
+        "title": "Serving traffic",
+        "text": "Users reach pods through an Azure Load Balancer and an ingress controller that routes by host and path.",
+        "highlight": [
+          "users",
+          "lb",
+          "ingress",
+          "pods"
+        ]
+      },
+      {
+        "title": "State and observability",
+        "text": "Persistent volumes use Azure Disk or Azure Files; Azure Monitor collects metrics and logs.",
+        "highlight": [
+          "pods",
+          "pv",
+          "mon"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Beyond AZ-104: this diagram is for context. AZ-104 expects you to choose simpler container services (ACI, Container Apps) when they meet the requirement.",
+      "Know the shared-responsibility split: Azure manages the control plane; you manage node pools, workloads and upgrades.",
+      "AKS reuses AZ-104 building blocks: scale sets, load balancers, VNets, managed disks, Azure Files, Entra ID, RBAC, ACR and Azure Monitor."
+    ],
+    "docLinks": [
+      {
+        "title": "Core Kubernetes concepts for AKS",
+        "url": "https://learn.microsoft.com/azure/aks/core-aks-concepts"
+      },
+      {
+        "title": "AKS baseline architecture",
+        "url": "https://learn.microsoft.com/azure/architecture/reference-architectures/containers/aks/baseline-aks"
+      }
+    ]
+  },
+  {
+    "id": "aks-scaling",
+    "title": "AKS Scaling: Pods vs Nodes",
+    "summary": "How the Horizontal Pod Autoscaler, KEDA and the cluster autoscaler work together to scale applications and capacity.",
+    "domain": "compute",
+    "topics": [
+      "aks"
+    ],
+    "width": 860,
+    "height": 480,
+    "nodes": [
+      {
+        "id": "metrics",
+        "label": "Metrics server",
+        "sublabel": "CPU / memory",
+        "icon": "gauge",
+        "x": 120,
+        "y": 110,
+        "w": 180,
+        "color": "purple",
+        "detail": "Collects resource usage from nodes and pods so autoscalers can make decisions."
+      },
+      {
+        "id": "keda",
+        "label": "KEDA add-on",
+        "sublabel": "queues, events",
+        "icon": "zap",
+        "x": 120,
+        "y": 250,
+        "w": 180,
+        "color": "purple",
+        "detail": "Kubernetes Event-driven Autoscaling feeds external metrics (queue length, event counts) to the HPA and can scale workloads to zero."
+      },
+      {
+        "id": "hpa",
+        "label": "Pod autoscaler (HPA)",
+        "sublabel": "scales replicas",
+        "icon": "trending-up",
+        "x": 400,
+        "y": 110,
+        "w": 200,
+        "color": "blue",
+        "detail": "The Horizontal Pod Autoscaler raises or lowers a Deployment's replica count to hold a target such as 70% CPU."
+      },
+      {
+        "id": "deploy",
+        "label": "Deployment",
+        "sublabel": "replicas 3 → 8",
+        "icon": "boxes",
+        "x": 720,
+        "y": 110,
+        "w": 200,
+        "color": "green",
+        "detail": "New replicas are created. If the nodes have room, they start immediately."
+      },
+      {
+        "id": "pending",
+        "label": "Pending pods",
+        "sublabel": "no room on nodes",
+        "icon": "clock",
+        "x": 720,
+        "y": 250,
+        "w": 200,
+        "color": "red",
+        "detail": "When no node has enough free CPU or memory, the scheduler leaves pods Pending. The HPA can't fix this by itself."
+      },
+      {
+        "id": "ca",
+        "label": "Cluster autoscaler",
+        "sublabel": "watches pending pods",
+        "icon": "settings",
+        "x": 400,
+        "y": 250,
+        "w": 220,
+        "color": "amber",
+        "detail": "Adds nodes to a node pool when pods can't be scheduled, and removes underused nodes, within the pool's min/max counts."
+      },
+      {
+        "id": "vmss",
+        "label": "VM scale set",
+        "sublabel": "node pool",
+        "icon": "azure:vm-scale-sets",
+        "x": 400,
+        "y": 390,
+        "w": 220,
+        "color": "blue",
+        "detail": "Each node pool is a Virtual Machine Scale Set; the cluster autoscaler changes its instance count through AKS."
+      },
+      {
+        "id": "newnode",
+        "label": "New node ready",
+        "sublabel": "pending pods scheduled",
+        "icon": "server",
+        "x": 720,
+        "y": 390,
+        "w": 210,
+        "color": "green",
+        "detail": "Once the new node joins the cluster, the scheduler places the pending pods on it."
+      }
+    ],
+    "edges": [
+      {
+        "from": "metrics",
+        "to": "hpa",
+        "label": "utilization",
+        "color": "purple"
+      },
+      {
+        "from": "keda",
+        "to": "hpa",
+        "label": "event metrics",
+        "style": "dashed",
+        "color": "purple"
+      },
+      {
+        "from": "hpa",
+        "to": "deploy",
+        "label": "scale pods",
+        "color": "blue"
+      },
+      {
+        "from": "deploy",
+        "to": "pending",
+        "label": "nodes full",
+        "color": "red"
+      },
+      {
+        "from": "pending",
+        "to": "ca",
+        "label": "triggers",
+        "color": "amber"
+      },
+      {
+        "from": "ca",
+        "to": "vmss",
+        "label": "add node",
+        "color": "amber"
+      },
+      {
+        "from": "vmss",
+        "to": "newnode",
+        "color": "blue"
+      },
+      {
+        "from": "newnode",
+        "to": "pending",
+        "label": "pods land",
+        "style": "dashed",
+        "color": "green"
+      }
+    ],
+    "legend": [
+      {
+        "color": "purple",
+        "label": "Signals"
+      },
+      {
+        "color": "blue",
+        "label": "Pod scaling"
+      },
+      {
+        "color": "amber",
+        "label": "Node scaling"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Load rises",
+        "text": "CPU climbs; the metrics server reports it to the Horizontal Pod Autoscaler.",
+        "highlight": [
+          "metrics",
+          "hpa"
+        ]
+      },
+      {
+        "title": "Scale pods",
+        "text": "The HPA raises the Deployment's replicas from 3 to 8. KEDA can drive the same decision from queue length or events.",
+        "highlight": [
+          "hpa",
+          "deploy",
+          "keda"
+        ]
+      },
+      {
+        "title": "Nodes are full",
+        "text": "Some new pods stay Pending because no node has room — pod scaling alone can't add capacity.",
+        "highlight": [
+          "deploy",
+          "pending"
+        ]
+      },
+      {
+        "title": "Scale nodes",
+        "text": "The cluster autoscaler sees pending pods and adds a node to the scale set; the pods are then scheduled. When load drops, both scale back down.",
+        "highlight": [
+          "pending",
+          "ca",
+          "vmss",
+          "newnode"
+        ]
+      }
+    ],
+    "examExpects": [
+      "Beyond AZ-104: for context only.",
+      "HPA scales pods on metrics; the cluster autoscaler scales nodes when pods can't be scheduled. Production clusters usually enable both.",
+      "The same idea appears in AZ-104 with scale sets and App Service: scale out instances on metrics, within minimum and maximum bounds."
+    ],
+    "docLinks": [
+      {
+        "title": "Scaling options for applications in AKS",
+        "url": "https://learn.microsoft.com/azure/aks/concepts-scale"
+      },
+      {
+        "title": "Use the cluster autoscaler in AKS",
+        "url": "https://learn.microsoft.com/azure/aks/cluster-autoscaler"
+      }
+    ]
+  }
+]

@@ -10,6 +10,7 @@ export function encodeFilters(f: SessionFilters): string {
   if (f.difficulties?.length) p.set('difficulty', f.difficulties.join(','))
   if (f.types?.length) p.set('type', f.types.join(','))
   if (f.source && f.source !== 'all') p.set('source', f.source)
+  if (f.includeBeyond) p.set('beyond', '1')
   p.set('count', String(f.count))
   return p.toString()
 }
@@ -24,6 +25,7 @@ export function decodeFilters(p: URLSearchParams): SessionFilters {
     difficulties: list<Difficulty>(p.get('difficulty')),
     types: list<QuestionType>(p.get('type')),
     source: (p.get('source') as SessionSource) ?? 'all',
+    includeBeyond: p.get('beyond') === '1',
     count: Math.min(100, Math.max(1, Number(p.get('count')) || 10)),
   }
 }

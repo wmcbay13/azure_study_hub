@@ -61,6 +61,13 @@ export const ObjectivesFile = z.object({
 export type ObjectivesFile = z.infer<typeof ObjectivesFile>
 
 // ---------------------------------------------------------------- topics
+/**
+ * 'in' = covered by the AZ-104 skills outline. 'beyond' = extra context (e.g. AKS) that's
+ * labelled as such and excluded from readiness scoring and practice exams.
+ */
+export const ExamScope = z.enum(['in', 'beyond'])
+export type ExamScope = z.infer<typeof ExamScope>
+
 export const Topic = z.object({
   slug,
   title: text,
@@ -69,6 +76,7 @@ export const Topic = z.object({
   icon: text,
   /** Acronyms and alternate names learners search for (e.g. NSG, VMSS). */
   aliases: z.array(z.string()).default([]),
+  examScope: ExamScope.default('in'),
   summary: text,
   overview: z.array(text).min(1),
   keyConcepts: z.array(z.object({ term: text, definition: text })).min(3),
@@ -116,7 +124,7 @@ export const Service = z.object({
   pricing: text,
   relatedServices: z.array(slug),
   confusedWith: z.array(z.object({ name: text, difference: text })),
-  relevance: z.enum(['core', 'important', 'awareness']),
+  relevance: z.enum(['core', 'important', 'awareness', 'beyond']),
   relevanceNote: text,
   examTips: z.array(text).min(1),
   topics: z.array(slug),

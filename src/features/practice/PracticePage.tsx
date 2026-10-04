@@ -32,6 +32,7 @@ const PRESETS: { title: string; desc: string; icon: string; color: 'blue' | 'tea
   { title: 'Networking Challenge', desc: 'Exam-level and challenging networking scenarios.', icon: 'network', color: 'orange', filters: { count: 15, domains: ['networking'], difficulties: ['exam', 'challenging'] } },
   { title: 'Storage Challenge', desc: 'Redundancy, access, tiers and Azure Files at exam level.', icon: 'database', color: 'teal', filters: { count: 15, domains: ['storage'], difficulties: ['intermediate', 'exam', 'challenging'] } },
   { title: 'Random AZ-104 Questions', desc: 'Twenty questions from the whole bank, any difficulty.', icon: 'shuffle', color: 'green', filters: { count: 20 } },
+  { title: 'AKS Explorer', desc: 'Beyond the exam: Azure Kubernetes Service scenarios for wider context.', icon: 'boxes', color: 'orange', filters: { count: 10, topics: ['aks'] } },
 ]
 
 function toggle<T>(list: T[], v: T): T[] {
@@ -48,9 +49,10 @@ export function PracticePage() {
   const [types, setTypes] = useState<QuestionType[]>([])
   const [source, setSource] = useState<SessionSource>('all')
   const [count, setCount] = useState(10)
+  const [includeBeyond, setIncludeBeyond] = useState(false)
 
-  const filters: SessionFilters = { domains: doms, topics, services, difficulties: diffs, types, source, count }
-  const available = useMemo(() => filterQuestions(content, progress, filters).length, [doms, topics, services, diffs, types, source, progress])
+  const filters: SessionFilters = { domains: doms, topics, services, difficulties: diffs, types, source, count, includeBeyond }
+  const available = useMemo(() => filterQuestions(content, progress, filters).length, [doms, topics, services, diffs, types, source, includeBeyond, progress])
   const topicOptions = content.topics.filter((t) => !doms.length || doms.includes(t.domain))
   const serviceOptions = content.services.filter((s) => content.questions.some((q) => q.services.includes(s.id)))
   const start = (f: SessionFilters) => navigate(`/practice/session?${encodeFilters(f)}`)
@@ -124,6 +126,14 @@ export function PracticePage() {
               {s.label}
             </Chip>
           ))}
+        </Field>
+        <Field label="Exam scope">
+          <Chip active={!includeBeyond} onClick={() => setIncludeBeyond(false)}>
+            AZ-104 only
+          </Chip>
+          <Chip active={includeBeyond} onClick={() => setIncludeBeyond(true)}>
+            Include beyond-exam topics (AKS)
+          </Chip>
         </Field>
         <Field label="Number of questions">
           {[5, 10, 25, 50].map((n) => (

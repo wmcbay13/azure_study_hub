@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ArrowDown, ArrowUp, Check, ChevronDown, X } from 'lucide-react'
 import type { Question } from '@/content/schema'
 import { content } from '@/content'
+import { BEYOND_LABEL, isBeyondQuestion } from '@/content/scope'
 import type { GivenAnswer } from '@/progress/types'
 import { isCorrectOption, isMultiSelect } from '@/lib/grading'
 import { shuffle } from '@/lib/random'
@@ -40,6 +41,7 @@ export function QuestionView({ question: q, value, onChange, revealed = false, s
           <DomainBadge domain={q.domain} />
           <DifficultyBadge difficulty={q.difficulty} />
           <Badge>{TYPE_LABEL[q.questionType]}</Badge>
+          {isBeyondQuestion(content, q) && <Badge color="amber">{BEYOND_LABEL}</Badge>}
         </div>
       )}
 

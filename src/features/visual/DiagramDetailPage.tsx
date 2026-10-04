@@ -1,7 +1,8 @@
 import { Link, useParams } from 'react-router-dom'
 import { ChevronRight, GraduationCap } from 'lucide-react'
 import { content } from '@/content'
-import { Card, DocLinks, DomainBadge, PageHeader } from '@/components/ui'
+import { Badge, Card, DocLinks, DomainBadge, PageHeader } from '@/components/ui'
+import { BEYOND_LABEL, isBeyondDiagram } from '@/content/scope'
 import { DiagramCanvas } from '@/components/diagram/DiagramCanvas'
 import { Icon } from '@/components/Icon'
 import { NotFoundPage } from '../NotFoundPage'
@@ -20,7 +21,15 @@ export function DiagramDetailPage() {
         <ChevronRight className="size-3.5" aria-hidden />
         <span className="truncate">{d.title}</span>
       </nav>
-      <PageHeader title={d.title} description={d.summary} eyebrow={<DomainBadge domain={d.domain} short={false} />} />
+      <PageHeader title={d.title} description={d.summary} eyebrow={
+          isBeyondDiagram(content, d) ? (
+            <Badge color="amber" icon="compass">
+              {BEYOND_LABEL} — for context, not tested
+            </Badge>
+          ) : (
+            <DomainBadge domain={d.domain} short={false} />
+          )
+        } />
       <DiagramCanvas diagram={d} />
       <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <Card className="p-5">
