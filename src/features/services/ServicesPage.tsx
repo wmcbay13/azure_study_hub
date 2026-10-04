@@ -34,7 +34,7 @@ export function ServicesPage() {
         <label className="relative block max-w-md">
           <span className="sr-only">Search services</span>
           <Search className="absolute top-2.5 left-3 size-4 text-subtle" aria-hidden />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search services…" className="h-10 w-full rounded-xl border border-border bg-surface pr-3 pl-9 text-sm" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search services…" className="h-10 w-full rounded-md border border-border bg-surface pr-3 pl-9 text-sm" />
         </label>
         <div className="flex flex-wrap gap-2">
           <Chip active={cat === 'all'} onClick={() => setCat('all')}>
@@ -53,7 +53,7 @@ export function ServicesPage() {
           <Link key={s.id} to={`/services/${s.id}`} className="group">
             <Card className="flex h-full flex-col p-5 transition-all group-hover:-translate-y-0.5 group-hover:border-accent/50 group-hover:shadow-pop">
               <div className="flex items-start justify-between gap-2">
-                <span className="grid size-10 place-items-center rounded-xl bg-accent-soft text-accent">
+                <span className="grid size-10 place-items-center rounded-md bg-accent-soft text-accent">
                   <Icon name={s.icon} className="size-5" />
                 </span>
                 <Badge color={RELEVANCE[s.relevance].color}>{RELEVANCE[s.relevance].label}</Badge>

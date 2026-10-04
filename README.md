@@ -61,6 +61,15 @@ scripts/validate-content.ts
 - **Progress is local, but swappable.** The store talks only to a `ProgressRepository` (`src/progress/storage.ts`). `LocalStorageRepository` is the default; a cloud-backed implementation with authentication can replace it without UI changes. Stored progress is versioned with a `migrate()` hook.
 - **Routing** uses `HashRouter` so deep links work on GitHub Pages without server rewrites.
 
+## Visual design, icons and fonts
+
+- **Styling** follows Microsoft's [Fluent 2](https://fluent2.microsoft.design/) design language (the open-source, MIT-licensed system used across Microsoft products): Fluent neutral and brand color tokens, 4–8 px corner radii, Fluent elevation shadows and semibold type ramp. Tokens live in `src/index.css`.
+- **Fonts:** the stack prefers **Segoe UI Variable / Segoe UI** as a *system* font (present on Windows and wherever Office is installed) and falls back to the platform UI font. Segoe UI is proprietary and isn't licensed for web hosting, so no font files are bundled.
+- **Official Azure icons:** `public/azure-icons/` contains a curated subset of the [Azure architecture icons](https://learn.microsoft.com/azure/architecture/icons/) and [Microsoft Entra architecture icons](https://learn.microsoft.com/entra/architecture/architecture-icons). Microsoft permits their use in architecture diagrams, training materials and documentation. Content references them as `"icon": "azure:<key>"` (keys in `src/content/azureIcons.ts`). Usage rules this project follows and the validator partly enforces:
+  - an icon only represents the Microsoft product it was designed for, with that product's name shown next to it — so study topics, domains and navigation use generic icons, and `validate:content` rejects Azure icons on topics;
+  - icons are never cropped, flipped, rotated, recolored or distorted;
+  - no Microsoft icon or logo represents Azure Study Hub itself — the app keeps its own mark and the non-affiliation disclaimer.
+
 ## Adding or updating content
 
 1. Edit or add JSON under `content/`. Your editor can follow the shapes in `src/content/schema.ts`.

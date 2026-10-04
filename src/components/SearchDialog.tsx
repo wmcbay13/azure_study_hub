@@ -56,7 +56,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
         role="dialog"
         aria-modal="true"
         aria-label="Search"
-        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-border bg-surface shadow-pop"
+        className="w-full max-w-2xl overflow-hidden rounded-lg border border-border bg-surface shadow-pop"
         onMouseDown={(e) => e.stopPropagation()}
         onKeyDown={onKey}
       >
@@ -108,7 +108,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
                       aria-selected={idx === active}
                       onMouseEnter={() => setActive(idx)}
                       onClick={() => go(r.href)}
-                      className={cn('flex w-full items-start gap-3 rounded-xl px-3 py-2 text-left', idx === active && 'bg-accent-soft')}
+                      className={cn('flex w-full items-start gap-3 rounded-md px-3 py-2 text-left', idx === active && 'bg-accent-soft')}
                     >
                       <Icon name={KIND_ICON[r.kind]} className="mt-0.5 size-4 shrink-0 text-accent" />
                       <span className="min-w-0">

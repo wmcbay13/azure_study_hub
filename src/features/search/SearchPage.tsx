@@ -25,7 +25,7 @@ export function SearchPage() {
           value={q}
           onChange={(e) => setParams({ q: e.target.value }, { replace: true })}
           placeholder="e.g. private endpoint, RBAC inheritance, NSG…"
-          className="h-11 w-full rounded-xl border border-border bg-surface pr-3 pl-10"
+          className="h-11 w-full rounded-md border border-border bg-surface pr-3 pl-10"
         />
       </label>
       {grouped.length > 1 && (

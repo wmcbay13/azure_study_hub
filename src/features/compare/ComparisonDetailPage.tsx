@@ -9,7 +9,7 @@ import { NotFoundPage } from '../NotFoundPage'
 function Scenario({ scenario, answer }: { scenario: string; answer: string }) {
   const [open, setOpen] = useState(false)
   return (
-    <li className="rounded-xl border border-border bg-surface p-4">
+    <li className="rounded-md border border-border bg-surface p-4">
       <p className="text-[15px] leading-relaxed">{scenario}</p>
       {open ? (
         <p className="mt-2 rounded-lg bg-success-soft px-3 py-2 text-sm font-medium text-success">{answer}</p>

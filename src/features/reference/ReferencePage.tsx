@@ -16,7 +16,7 @@ export function ReferencePage() {
           <Link key={r.id} to={`/reference/${r.id}`} className="group">
             <Card className="flex h-full flex-col p-5 transition-all group-hover:-translate-y-0.5 group-hover:border-accent/50 group-hover:shadow-pop">
               <div className="flex items-start justify-between gap-2">
-                <span className="grid size-10 place-items-center rounded-xl bg-accent-soft text-accent">
+                <span className="grid size-10 place-items-center rounded-md bg-accent-soft text-accent">
                   <Icon name={r.icon} className="size-5" />
                 </span>
                 {r.domain && <DomainBadge domain={r.domain} />}

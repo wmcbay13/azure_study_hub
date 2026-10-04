@@ -39,7 +39,7 @@ export function TopicsPage() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Filter topics…"
-            className="h-10 w-full rounded-xl border border-border bg-surface pr-3 pl-9 text-sm"
+            className="h-10 w-full rounded-md border border-border bg-surface pr-3 pl-9 text-sm"
           />
         </label>
         <div className="flex flex-wrap gap-2">
@@ -80,7 +80,7 @@ export function TopicsPage() {
                     <Link key={t.slug} to={`/topics/${t.slug}`} className="group">
                       <Card className="flex h-full flex-col p-5 transition-all group-hover:-translate-y-0.5 group-hover:border-accent/50 group-hover:shadow-pop">
                         <div className="flex items-start justify-between gap-3">
-                          <span className="grid size-10 place-items-center rounded-xl" style={tone(d.color, ['fg', 'bg'])}>
+                          <span className="grid size-10 place-items-center rounded-md" style={tone(d.color, ['fg', 'bg'])}>
                             <Icon name={t.icon} className="size-5" />
                           </span>
                           <StatusBadge status={st} />

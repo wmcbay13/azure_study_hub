@@ -37,7 +37,7 @@ export function ExamPage() {
         description="A timed simulation of the exam experience: no feedback until you submit, question navigation, and flag-for-review. Afterwards, review every question with full explanations."
       />
 
-      <div className="mb-6 flex gap-3 rounded-2xl border border-warning/40 bg-warning-soft p-4 text-sm">
+      <div className="mb-6 flex gap-3 rounded-lg border border-warning/40 bg-warning-soft p-4 text-sm">
         <AlertTriangle className="mt-0.5 size-5 shrink-0 text-warning" aria-hidden />
         <p>
           <strong>Practice simulation — not an official Microsoft exam.</strong> Questions are original and written for learning. Real exam
@@ -115,7 +115,7 @@ export function ExamPage() {
                 {exams.map((e) => (
                   <li key={e.id}>
                     <Link to={`/exam/results/${e.id}`} className="flex items-center gap-4 py-3 hover:text-accent">
-                      <span className="w-14 text-xl font-bold tabular-nums" style={{ color: scoreColor(e.score) }}>
+                      <span className="w-14 text-xl font-semibold tabular-nums" style={{ color: scoreColor(e.score) }}>
                         {pct(e.score)}
                       </span>
                       <span className="flex-1 text-sm">

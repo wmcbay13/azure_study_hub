@@ -15,7 +15,7 @@ export const tone = (c: ColorToken, parts: ('fg' | 'bg' | 'bd')[] = ['fg', 'bg',
 export const toneVar = (c: ColorToken, part: 'fg' | 'bg' | 'bd' | 'mk' = 'fg') => `var(--c-${c}-${part})`
 
 export function Card({ className, ...props }: ComponentProps<'div'>) {
-  return <div className={cn('rounded-2xl border border-border bg-surface shadow-card', className)} {...props} />
+  return <div className={cn('rounded-lg border border-border bg-surface shadow-card', className)} {...props} />
 }
 
 export function CardHeader({ title, icon, action, subtitle }: { title: ReactNode; icon?: ReactNode; action?: ReactNode; subtitle?: ReactNode }) {
@@ -35,14 +35,14 @@ export function CardHeader({ title, icon, action, subtitle }: { title: ReactNode
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
 const variants: Record<Variant, string> = {
-  primary: 'bg-accent text-accent-fg hover:bg-accent-hover shadow-card',
+  primary: 'bg-accent-solid text-accent-fg hover:bg-accent-solid-hover shadow-card',
   secondary: 'border border-border bg-surface hover:bg-surface-2 text-text shadow-card',
   ghost: 'hover:bg-surface-2 text-text',
   danger: 'bg-danger text-white hover:opacity-90',
 }
 const sizes = { sm: 'h-8 px-3 text-sm gap-1.5', md: 'h-10 px-4 text-sm gap-2', lg: 'h-11 px-5 text-[15px] gap-2' }
 const btnBase =
-  'inline-flex items-center justify-center rounded-xl font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap'
+  'inline-flex items-center justify-center rounded font-semibold transition-colors disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap'
 
 export function Button({
   variant = 'secondary',
@@ -167,9 +167,9 @@ export function PageHeader({
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
         {eyebrow && <div className="mb-2">{eyebrow}</div>}
-        <h1 className="flex items-center gap-3 text-2xl font-bold tracking-tight sm:text-3xl">
+        <h1 className="flex items-center gap-3 text-2xl font-semibold tracking-tight sm:text-3xl">
           {icon && (
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent">
+            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-accent-soft text-accent">
               <Icon name={icon} className="size-5" />
             </span>
           )}
@@ -193,7 +193,7 @@ export function SectionTitle({ id, children, icon }: { id?: string; children: Re
 
 export function EmptyState({ icon = 'compass', title, children }: { icon?: string; title: string; children?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-2xl border border-dashed border-border-strong p-8 text-center">
+    <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border-strong p-8 text-center">
       <Icon name={icon} className="size-8 text-subtle" />
       <p className="font-medium">{title}</p>
       {children && <div className="text-sm text-muted">{children}</div>}
@@ -229,7 +229,7 @@ export function DocLinks({ links, title = 'Official documentation' }: { links: D
 export function VersionNote({ children }: { children?: ReactNode }) {
   if (!children) return null
   return (
-    <div className="flex gap-2 rounded-xl border px-3 py-2 text-sm" style={tone('amber')}>
+    <div className="flex gap-2 rounded-md border px-3 py-2 text-sm" style={tone('amber')}>
       <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
       <div>
         <span className="font-semibold">Version-sensitive: </span>
@@ -241,7 +241,7 @@ export function VersionNote({ children }: { children?: ReactNode }) {
 
 export function Callout({ color = 'blue', icon = 'lightbulb', title, children }: { color?: ColorToken; icon?: string; title: ReactNode; children: ReactNode }) {
   return (
-    <div className="rounded-2xl border p-4" style={{ ...tone(color, ['bg', 'bd']) }}>
+    <div className="rounded-lg border p-4" style={{ ...tone(color, ['bg', 'bd']) }}>
       <div className="mb-1.5 flex items-center gap-2 text-sm font-semibold" style={tone(color, ['fg'])}>
         <Icon name={icon} className="size-4" />
         {title}
@@ -254,11 +254,11 @@ export function Callout({ color = 'blue', icon = 'lightbulb', title, children }:
 export function Stat({ label, value, icon, hint, color = 'blue' }: { label: string; value: ReactNode; icon: string; hint?: ReactNode; color?: ColorToken }) {
   return (
     <Card className="flex items-center gap-3 p-4">
-      <span className="grid size-10 shrink-0 place-items-center rounded-xl" style={tone(color, ['fg', 'bg'])}>
+      <span className="grid size-10 shrink-0 place-items-center rounded-md" style={tone(color, ['fg', 'bg'])}>
         <Icon name={icon} className="size-5" />
       </span>
       <div className="min-w-0">
-        <div className="text-xl font-bold tabular-nums leading-tight">{value}</div>
+        <div className="text-xl font-semibold tabular-nums leading-tight">{value}</div>
         <div className="text-xs leading-tight text-muted">{label}</div>
         {hint && <div className="truncate text-xs text-subtle">{hint}</div>}
       </div>

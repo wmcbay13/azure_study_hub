@@ -3,208 +3,505 @@
     "id": "virtual-machines",
     "name": "Azure Virtual Machines",
     "category": "Compute",
-    "icon": "server",
+    "icon": "azure:virtual-machine",
     "tagline": "On-demand, scalable IaaS compute with full OS control.",
     "whatItIs": "Windows and Linux virtual machines in hundreds of sizes, with managed disks, virtual networking and availability options.",
     "primaryPurpose": "Run workloads that need full control over the operating system.",
-    "useCases": ["Lift-and-shift migrations", "Custom or legacy applications", "Dev/test environments", "GPU and HPC workloads"],
-    "keyFeatures": ["Size families (B, D, E, F, L, M, N, H)", "Availability sets and zones", "Extensions (monitoring, scripts)", "Spot VMs and reservations", "Encryption at host, CMK, ADE"],
-    "security": ["Avoid public IPs; use Bastion or JIT", "Use managed identities", "Patch the guest OS (Update Manager)", "Encrypt disks with platform or customer-managed keys"],
-    "networking": ["Each VM has at least one NIC in a subnet; NSGs on NIC/subnet; optional Standard public IP"],
+    "useCases": [
+      "Lift-and-shift migrations",
+      "Custom or legacy applications",
+      "Dev/test environments",
+      "GPU and HPC workloads"
+    ],
+    "keyFeatures": [
+      "Size families (B, D, E, F, L, M, N, H)",
+      "Availability sets and zones",
+      "Extensions (monitoring, scripts)",
+      "Spot VMs and reservations",
+      "Encryption at host, CMK, ADE"
+    ],
+    "security": [
+      "Avoid public IPs; use Bastion or JIT",
+      "Use managed identities",
+      "Patch the guest OS (Update Manager)",
+      "Encrypt disks with platform or customer-managed keys"
+    ],
+    "networking": [
+      "Each VM has at least one NIC in a subnet; NSGs on NIC/subnet; optional Standard public IP"
+    ],
     "pricing": "Per second of compute while allocated (by size/OS license), plus disks, networking and any licenses. Reservations, savings plans and Spot reduce cost.",
-    "relatedServices": ["vm-scale-sets", "managed-disks", "load-balancer", "azure-backup", "site-recovery"],
+    "relatedServices": [
+      "vm-scale-sets",
+      "managed-disks",
+      "load-balancer",
+      "azure-backup",
+      "site-recovery"
+    ],
     "confusedWith": [
-      { "name": "App Service", "difference": "PaaS for web apps with no OS management." },
-      { "name": "Container Instances", "difference": "Runs containers without a VM to manage." }
+      {
+        "name": "App Service",
+        "difference": "PaaS for web apps with no OS management."
+      },
+      {
+        "name": "Container Instances",
+        "difference": "Runs containers without a VM to manage."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Creating, sizing, encrypting, moving and making VMs highly available are core skills.",
-    "examTips": ["Deallocate to stop compute billing", "Availability options are chosen at creation"],
-    "topics": ["virtual-machines", "vm-availability", "managed-disks-images"],
-    "docLinks": [{ "title": "Virtual machines in Azure", "url": "https://learn.microsoft.com/azure/virtual-machines/overview" }]
+    "examTips": [
+      "Deallocate to stop compute billing",
+      "Availability options are chosen at creation"
+    ],
+    "topics": [
+      "virtual-machines",
+      "vm-availability",
+      "managed-disks-images"
+    ],
+    "docLinks": [
+      {
+        "title": "Virtual machines in Azure",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/overview"
+      }
+    ]
   },
   {
     "id": "vm-scale-sets",
     "name": "Virtual Machine Scale Sets",
     "category": "Compute",
-    "icon": "boxes",
+    "icon": "azure:vm-scale-sets",
     "tagline": "Autoscaling groups of load-balanced VMs.",
     "whatItIs": "Manage and scale a group of VMs from one configuration, in Flexible or Uniform orchestration mode.",
     "primaryPurpose": "Elastic, highly available IaaS capacity.",
-    "useCases": ["Stateless web tiers", "Batch processing", "Large compute fleets"],
-    "keyFeatures": ["Autoscale by metrics or schedule", "Zone and fault-domain spreading", "Upgrade policies (Automatic, Rolling, Manual)", "Scale-in policies and instance protection"],
-    "security": ["Same as VMs — use managed identities, Bastion, patching"],
-    "networking": ["Integrates with Load Balancer and Application Gateway backend pools"],
+    "useCases": [
+      "Stateless web tiers",
+      "Batch processing",
+      "Large compute fleets"
+    ],
+    "keyFeatures": [
+      "Autoscale by metrics or schedule",
+      "Zone and fault-domain spreading",
+      "Upgrade policies (Automatic, Rolling, Manual)",
+      "Scale-in policies and instance protection"
+    ],
+    "security": [
+      "Same as VMs — use managed identities, Bastion, patching"
+    ],
+    "networking": [
+      "Integrates with Load Balancer and Application Gateway backend pools"
+    ],
     "pricing": "No extra charge; pay for the VMs, disks and networking used.",
-    "relatedServices": ["virtual-machines", "load-balancer", "azure-monitor"],
+    "relatedServices": [
+      "virtual-machines",
+      "load-balancer",
+      "azure-monitor"
+    ],
     "confusedWith": [
-      { "name": "Availability sets", "difference": "Static placement of individual VMs; no autoscale." }
+      {
+        "name": "Availability sets",
+        "difference": "Static placement of individual VMs; no autoscale."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Deploying and configuring scale sets is an explicit skill.",
-    "examTips": ["Pair scale-out and scale-in rules", "Orchestration mode can't be changed later"],
-    "topics": ["vm-scale-sets"],
-    "docLinks": [{ "title": "What are Virtual Machine Scale Sets?", "url": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/overview" }]
+    "examTips": [
+      "Pair scale-out and scale-in rules",
+      "Orchestration mode can't be changed later"
+    ],
+    "topics": [
+      "vm-scale-sets"
+    ],
+    "docLinks": [
+      {
+        "title": "What are Virtual Machine Scale Sets?",
+        "url": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/overview"
+      }
+    ]
   },
   {
     "id": "managed-disks",
     "name": "Azure Managed Disks",
     "category": "Storage",
-    "icon": "hard-drive",
+    "icon": "azure:disks",
     "tagline": "Block storage volumes for VMs.",
     "whatItIs": "Durable block storage managed by Azure, in Standard HDD, Standard SSD, Premium SSD, Premium SSD v2 and Ultra Disk types.",
     "primaryPurpose": "Persistent OS and data disks for VMs.",
-    "useCases": ["OS and data disks", "High-IOPS database storage", "Shared disks for clusters", "Snapshots for backup/copy"],
-    "keyFeatures": ["Multiple performance tiers", "Incremental snapshots", "Server-side encryption with PMK or CMK (disk encryption sets)", "Disk bursting", "Zone-redundant disks (ZRS) for some types"],
-    "security": ["Encryption at rest always on; CMK via disk encryption sets", "Restrict export with private links for disk access (Disk Access)"],
-    "networking": ["Disk export/import can be restricted to private endpoints via Disk Access resources"],
+    "useCases": [
+      "OS and data disks",
+      "High-IOPS database storage",
+      "Shared disks for clusters",
+      "Snapshots for backup/copy"
+    ],
+    "keyFeatures": [
+      "Multiple performance tiers",
+      "Incremental snapshots",
+      "Server-side encryption with PMK or CMK (disk encryption sets)",
+      "Disk bursting",
+      "Zone-redundant disks (ZRS) for some types"
+    ],
+    "security": [
+      "Encryption at rest always on; CMK via disk encryption sets",
+      "Restrict export with private links for disk access (Disk Access)"
+    ],
+    "networking": [
+      "Disk export/import can be restricted to private endpoints via Disk Access resources"
+    ],
     "pricing": "By provisioned size and type (and performance for Premium SSD v2/Ultra), plus snapshots and transactions for some tiers.",
-    "relatedServices": ["virtual-machines", "compute-gallery", "azure-backup"],
+    "relatedServices": [
+      "virtual-machines",
+      "compute-gallery",
+      "azure-backup"
+    ],
     "confusedWith": [
-      { "name": "Temporary disk", "difference": "The temp disk is local, non-persistent host storage — not a managed disk." }
+      {
+        "name": "Temporary disk",
+        "difference": "The temp disk is local, non-persistent host storage — not a managed disk."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Managing VM disks is in the outline.",
-    "examTips": ["Disks can grow, not shrink", "Ultra/Premium SSD v2 can't be OS disks"],
-    "topics": ["managed-disks-images", "virtual-machines"],
-    "docLinks": [{ "title": "Managed disks overview", "url": "https://learn.microsoft.com/azure/virtual-machines/managed-disks-overview" }]
+    "examTips": [
+      "Disks can grow, not shrink",
+      "Ultra/Premium SSD v2 can't be OS disks"
+    ],
+    "topics": [
+      "managed-disks-images",
+      "virtual-machines"
+    ],
+    "docLinks": [
+      {
+        "title": "Managed disks overview",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/managed-disks-overview"
+      }
+    ]
   },
   {
     "id": "compute-gallery",
     "name": "Azure Compute Gallery",
     "category": "Compute",
-    "icon": "layers",
+    "icon": "azure:compute-galleries",
     "tagline": "Share and replicate VM images and applications.",
     "whatItIs": "A repository (formerly Shared Image Gallery) for image definitions and versions and VM applications, with regional replication and sharing.",
     "primaryPurpose": "Standardize and distribute golden images.",
-    "useCases": ["Golden images across regions", "Sharing images with other subscriptions or tenants", "Deploying scale sets from custom images"],
-    "keyFeatures": ["Image definitions and versions", "Replication to multiple regions with replica counts", "Sharing via RBAC, direct shared gallery or community gallery"],
-    "security": ["Control access with RBAC", "Generalize images to remove machine-specific data"],
-    "networking": ["Not applicable"],
+    "useCases": [
+      "Golden images across regions",
+      "Sharing images with other subscriptions or tenants",
+      "Deploying scale sets from custom images"
+    ],
+    "keyFeatures": [
+      "Image definitions and versions",
+      "Replication to multiple regions with replica counts",
+      "Sharing via RBAC, direct shared gallery or community gallery"
+    ],
+    "security": [
+      "Control access with RBAC",
+      "Generalize images to remove machine-specific data"
+    ],
+    "networking": [
+      "Not applicable"
+    ],
     "pricing": "No gallery charge; pay for image storage and replication egress.",
-    "relatedServices": ["virtual-machines", "managed-disks", "vm-scale-sets"],
+    "relatedServices": [
+      "virtual-machines",
+      "managed-disks",
+      "vm-scale-sets"
+    ],
     "confusedWith": [
-      { "name": "Managed image", "difference": "A single-region image resource without versioning or replication." }
+      {
+        "name": "Managed image",
+        "difference": "A single-region image resource without versioning or replication."
+      }
     ],
     "relevance": "important",
     "relevanceNote": "Appears in VM deployment and image-management scenarios.",
-    "examTips": ["Use the gallery to share images across subscriptions/regions"],
-    "topics": ["managed-disks-images"],
-    "docLinks": [{ "title": "Azure Compute Gallery", "url": "https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery" }]
+    "examTips": [
+      "Use the gallery to share images across subscriptions/regions"
+    ],
+    "topics": [
+      "managed-disks-images"
+    ],
+    "docLinks": [
+      {
+        "title": "Azure Compute Gallery",
+        "url": "https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery"
+      }
+    ]
   },
   {
     "id": "arm-templates",
     "name": "ARM Templates & Bicep",
     "category": "Governance",
-    "icon": "file-text",
+    "icon": "azure:templates",
     "tagline": "Native infrastructure as code for Azure.",
     "whatItIs": "Declarative JSON templates and the Bicep language that compiles to them, deployed through Azure Resource Manager.",
     "primaryPurpose": "Repeatable, version-controlled deployments.",
-    "useCases": ["Environment provisioning in CI/CD", "Standardized landing zones", "Re-creating exported environments"],
-    "keyFeatures": ["Parameters, variables, resources, outputs", "Incremental and Complete modes", "What-if previews", "Bicep modules and decompilation"],
-    "security": ["Use secure parameters and Key Vault references", "Deployment history can expose parameter values — avoid plain-text secrets"],
-    "networking": ["Not applicable"],
+    "useCases": [
+      "Environment provisioning in CI/CD",
+      "Standardized landing zones",
+      "Re-creating exported environments"
+    ],
+    "keyFeatures": [
+      "Parameters, variables, resources, outputs",
+      "Incremental and Complete modes",
+      "What-if previews",
+      "Bicep modules and decompilation"
+    ],
+    "security": [
+      "Use secure parameters and Key Vault references",
+      "Deployment history can expose parameter values — avoid plain-text secrets"
+    ],
+    "networking": [
+      "Not applicable"
+    ],
     "pricing": "No charge.",
-    "relatedServices": ["azure-policy", "virtual-machines"],
+    "relatedServices": [
+      "azure-policy",
+      "virtual-machines"
+    ],
     "confusedWith": [
-      { "name": "Terraform", "difference": "Third-party IaC with a state file; ARM/Bicep are Azure-native and stateless." }
+      {
+        "name": "Terraform",
+        "difference": "Third-party IaC with a state file; ARM/Bicep are Azure-native and stateless."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Interpreting, modifying and deploying templates/Bicep is a full objective.",
-    "examTips": ["Complete mode deletes unlisted resources in the RG", "'az bicep decompile' converts JSON to Bicep"],
-    "topics": ["arm-bicep"],
-    "docLinks": [{ "title": "What is Bicep?", "url": "https://learn.microsoft.com/azure/azure-resource-manager/bicep/overview" }]
+    "examTips": [
+      "Complete mode deletes unlisted resources in the RG",
+      "'az bicep decompile' converts JSON to Bicep"
+    ],
+    "topics": [
+      "arm-bicep"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Bicep?",
+        "url": "https://learn.microsoft.com/azure/azure-resource-manager/bicep/overview"
+      }
+    ]
   },
   {
     "id": "app-service",
     "name": "Azure App Service",
     "category": "Compute",
-    "icon": "app-window",
+    "icon": "azure:app-services",
     "tagline": "Managed hosting for web apps and APIs.",
     "whatItIs": "A PaaS for web applications, REST APIs and containers, running on App Service plans with built-in scaling, deployment slots and security features.",
     "primaryPurpose": "Run web apps without managing infrastructure.",
-    "useCases": ["Websites and web APIs", "Container-based web apps", "Blue/green deployments with slots"],
-    "keyFeatures": ["Plans and tiers", "Autoscale", "Deployment slots", "Custom domains and TLS", "Backups", "VNet integration and private endpoints"],
-    "security": ["Managed identities", "Access restrictions", "HTTPS only and minimum TLS", "Authentication (Easy Auth)"],
-    "networking": ["Outbound: VNet integration. Inbound private: private endpoints. Access restrictions for public inbound."],
+    "useCases": [
+      "Websites and web APIs",
+      "Container-based web apps",
+      "Blue/green deployments with slots"
+    ],
+    "keyFeatures": [
+      "Plans and tiers",
+      "Autoscale",
+      "Deployment slots",
+      "Custom domains and TLS",
+      "Backups",
+      "VNet integration and private endpoints"
+    ],
+    "security": [
+      "Managed identities",
+      "Access restrictions",
+      "HTTPS only and minimum TLS",
+      "Authentication (Easy Auth)"
+    ],
+    "networking": [
+      "Outbound: VNet integration. Inbound private: private endpoints. Access restrictions for public inbound."
+    ],
     "pricing": "Per App Service plan instance by tier and size; Free/Shared tiers for dev/test.",
-    "relatedServices": ["container-registry", "application-gateway", "front-door", "key-vault"],
+    "relatedServices": [
+      "container-registry",
+      "application-gateway",
+      "front-door",
+      "key-vault"
+    ],
     "confusedWith": [
-      { "name": "Azure Functions", "difference": "Event-driven serverless code; App Service hosts full web apps (Functions can run on App Service plans)." }
+      {
+        "name": "Azure Functions",
+        "difference": "Event-driven serverless code; App Service hosts full web apps (Functions can run on App Service plans)."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "An entire objective covers App Service plans, scaling, TLS, domains, backup, networking and slots.",
-    "examTips": ["Slots/autoscale: Standard+", "Custom domain needs a TXT asuid record"],
-    "topics": ["app-service"],
-    "docLinks": [{ "title": "App Service overview", "url": "https://learn.microsoft.com/azure/app-service/overview" }]
+    "examTips": [
+      "Slots/autoscale: Standard+",
+      "Custom domain needs a TXT asuid record"
+    ],
+    "topics": [
+      "app-service"
+    ],
+    "docLinks": [
+      {
+        "title": "App Service overview",
+        "url": "https://learn.microsoft.com/azure/app-service/overview"
+      }
+    ]
   },
   {
     "id": "container-registry",
     "name": "Azure Container Registry",
     "category": "Containers",
-    "icon": "box",
+    "icon": "azure:container-registries",
     "tagline": "Private registry for container images.",
     "whatItIs": "A managed, private Docker/OCI registry with build tasks, geo-replication and security integrations.",
     "primaryPurpose": "Store and distribute container images close to deployments.",
-    "useCases": ["Images for ACI, ACA, App Service and AKS", "Cloud builds with ACR Tasks", "Multi-region image distribution"],
-    "keyFeatures": ["Basic/Standard/Premium SKUs", "Geo-replication (Premium)", "ACR Tasks", "Content trust and private link (Premium)"],
-    "security": ["Use Entra identities/managed identities with AcrPull; keep admin user disabled", "Private endpoints (Premium)"],
-    "networking": ["Public endpoint with firewall rules or private endpoints (Premium)"],
+    "useCases": [
+      "Images for ACI, ACA, App Service and AKS",
+      "Cloud builds with ACR Tasks",
+      "Multi-region image distribution"
+    ],
+    "keyFeatures": [
+      "Basic/Standard/Premium SKUs",
+      "Geo-replication (Premium)",
+      "ACR Tasks",
+      "Content trust and private link (Premium)"
+    ],
+    "security": [
+      "Use Entra identities/managed identities with AcrPull; keep admin user disabled",
+      "Private endpoints (Premium)"
+    ],
+    "networking": [
+      "Public endpoint with firewall rules or private endpoints (Premium)"
+    ],
     "pricing": "Daily rate by SKU plus storage beyond included and data transfer.",
-    "relatedServices": ["container-instances", "container-apps", "app-service"],
+    "relatedServices": [
+      "container-instances",
+      "container-apps",
+      "app-service"
+    ],
     "confusedWith": [
-      { "name": "Docker Hub", "difference": "Public registry service; ACR is private and Azure-integrated." }
+      {
+        "name": "Docker Hub",
+        "difference": "Public registry service; ACR is private and Azure-integrated."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Creating and managing a container registry is listed.",
-    "examTips": ["Geo-replication requires Premium"],
-    "topics": ["containers"],
-    "docLinks": [{ "title": "Introduction to Azure Container Registry", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-intro" }]
+    "examTips": [
+      "Geo-replication requires Premium"
+    ],
+    "topics": [
+      "containers"
+    ],
+    "docLinks": [
+      {
+        "title": "Introduction to Azure Container Registry",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-intro"
+      }
+    ]
   },
   {
     "id": "container-instances",
     "name": "Azure Container Instances",
     "category": "Containers",
-    "icon": "container",
+    "icon": "azure:container-instances",
     "tagline": "Run containers on demand without servers.",
     "whatItIs": "Serverless containers billed per second, deployed as container groups with set CPU and memory.",
     "primaryPurpose": "The simplest way to run a container in Azure.",
-    "useCases": ["Batch and scheduled jobs", "Build agents", "Quick test environments", "Burst capacity"],
-    "keyFeatures": ["Container groups (multi-container)", "Restart policies", "Azure Files volume mounts", "Public IP/DNS label or VNet deployment"],
-    "security": ["Managed identity support", "VNet deployment for private access", "Confidential containers option"],
-    "networking": ["Public IP with DNS name label, or deploy into a VNet subnet"],
+    "useCases": [
+      "Batch and scheduled jobs",
+      "Build agents",
+      "Quick test environments",
+      "Burst capacity"
+    ],
+    "keyFeatures": [
+      "Container groups (multi-container)",
+      "Restart policies",
+      "Azure Files volume mounts",
+      "Public IP/DNS label or VNet deployment"
+    ],
+    "security": [
+      "Managed identity support",
+      "VNet deployment for private access",
+      "Confidential containers option"
+    ],
+    "networking": [
+      "Public IP with DNS name label, or deploy into a VNet subnet"
+    ],
     "pricing": "Per second for requested vCPU and memory (and GPU where used).",
-    "relatedServices": ["container-registry", "container-apps", "azure-files"],
+    "relatedServices": [
+      "container-registry",
+      "container-apps",
+      "azure-files"
+    ],
     "confusedWith": [
-      { "name": "Container Apps", "difference": "ACA adds autoscaling, revisions and ingress for microservices." }
+      {
+        "name": "Container Apps",
+        "difference": "ACA adds autoscaling, revisions and ingress for microservices."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Provisioning containers with ACI and managing sizing are listed.",
-    "examTips": ["No autoscale", "Mount Azure Files for persistence"],
-    "topics": ["containers"],
-    "docLinks": [{ "title": "What is Azure Container Instances?", "url": "https://learn.microsoft.com/azure/container-instances/container-instances-overview" }]
+    "examTips": [
+      "No autoscale",
+      "Mount Azure Files for persistence"
+    ],
+    "topics": [
+      "containers"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Container Instances?",
+        "url": "https://learn.microsoft.com/azure/container-instances/container-instances-overview"
+      }
+    ]
   },
   {
     "id": "container-apps",
     "name": "Azure Container Apps",
     "category": "Containers",
-    "icon": "boxes",
+    "icon": "azure:container-apps-environments",
     "tagline": "Serverless containers with autoscaling and microservice features.",
     "whatItIs": "A managed platform for containerized apps and jobs, built on Kubernetes, KEDA, Dapr and Envoy, without cluster management.",
     "primaryPurpose": "Run scalable microservices and event-driven workloads.",
-    "useCases": ["Public APIs and web apps", "Background processors scaling on queue length", "Microservices with service discovery", "Container jobs"],
-    "keyFeatures": ["Scale rules (HTTP, CPU/memory, KEDA) including scale to zero", "Revisions and traffic splitting", "Built-in ingress", "Dapr integration"],
-    "security": ["Managed identities", "Internal-only environments", "Secrets management"],
-    "networking": ["Environment can be deployed into a custom VNet; external or internal ingress"],
+    "useCases": [
+      "Public APIs and web apps",
+      "Background processors scaling on queue length",
+      "Microservices with service discovery",
+      "Container jobs"
+    ],
+    "keyFeatures": [
+      "Scale rules (HTTP, CPU/memory, KEDA) including scale to zero",
+      "Revisions and traffic splitting",
+      "Built-in ingress",
+      "Dapr integration"
+    ],
+    "security": [
+      "Managed identities",
+      "Internal-only environments",
+      "Secrets management"
+    ],
+    "networking": [
+      "Environment can be deployed into a custom VNet; external or internal ingress"
+    ],
     "pricing": "Consumption billing per vCPU-second/GiB-second and requests, or dedicated workload profiles.",
-    "relatedServices": ["container-registry", "container-instances", "log-analytics"],
+    "relatedServices": [
+      "container-registry",
+      "container-instances",
+      "log-analytics"
+    ],
     "confusedWith": [
-      { "name": "AKS", "difference": "AKS exposes full Kubernetes; ACA abstracts it away." }
+      {
+        "name": "AKS",
+        "difference": "AKS exposes full Kubernetes; ACA abstracts it away."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Provisioning and scaling Container Apps is in the outline.",
-    "examTips": ["Min replicas 0 = scale to zero", "Scale rules define max/min replicas"],
-    "topics": ["containers"],
-    "docLinks": [{ "title": "Azure Container Apps overview", "url": "https://learn.microsoft.com/azure/container-apps/overview" }]
+    "examTips": [
+      "Min replicas 0 = scale to zero",
+      "Scale rules define max/min replicas"
+    ],
+    "topics": [
+      "containers"
+    ],
+    "docLinks": [
+      {
+        "title": "Azure Container Apps overview",
+        "url": "https://learn.microsoft.com/azure/container-apps/overview"
+      }
+    ]
   }
 ]

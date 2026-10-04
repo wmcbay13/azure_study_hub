@@ -1,5 +1,6 @@
 /** Maps content icon names (kebab-case strings in JSON) to generic lucide icons. */
 import type { LucideIcon, LucideProps } from 'lucide-react'
+import { azureIconUrl, isAzureIcon } from '@/content/azureIcons'
 import {
   GraduationCap,
   Shuffle,
@@ -204,7 +205,14 @@ export const ICONS: Record<string, LucideIcon> = {
   'trophy': Trophy,
 }
 
+/**
+ * Renders a content icon. "azure:<key>" names render the official Microsoft icon unmodified
+ * (see src/content/azureIcons.ts for usage rules); anything else is a generic lucide icon.
+ */
 export function Icon({ name, ...props }: { name?: string } & LucideProps) {
+  if (isAzureIcon(name)) {
+    return <img src={azureIconUrl(name)} alt="" aria-hidden className={props.className} style={{ objectFit: 'contain' }} draggable={false} />
+  }
   const C = (name && ICONS[name]) || Cloud
   return <C aria-hidden {...props} />
 }

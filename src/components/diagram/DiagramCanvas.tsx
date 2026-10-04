@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { ChevronLeft, ChevronRight, MousePointerClick } from 'lucide-react'
 import type { ColorToken, Diagram, DiagramNode } from '@/content/schema'
 import { ICONS } from '../Icon'
+import { azureIconUrl, isAzureIcon } from '@/content/azureIcons'
 import { Button, toneVar } from '../ui'
 import { cn } from '@/lib/cn'
 
@@ -36,7 +37,7 @@ export function DiagramCanvas({ diagram, minWidth = 640 }: { diagram: Diagram; m
 
   return (
     <div className="space-y-3">
-      <div className="overflow-x-auto rounded-2xl border border-border bg-surface-2/60">
+      <div className="overflow-x-auto rounded-lg border border-border bg-surface-2/60">
         <svg
           viewBox={`0 0 ${diagram.width} ${diagram.height}`}
           className="block h-auto w-full"
@@ -145,8 +146,12 @@ export function DiagramCanvas({ diagram, minWidth = 640 }: { diagram: Diagram; m
                   strokeWidth={isSel ? 2.5 : 1.5}
                 />
                 <rect width={5} height={h - 16} x={0} y={8} rx={2.5} fill={toneVar(n.color)} />
-                <rect x={12} y={h / 2 - 15} width={30} height={30} rx={8} fill={toneVar(n.color, 'bg')} />
-                <I x={18} y={h / 2 - 9} width={18} height={18} color={toneVar(n.color)} strokeWidth={2} />
+                <rect x={12} y={h / 2 - 15} width={30} height={30} rx={6} fill={isAzureIcon(n.icon) ? 'transparent' : toneVar(n.color, 'bg')} />
+                {isAzureIcon(n.icon) ? (
+                  <image href={azureIconUrl(n.icon)} x={15} y={h / 2 - 12} width={24} height={24} preserveAspectRatio="xMidYMid meet" />
+                ) : (
+                  <I x={18} y={h / 2 - 9} width={18} height={18} color={toneVar(n.color)} strokeWidth={2} />
+                )}
                 <text x={50} y={n.sublabel ? h / 2 - 3 : h / 2 + 4.5} fontSize={13} fontWeight={650} fill="var(--text)">
                   {n.label}
                 </text>
@@ -172,7 +177,7 @@ export function DiagramCanvas({ diagram, minWidth = 640 }: { diagram: Diagram; m
         </ul>
       )}
 
-      <div aria-live="polite" className={cn('rounded-2xl border p-4 transition-colors', sel ? '' : 'border-dashed border-border-strong')} style={sel ? { borderColor: toneVar(sel.color, 'bd'), background: toneVar(sel.color, 'bg') } : undefined}>
+      <div aria-live="polite" className={cn('rounded-lg border p-4 transition-colors', sel ? '' : 'border-dashed border-border-strong')} style={sel ? { borderColor: toneVar(sel.color, 'bd'), background: toneVar(sel.color, 'bg') } : undefined}>
         {sel ? (
           <div>
             <p className="font-semibold" style={{ color: toneVar(sel.color) }}>
@@ -189,7 +194,7 @@ export function DiagramCanvas({ diagram, minWidth = 640 }: { diagram: Diagram; m
       </div>
 
       {diagram.steps.length > 0 && (
-        <div className="rounded-2xl border border-border bg-surface p-4">
+        <div className="rounded-lg border border-border bg-surface p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-sm font-semibold">
               Walkthrough{' '}

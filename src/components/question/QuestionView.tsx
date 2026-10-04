@@ -46,7 +46,7 @@ export function QuestionView({ question: q, value, onChange, revealed = false, s
       {caseStudy && <CaseStudyPanel id={caseStudy.id} />}
 
       {q.scenario && (
-        <div className="rounded-xl border-l-4 border-accent bg-surface-2 px-4 py-3 text-[15px] leading-relaxed">{q.scenario}</div>
+        <div className="rounded-md border-l-4 border-accent bg-surface-2 px-4 py-3 text-[15px] leading-relaxed">{q.scenario}</div>
       )}
 
       <p className="text-[17px] font-semibold leading-snug">{q.question}</p>
@@ -93,7 +93,7 @@ function ChoiceInput({ q, multi, value, onChange, revealed }: { q: Question; mul
             disabled={revealed}
             onClick={() => toggle(o.id)}
             className={cn(
-              'flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-left text-[15px] transition-colors',
+              'flex w-full items-start gap-3 rounded-md border px-4 py-3 text-left text-[15px] transition-colors',
               state === 'idle' && 'border-border bg-surface hover:border-border-strong hover:bg-surface-2',
               state === 'selected' && 'border-accent bg-accent-soft',
               state === 'correct' && 'border-success bg-success-soft',
@@ -103,10 +103,10 @@ function ChoiceInput({ q, multi, value, onChange, revealed }: { q: Question; mul
           >
             <span
               className={cn(
-                'grid size-6 shrink-0 place-items-center border text-xs font-bold',
+                'grid size-6 shrink-0 place-items-center border text-xs font-semibold',
                 multi ? 'rounded-md' : 'rounded-full',
                 state === 'idle' && 'border-border-strong text-muted',
-                state === 'selected' && 'border-accent bg-accent text-accent-fg',
+                state === 'selected' && 'border-accent-solid bg-accent-solid text-accent-fg',
                 state === 'correct' && 'border-success bg-success text-white',
                 state === 'wrong' && 'border-danger bg-danger text-white',
               )}
@@ -155,12 +155,12 @@ function OrderingInput({ q, value, onChange, revealed }: { q: Question; value: G
             <li
               key={id}
               className={cn(
-                'flex items-center gap-3 rounded-xl border px-3 py-2.5 text-[15px]',
+                'flex items-center gap-3 rounded-md border px-3 py-2.5 text-[15px]',
                 !revealed && 'border-border bg-surface',
                 revealed && (ok ? 'border-success bg-success-soft' : 'border-danger bg-danger-soft'),
               )}
             >
-              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-surface-3 text-xs font-bold">{i + 1}</span>
+              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-surface-3 text-xs font-semibold">{i + 1}</span>
               <span className="flex-1">{text(id)}</span>
               {revealed ? (
                 !ok && <span className="text-xs font-medium text-danger">should be #{ca.indexOf(id) + 1}</span>
@@ -202,7 +202,7 @@ function MatchingInput({ q, value, onChange, revealed }: { q: Question; value: G
             <div
               key={o.id}
               className={cn(
-                'grid gap-2 rounded-xl border px-3 py-2.5 sm:grid-cols-[1fr_minmax(0,16rem)] sm:items-center',
+                'grid gap-2 rounded-md border px-3 py-2.5 sm:grid-cols-[1fr_minmax(0,16rem)] sm:items-center',
                 !revealed && 'border-border bg-surface',
                 revealed && (ok ? 'border-success bg-success-soft' : 'border-danger bg-danger-soft'),
               )}
@@ -244,7 +244,7 @@ function CaseStudyPanel({ id }: { id: string }) {
   const cs = content.caseStudyById.get(id)!
   const [open, setOpen] = useState(true)
   return (
-    <div className="rounded-2xl border border-border bg-surface-2">
+    <div className="rounded-lg border border-border bg-surface-2">
       <button onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between px-4 py-3 text-left" aria-expanded={open}>
         <span className="text-sm font-semibold">
           <span className="text-accent">Case study:</span> {cs.title}

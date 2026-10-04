@@ -3,93 +3,220 @@
     "id": "azure-monitor",
     "name": "Azure Monitor",
     "category": "Monitoring",
-    "icon": "activity",
+    "icon": "azure:monitor",
     "tagline": "Collect, analyze and act on telemetry.",
     "whatItIs": "The unified monitoring platform for metrics, logs, alerts, insights and workbooks across Azure, hybrid and multicloud resources.",
     "primaryPurpose": "Observe the health and performance of resources and applications.",
-    "useCases": ["Performance dashboards", "Alerting and automated response", "Troubleshooting with logs", "VM, storage and network insights"],
-    "keyFeatures": ["Metrics and Metrics explorer", "Logs and Log Analytics", "Alerts, action groups, processing rules", "Diagnostic settings", "Azure Monitor Agent and DCRs", "Workbooks and Insights"],
-    "security": ["Control workspace access with RBAC (workspace or resource-context)", "Activity log for auditing"],
-    "networking": ["Azure Monitor Private Link Scope (AMPLS) for private ingestion and queries"],
+    "useCases": [
+      "Performance dashboards",
+      "Alerting and automated response",
+      "Troubleshooting with logs",
+      "VM, storage and network insights"
+    ],
+    "keyFeatures": [
+      "Metrics and Metrics explorer",
+      "Logs and Log Analytics",
+      "Alerts, action groups, processing rules",
+      "Diagnostic settings",
+      "Azure Monitor Agent and DCRs",
+      "Workbooks and Insights"
+    ],
+    "security": [
+      "Control workspace access with RBAC (workspace or resource-context)",
+      "Activity log for auditing"
+    ],
+    "networking": [
+      "Azure Monitor Private Link Scope (AMPLS) for private ingestion and queries"
+    ],
     "pricing": "Platform metrics free; pay for log ingestion/retention, alert rules, and some features.",
-    "relatedServices": ["log-analytics", "application-insights", "network-watcher"],
+    "relatedServices": [
+      "log-analytics",
+      "application-insights",
+      "network-watcher"
+    ],
     "confusedWith": [
-      { "name": "Microsoft Sentinel", "difference": "SIEM built on Log Analytics; Azure Monitor is operational monitoring." }
+      {
+        "name": "Microsoft Sentinel",
+        "difference": "SIEM built on Log Analytics; Azure Monitor is operational monitoring."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Metrics, log settings, KQL, alerts and insights are explicit skills.",
-    "examTips": ["No resource logs without a diagnostic setting"],
-    "topics": ["azure-monitor", "alerts-action-groups"],
-    "docLinks": [{ "title": "Azure Monitor overview", "url": "https://learn.microsoft.com/azure/azure-monitor/overview" }]
+    "examTips": [
+      "No resource logs without a diagnostic setting"
+    ],
+    "topics": [
+      "azure-monitor",
+      "alerts-action-groups"
+    ],
+    "docLinks": [
+      {
+        "title": "Azure Monitor overview",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/overview"
+      }
+    ]
   },
   {
     "id": "log-analytics",
     "name": "Log Analytics Workspace",
     "category": "Monitoring",
-    "icon": "database",
+    "icon": "azure:log-analytics",
     "tagline": "Store and query logs with KQL.",
     "whatItIs": "A workspace that stores log data in tables and lets you query it with Kusto Query Language.",
     "primaryPurpose": "Central log store for analysis, alerts and dashboards.",
-    "useCases": ["Resource and activity log analysis", "VM insights and performance data", "Log search alerts", "Backup reports"],
-    "keyFeatures": ["KQL queries", "Table-level retention and plans", "Data export", "Access modes and table RBAC"],
-    "security": ["Use resource-context RBAC to scope access to data from resources users can see"],
-    "networking": ["Private ingestion/query through AMPLS"],
+    "useCases": [
+      "Resource and activity log analysis",
+      "VM insights and performance data",
+      "Log search alerts",
+      "Backup reports"
+    ],
+    "keyFeatures": [
+      "KQL queries",
+      "Table-level retention and plans",
+      "Data export",
+      "Access modes and table RBAC"
+    ],
+    "security": [
+      "Use resource-context RBAC to scope access to data from resources users can see"
+    ],
+    "networking": [
+      "Private ingestion/query through AMPLS"
+    ],
     "pricing": "Per GB ingested (with commitment tiers) and retention beyond included days; archive and query costs for some plans.",
-    "relatedServices": ["azure-monitor", "application-insights"],
+    "relatedServices": [
+      "azure-monitor",
+      "application-insights"
+    ],
     "confusedWith": [
-      { "name": "Storage account archive", "difference": "Storage archives logs cheaply but isn't queryable with KQL." }
+      {
+        "name": "Storage account archive",
+        "difference": "Storage archives logs cheaply but isn't queryable with KQL."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Querying and analyzing logs is an explicit skill.",
-    "examTips": ["KQL: Table | where | summarize count() by"],
-    "topics": ["azure-monitor"],
-    "docLinks": [{ "title": "Log Analytics workspace overview", "url": "https://learn.microsoft.com/azure/azure-monitor/logs/log-analytics-workspace-overview" }]
+    "examTips": [
+      "KQL: Table | where | summarize count() by"
+    ],
+    "topics": [
+      "azure-monitor"
+    ],
+    "docLinks": [
+      {
+        "title": "Log Analytics workspace overview",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/logs/log-analytics-workspace-overview"
+      }
+    ]
   },
   {
     "id": "application-insights",
     "name": "Application Insights",
     "category": "Monitoring",
-    "icon": "trending-up",
+    "icon": "azure:application-insights",
     "tagline": "Application performance monitoring (APM).",
     "whatItIs": "A feature of Azure Monitor that collects application telemetry — requests, dependencies, exceptions, traces — via SDKs or OpenTelemetry.",
     "primaryPurpose": "Understand and troubleshoot application behavior and performance.",
-    "useCases": ["Detect failures and slow dependencies", "Availability tests", "Usage analytics", "Distributed tracing"],
-    "keyFeatures": ["Application map", "Live metrics", "Availability tests", "Smart detection", "Workspace-based storage"],
-    "security": ["Connection strings identify the resource; restrict ingestion with Entra auth where needed"],
-    "networking": ["Telemetry sent over HTTPS; private ingestion via AMPLS"],
+    "useCases": [
+      "Detect failures and slow dependencies",
+      "Availability tests",
+      "Usage analytics",
+      "Distributed tracing"
+    ],
+    "keyFeatures": [
+      "Application map",
+      "Live metrics",
+      "Availability tests",
+      "Smart detection",
+      "Workspace-based storage"
+    ],
+    "security": [
+      "Connection strings identify the resource; restrict ingestion with Entra auth where needed"
+    ],
+    "networking": [
+      "Telemetry sent over HTTPS; private ingestion via AMPLS"
+    ],
     "pricing": "Billed by data ingested into the Log Analytics workspace.",
-    "relatedServices": ["azure-monitor", "log-analytics", "app-service"],
+    "relatedServices": [
+      "azure-monitor",
+      "log-analytics",
+      "app-service"
+    ],
     "confusedWith": [
-      { "name": "VM insights", "difference": "Infrastructure monitoring of VMs; App Insights monitors application code." }
+      {
+        "name": "VM insights",
+        "difference": "Infrastructure monitoring of VMs; App Insights monitors application code."
+      }
     ],
     "relevance": "awareness",
     "relevanceNote": "Concept-level knowledge as part of Azure Monitor.",
-    "examTips": ["App telemetry (requests, exceptions) → Application Insights"],
-    "topics": ["azure-monitor"],
-    "docLinks": [{ "title": "Application Insights overview", "url": "https://learn.microsoft.com/azure/azure-monitor/app/app-insights-overview" }]
+    "examTips": [
+      "App telemetry (requests, exceptions) → Application Insights"
+    ],
+    "topics": [
+      "azure-monitor"
+    ],
+    "docLinks": [
+      {
+        "title": "Application Insights overview",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/app-insights-overview"
+      }
+    ]
   },
   {
     "id": "azure-backup",
     "name": "Azure Backup",
     "category": "Backup",
-    "icon": "database-backup",
+    "icon": "azure:backup-center",
     "tagline": "Managed backup for Azure and on-premises workloads.",
     "whatItIs": "A backup service using Recovery Services vaults and Backup vaults, with policies, secure storage and flexible restore.",
     "primaryPurpose": "Recover data to a previous point in time.",
-    "useCases": ["Azure VM backups", "Azure Files and blobs", "SQL/SAP HANA in VMs", "On-premises files via MARS"],
-    "keyFeatures": ["Backup policies", "Instant restore snapshots", "Soft delete and immutable vaults", "Cross Region Restore", "Backup center / reports"],
-    "security": ["Soft delete, MUA (multi-user authorization), immutability", "Encryption with platform or customer-managed keys"],
-    "networking": ["Private endpoints for vaults (for some workloads)"],
+    "useCases": [
+      "Azure VM backups",
+      "Azure Files and blobs",
+      "SQL/SAP HANA in VMs",
+      "On-premises files via MARS"
+    ],
+    "keyFeatures": [
+      "Backup policies",
+      "Instant restore snapshots",
+      "Soft delete and immutable vaults",
+      "Cross Region Restore",
+      "Backup center / reports"
+    ],
+    "security": [
+      "Soft delete, MUA (multi-user authorization), immutability",
+      "Encryption with platform or customer-managed keys"
+    ],
+    "networking": [
+      "Private endpoints for vaults (for some workloads)"
+    ],
     "pricing": "Per protected instance (by size) plus backup storage consumed (by redundancy).",
-    "relatedServices": ["site-recovery", "virtual-machines", "azure-files"],
+    "relatedServices": [
+      "site-recovery",
+      "virtual-machines",
+      "azure-files"
+    ],
     "confusedWith": [
-      { "name": "Site Recovery", "difference": "Replication and failover for DR vs point-in-time restore." }
+      {
+        "name": "Site Recovery",
+        "difference": "Replication and failover for DR vs point-in-time restore."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Vaults, policies, backup/restore and reports are explicit skills.",
-    "examTips": ["Vault in same region as VMs", "Set redundancy before protecting items"],
-    "topics": ["azure-backup"],
-    "docLinks": [{ "title": "What is Azure Backup?", "url": "https://learn.microsoft.com/azure/backup/backup-overview" }]
+    "examTips": [
+      "Vault in same region as VMs",
+      "Set redundancy before protecting items"
+    ],
+    "topics": [
+      "azure-backup"
+    ],
+    "docLinks": [
+      {
+        "title": "What is Azure Backup?",
+        "url": "https://learn.microsoft.com/azure/backup/backup-overview"
+      }
+    ]
   },
   {
     "id": "site-recovery",
@@ -99,19 +226,48 @@
     "tagline": "Disaster recovery through replication and failover.",
     "whatItIs": "A service that replicates VMs and physical servers to a secondary location and orchestrates failover and failback.",
     "primaryPurpose": "Keep workloads running during outages.",
-    "useCases": ["Azure-to-Azure regional DR", "On-premises to Azure DR", "Migration", "DR drills"],
-    "keyFeatures": ["Continuous replication", "Recovery plans", "Test failover", "App-consistent recovery points"],
-    "security": ["Encrypted replication; supports encrypted disks"],
-    "networking": ["Map target VNets; plan IP addressing and DNS for failover"],
+    "useCases": [
+      "Azure-to-Azure regional DR",
+      "On-premises to Azure DR",
+      "Migration",
+      "DR drills"
+    ],
+    "keyFeatures": [
+      "Continuous replication",
+      "Recovery plans",
+      "Test failover",
+      "App-consistent recovery points"
+    ],
+    "security": [
+      "Encrypted replication; supports encrypted disks"
+    ],
+    "networking": [
+      "Map target VNets; plan IP addressing and DNS for failover"
+    ],
     "pricing": "Per protected instance per month (with an initial free period per instance), plus storage and compute during failover.",
-    "relatedServices": ["azure-backup", "virtual-machines"],
+    "relatedServices": [
+      "azure-backup",
+      "virtual-machines"
+    ],
     "confusedWith": [
-      { "name": "Azure Backup", "difference": "Backup restores data; ASR fails over running workloads." }
+      {
+        "name": "Azure Backup",
+        "difference": "Backup restores data; ASR fails over running workloads."
+      }
     ],
     "relevance": "core",
     "relevanceNote": "Configuring ASR and performing failover are explicit skills.",
-    "examTips": ["Test failover uses an isolated network"],
-    "topics": ["site-recovery"],
-    "docLinks": [{ "title": "About Site Recovery", "url": "https://learn.microsoft.com/azure/site-recovery/site-recovery-overview" }]
+    "examTips": [
+      "Test failover uses an isolated network"
+    ],
+    "topics": [
+      "site-recovery"
+    ],
+    "docLinks": [
+      {
+        "title": "About Site Recovery",
+        "url": "https://learn.microsoft.com/azure/site-recovery/site-recovery-overview"
+      }
+    ]
   }
 ]
